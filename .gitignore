@@ -1,0 +1,5 @@
+# Ignore temp and bin files
+/eshopBackend.App/bin/
+/eshopBackend.App/obj/
+/eshopBackend.DAL/bin/
+/eshopBackend.DAL/obj/
