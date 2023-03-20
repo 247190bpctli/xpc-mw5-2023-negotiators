@@ -3,3 +3,6 @@
 /eshopBackend.App/obj/
 /eshopBackend.DAL/bin/
 /eshopBackend.DAL/obj/
+# Ignore DB configs
+/eshopBackend.DAL/dbConfig.json
+/eshopBackend.DAL/DbSettings/EshopBackendDb.cs
