@@ -6,4 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="linq2db.MySqlConnector" Version="5.0.0" />
+    </ItemGroup>
 </Project>
