@@ -1,6 +1,14 @@
-﻿namespace eshopBackend.DAL.Entities;
+﻿using LinqToDB.Mapping;
+
+namespace eshopBackend.DAL.Entities;
 
 public abstract class EntityBase : IEntity
 {
-    public Guid Id { get; set; }
+    [PrimaryKey, Identity]
+    public required Guid Id { get; init; }
+
+    protected EntityBase()
+    {
+        Id = Guid.NewGuid();
+    }
 }
