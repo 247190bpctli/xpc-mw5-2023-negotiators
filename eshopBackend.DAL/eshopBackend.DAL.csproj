@@ -7,6 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="linq2db.MySqlConnector" Version="5.0.0" />
+        <PackageReference Include="linq2db.MySqlConnector" Version="5.0.0" />
     </ItemGroup>
 </Project>
