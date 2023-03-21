@@ -4,7 +4,7 @@ namespace eshopBackend.DAL.Entities;
 
 public abstract class EntityBase : IEntity
 {
-    [PrimaryKey, Identity]
+    [PrimaryKey, Column]
     public required Guid Id { get; init; }
 
     protected EntityBase()
