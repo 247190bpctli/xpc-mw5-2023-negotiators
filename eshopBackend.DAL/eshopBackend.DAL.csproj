@@ -8,5 +8,8 @@
 
     <ItemGroup>
         <PackageReference Include="linq2db.MySqlConnector" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.2.23128.3" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0-preview.2.23128.3" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0-preview.2.23128.3" />
     </ItemGroup>
 </Project>
