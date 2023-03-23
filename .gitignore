@@ -8,3 +8,4 @@
 /xpc-mw5-2023-negotiators.sln.DotSettings.user
 # Ignore DB configs
 /eshopBackend.DAL/dbConfig.json
+/eshopBackend.DAL/appsettings.json
