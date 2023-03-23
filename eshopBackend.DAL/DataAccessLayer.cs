@@ -2,26 +2,26 @@
 using LinqToDB.Data;
 using Microsoft.Extensions.DependencyInjection;
 
-
 namespace eshopBackend.DAL;
 
 public class DataAccessLayer
 {
-    private static ServiceProvider serviceProvider;
+    public static ServiceProvider serviceProvider;
     
     public DataAccessLayer()
     {
-        //load default db settings
-        DataConnection.DefaultSettings = new DbSettings.DbSettings();
-        
         //build dependency services
         var serviceCollection = new ServiceCollection();
-
+        
+        serviceCollection.AddSingleton<ConfigLoader>();
         serviceCollection.AddSingleton<EshopBackendDb>();
         serviceCollection.AddTransient<DbReset>();
         
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
+        
+        //load default db settings
+        DataConnection.DefaultSettings = new DbSettings.DbSettings(serviceProvider.GetRequiredService<ConfigLoader>().GetFirstConnectionString());
         
         //scopes
         /*var serviceScopeProvider = serviceProvider.GetRequiredService<IServiceScopeFactory>();
@@ -30,11 +30,11 @@ public class DataAccessLayer
             scope.ServiceProvider.GetRequiredService<Service>();
         }*/
         
+        Console.WriteLine();
+        
+        serviceProvider.GetRequiredService<ConfigLoader>().ConfigDebugView();
+        
+        
         Console.WriteLine("Hello, DAL!");
-    }
-
-    public T Command<T>() where T : notnull
-    {
-        return serviceProvider.GetRequiredService<T>();
     }
 }

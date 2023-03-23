@@ -13,6 +13,13 @@ public class ConnectionStringSettings : IConnectionStringSettings
 
 public class DbSettings : ILinqToDBSettings
 {
+    private string _firstConnectionString;
+    
+    public DbSettings(string firstConnectionString)
+    {
+        _firstConnectionString = firstConnectionString;
+    }
+
     public IEnumerable<IDataProviderSettings> DataProviders
         => Enumerable.Empty<IDataProviderSettings>();
 
@@ -28,8 +35,7 @@ public class DbSettings : ILinqToDBSettings
                 {
                     Name             = "eshopBackendDB",
                     ProviderName     = ProviderName.MySql,
-                    ConnectionString =
-                        @"connectionstring"
+                    ConnectionString = _firstConnectionString
                 };
         }
     }

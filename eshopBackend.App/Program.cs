@@ -1,5 +1,6 @@
 ﻿using eshopBackend.DAL;
 using eshopBackend.DAL.DbSettings;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace eshopBackend.App;
 
@@ -9,7 +10,7 @@ class Program
     {
         DataAccessLayer dataAccessLayer = new();
 
-        //dataAccessLayer.Command<DbReset>();
+        //DataAccessLayer.serviceProvider.GetRequiredService<DbReset>();
         
         Console.WriteLine("Hello, World!");
     }
