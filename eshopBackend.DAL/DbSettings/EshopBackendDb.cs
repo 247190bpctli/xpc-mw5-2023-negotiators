@@ -15,22 +15,24 @@ namespace eshopBackend.DAL.DbSettings;
 
 	public partial class EshopBackendDb : DataConnection
 	{
-		public EshopBackendDb()
+		private static string configurationName = "eshopBackendDB";
+		
+		/*public EshopBackendDb()
+		{
+			InitDataContext();
+		}*/
+
+		public EshopBackendDb() //string configuration
+			: base(configurationName)
 		{
 			InitDataContext();
 		}
 
-		public EshopBackendDb(string configuration)
-			: base(configuration)
-		{
-			InitDataContext();
-		}
-
-		public EshopBackendDb(DataOptions<EshopBackendDb> options)
+		/*public EshopBackendDb(DataOptions<EshopBackendDb> options)
 			: base(options.Options)
 		{
 			InitDataContext();
-		}
+		}*/
 
 		partial void InitDataContext();
 	}
