@@ -3,5 +3,8 @@
 /eshopBackend.App/obj/
 /eshopBackend.DAL/bin/
 /eshopBackend.DAL/obj/
+# Ignore IDE settings
+/.idea/
+/xpc-mw5-2023-negotiators.sln.DotSettings.user
 # Ignore DB configs
 /eshopBackend.DAL/dbConfig.json
