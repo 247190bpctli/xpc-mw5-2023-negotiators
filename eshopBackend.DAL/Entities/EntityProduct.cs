@@ -18,7 +18,7 @@ public class EntityProduct : EntityBase
     public float Price { get; set; }
     
     [Column]
-    public float Mass { get; set; }
+    public float Weight { get; set; }
     
     [Column]
     public int Stock { get; set; }
@@ -30,14 +30,14 @@ public class EntityProduct : EntityBase
     public EntityCategory? Category { get; set; }
     
     [Column]
-    public int VendorId { get; set; }
+    public int ManufacturerId { get; set; }
     
-    [Association(ThisKey = nameof(VendorId), OtherKey=nameof(EntityVendor.Id))]
-    public EntityVendor? Vendor { get; set; }
+    [Association(ThisKey = nameof(ManufacturerId), OtherKey=nameof(EntityManufacturer.Id))]
+    public EntityManufacturer? Manufacturer { get; set; }
     
     [Column]
-    public int RatingId { get; set; }
+    public int ReviewId { get; set; }
     
-    [Association(ThisKey = nameof(RatingId), OtherKey=nameof(EntityRating.Id))]
-    public EntityRating? Rating { get; set; }
+    [Association(ThisKey = nameof(ReviewId), OtherKey=nameof(EntityReview.Id))]
+    public EntityReview? Review { get; set; }
 }
