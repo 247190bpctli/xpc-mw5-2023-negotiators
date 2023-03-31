@@ -14,7 +14,7 @@ class Program
         DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Hello!");
         
         //service access below [test]
-        //DataAccessLayer.serviceProvider.GetRequiredService<DbReset>();
+        DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().CreateTest();
         
         DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Bye!");
     }

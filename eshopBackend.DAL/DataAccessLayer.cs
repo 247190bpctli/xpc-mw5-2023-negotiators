@@ -17,9 +17,9 @@ public class DataAccessLayer
         serviceCollection.AddSingleton<LoggerFactory>();
         serviceCollection.AddDbContext<DbConnectorFactory>(options =>
         {
-            //TODO: not quite sure about this
             options.UseMySQL(serviceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
         });
+        serviceCollection.AddTransient<CreateRecordTest>();
 
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
