@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL;
 
 public class ConfigLoader
 {
     private readonly IConfigurationRoot _config;
-
     private readonly string? _firstConnectionString;
-    
+
     public ConfigLoader ()
     {
         _config = new ConfigurationBuilder()
@@ -18,10 +19,9 @@ public class ConfigLoader
         _firstConnectionString = _config.GetRequiredSection("ConnectionStrings").GetChildren().First().Get<string>();
     }
 
-    //TODO: LogConfigDebugView
-    public void ConfigDebugView()
+    public void LogConfigDebugView()
     {
-        Console.WriteLine(_config.GetDebugView());
+        DataAccessLayer.serviceProvider.GetRequiredService<Logger>().Log.LogDebug("Config debug view:\n{debugView}", _config.GetDebugView());
     }
 
     public string GetFirstConnectionString()

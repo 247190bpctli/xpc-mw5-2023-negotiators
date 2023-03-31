@@ -1,6 +1,7 @@
 ﻿using eshopBackend.DAL;
 using eshopBackend.DAL.DbSettings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.App;
 
@@ -10,8 +11,11 @@ class Program
     {
         DataAccessLayer dataAccessLayer = new();
 
+        DataAccessLayer.serviceProvider.GetRequiredService<Logger>().Log.LogDebug("Hello!");
+        
+        //service access below [test]
         //DataAccessLayer.serviceProvider.GetRequiredService<DbReset>();
         
-        Console.WriteLine("Hello, World!");
+        DataAccessLayer.serviceProvider.GetRequiredService<Logger>().Log.LogDebug("Bye!");
     }
 }

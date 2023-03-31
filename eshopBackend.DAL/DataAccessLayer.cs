@@ -1,6 +1,7 @@
 ﻿using eshopBackend.DAL.DbSettings;
 using LinqToDB.Data;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL;
 
@@ -14,6 +15,7 @@ public class DataAccessLayer
         var serviceCollection = new ServiceCollection();
         
         serviceCollection.AddSingleton<ConfigLoader>();
+        serviceCollection.AddSingleton<Logger>();
         serviceCollection.AddSingleton<EshopBackendDb>();
         serviceCollection.AddTransient<DbReset>();
         
@@ -30,11 +32,8 @@ public class DataAccessLayer
             scope.ServiceProvider.GetRequiredService<Service>();
         }*/
         
-        Console.WriteLine();
+        serviceProvider.GetRequiredService<ConfigLoader>().LogConfigDebugView();
         
-        serviceProvider.GetRequiredService<ConfigLoader>().ConfigDebugView();
-        
-        
-        Console.WriteLine("Hello, DAL!");
+        serviceProvider.GetRequiredService<Logger>().Log.LogTrace("Hello, DAL!");
     }
 }
