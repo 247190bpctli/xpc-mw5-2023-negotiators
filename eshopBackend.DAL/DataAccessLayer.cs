@@ -1,5 +1,4 @@
-﻿using eshopBackend.DAL.DbSettings;
-using LinqToDB.Data;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -16,14 +15,15 @@ public class DataAccessLayer
         
         serviceCollection.AddSingleton<ConfigLoader>();
         serviceCollection.AddSingleton<Logger>();
-        serviceCollection.AddSingleton<EshopBackendDb>();
-        serviceCollection.AddTransient<DbReset>();
-        
+        serviceCollection.AddDbContext<DbConnector>(options =>
+        {
+            //TODO: not quite sure about this
+            options.UseMySQL(serviceProvider.GetRequiredService<ConfigLoader>().GetFirstConnectionString());
+        });
+        //serviceCollection.AddTransient<DbReset>();
+
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
-        
-        //load default db settings
-        DataConnection.DefaultSettings = new DbSettings.DbSettings(serviceProvider.GetRequiredService<ConfigLoader>().GetFirstConnectionString());
         
         //scopes
         /*var serviceScopeProvider = serviceProvider.GetRequiredService<IServiceScopeFactory>();

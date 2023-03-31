@@ -1,5 +1,4 @@
 ﻿using eshopBackend.DAL;
-using eshopBackend.DAL.DbSettings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
