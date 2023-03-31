@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eshopBackend.DAL;
 
-public class DbConnector : DbContext
+public class DbConnectorFactory : DbContext
 {
     public DbSet<EntityCategory> Categories { get; set; }
     public DbSet<EntityManufacturer> Manufacturers { get; set; }
@@ -11,14 +11,14 @@ public class DbConnector : DbContext
     public DbSet<EntityReview> Reviews { get; set; }
 
     //MIGRATION in-code connection string [comment out if not migrating]
-    /*public DbConnector(){}
+    /*public DbConnectorFactory(){}
     protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
     {
         optionsBuilder.UseMySQL(connectionString);
     }*/
     //ENDS MIGRATION
 
-    public DbConnector(DbContextOptions<DbConnector> options) : base(options)
+    public DbConnectorFactory(DbContextOptions<DbConnectorFactory> options) : base(options)
     {
     }
 }

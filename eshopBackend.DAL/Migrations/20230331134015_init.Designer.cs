@@ -10,7 +10,7 @@ using eshopBackend.DAL;
 
 namespace eshopBackend.DAL.Migrations
 {
-    [DbContext(typeof(DbConnector))]
+    [DbContext(typeof(DbConnectorFactory))]
     [Migration("20230331134015_init")]
     partial class init
     {

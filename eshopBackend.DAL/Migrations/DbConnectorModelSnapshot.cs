@@ -9,7 +9,7 @@ using eshopBackend.DAL;
 
 namespace eshopBackend.DAL.Migrations
 {
-    [DbContext(typeof(DbConnector))]
+    [DbContext(typeof(DbConnectorFactory))]
     partial class DbConnectorModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

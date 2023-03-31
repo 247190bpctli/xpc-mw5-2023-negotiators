@@ -13,14 +13,13 @@ public class DataAccessLayer
         //build dependency services
         var serviceCollection = new ServiceCollection();
         
-        serviceCollection.AddSingleton<ConfigLoader>();
-        serviceCollection.AddSingleton<Logger>();
-        serviceCollection.AddDbContext<DbConnector>(options =>
+        serviceCollection.AddSingleton<ConfigFactory>();
+        serviceCollection.AddSingleton<LoggerFactory>();
+        serviceCollection.AddDbContext<DbConnectorFactory>(options =>
         {
             //TODO: not quite sure about this
-            options.UseMySQL(serviceProvider.GetRequiredService<ConfigLoader>().GetFirstConnectionString());
+            options.UseMySQL(serviceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
         });
-        //serviceCollection.AddTransient<DbReset>();
 
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
@@ -32,8 +31,8 @@ public class DataAccessLayer
             scope.ServiceProvider.GetRequiredService<Service>();
         }*/
         
-        serviceProvider.GetRequiredService<ConfigLoader>().LogConfigDebugView();
+        serviceProvider.GetRequiredService<ConfigFactory>().LogConfigDebugView();
         
-        serviceProvider.GetRequiredService<Logger>().Log.LogTrace("Hello, DAL!");
+        serviceProvider.GetRequiredService<LoggerFactory>().Log.LogTrace("Hello, DAL!");
     }
 }

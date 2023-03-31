@@ -1,6 +1,7 @@
 ﻿using eshopBackend.DAL;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using LoggerFactory = eshopBackend.DAL.LoggerFactory;
 
 namespace eshopBackend.App;
 
@@ -10,11 +11,11 @@ class Program
     {
         DataAccessLayer dataAccessLayer = new();
 
-        DataAccessLayer.serviceProvider.GetRequiredService<Logger>().Log.LogDebug("Hello!");
+        DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Hello!");
         
         //service access below [test]
         //DataAccessLayer.serviceProvider.GetRequiredService<DbReset>();
         
-        DataAccessLayer.serviceProvider.GetRequiredService<Logger>().Log.LogDebug("Bye!");
+        DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Bye!");
     }
 }

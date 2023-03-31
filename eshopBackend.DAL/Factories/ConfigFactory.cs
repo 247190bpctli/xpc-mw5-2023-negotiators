@@ -4,12 +4,12 @@ using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL;
 
-public class ConfigLoader
+public class ConfigFactory
 {
     private readonly IConfigurationRoot _config;
     private readonly string? _firstConnectionString;
 
-    public ConfigLoader ()
+    public ConfigFactory ()
     {
         _config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json")
@@ -21,7 +21,7 @@ public class ConfigLoader
 
     public void LogConfigDebugView()
     {
-        DataAccessLayer.serviceProvider.GetRequiredService<Logger>().Log.LogDebug("Config debug view:\n{debugView}", _config.GetDebugView());
+        DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Config debug view:\n{debugView}", _config.GetDebugView());
     }
 
     public string GetFirstConnectionString()

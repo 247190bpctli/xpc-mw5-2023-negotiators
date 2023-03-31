@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL;
 
-public class Logger
+public class LoggerFactory
 {
     public ILogger Log;
-    private readonly ConfigLoader _config;
+    private readonly ConfigFactory _config;
 
-    public Logger(ConfigLoader config)
+    public LoggerFactory(ConfigFactory config)
     {
         _config = config;
         
@@ -21,7 +21,7 @@ public class Logger
             #endif
         };
 
-        using ILoggerFactory loggerFactory = LoggerFactory.Create(builder);
-        Log = loggerFactory.CreateLogger<Logger>();
+        using ILoggerFactory loggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder);
+        Log = loggerFactory.CreateLogger<LoggerFactory>();
     }
 }
