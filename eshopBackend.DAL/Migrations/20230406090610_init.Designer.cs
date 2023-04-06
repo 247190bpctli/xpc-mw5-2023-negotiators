@@ -11,7 +11,7 @@ using eshopBackend.DAL;
 namespace eshopBackend.DAL.Migrations
 {
     [DbContext(typeof(DbConnectorFactory))]
-    [Migration("20230331134015_init")]
+    [Migration("20230406090610_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -86,9 +86,6 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("ReviewId")
-                        .HasColumnType("char(36)");
-
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -100,8 +97,6 @@ namespace eshopBackend.DAL.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ManufacturerId");
-
-                    b.HasIndex("ReviewId");
 
                     b.ToTable("Products");
                 });
@@ -115,6 +110,9 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<Guid?>("EntityProductId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -124,6 +122,8 @@ namespace eshopBackend.DAL.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EntityProductId");
 
                     b.ToTable("Reviews");
                 });
@@ -138,15 +138,21 @@ namespace eshopBackend.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("ManufacturerId");
 
-                    b.HasOne("eshopBackend.DAL.Entities.EntityReview", "Review")
-                        .WithMany()
-                        .HasForeignKey("ReviewId");
-
                     b.Navigation("Category");
 
                     b.Navigation("Manufacturer");
+                });
 
-                    b.Navigation("Review");
+            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityReview", b =>
+                {
+                    b.HasOne("eshopBackend.DAL.Entities.EntityProduct", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("EntityProductId");
+                });
+
+            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityProduct", b =>
+                {
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

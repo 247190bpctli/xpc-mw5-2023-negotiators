@@ -44,21 +44,6 @@ namespace eshopBackend.DAL.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Stars = table.Column<string>(type: "longtext", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
-                    Description = table.Column<string>(type: "longtext", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -70,8 +55,7 @@ namespace eshopBackend.DAL.Migrations
                     Weight = table.Column<float>(type: "float", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<Guid>(type: "char(36)", nullable: true),
-                    ManufacturerId = table.Column<Guid>(type: "char(36)", nullable: true),
-                    ReviewId = table.Column<Guid>(type: "char(36)", nullable: true)
+                    ManufacturerId = table.Column<Guid>(type: "char(36)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,10 +70,26 @@ namespace eshopBackend.DAL.Migrations
                         column: x => x.ManufacturerId,
                         principalTable: "Manufacturers",
                         principalColumn: "Id");
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false),
+                    Stars = table.Column<string>(type: "longtext", nullable: false),
+                    Name = table.Column<string>(type: "longtext", nullable: false),
+                    Description = table.Column<string>(type: "longtext", nullable: true),
+                    EntityProductId = table.Column<Guid>(type: "char(36)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Reviews_ReviewId",
-                        column: x => x.ReviewId,
-                        principalTable: "Reviews",
+                        name: "FK_Reviews_Products_EntityProductId",
+                        column: x => x.EntityProductId,
+                        principalTable: "Products",
                         principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
@@ -105,14 +105,17 @@ namespace eshopBackend.DAL.Migrations
                 column: "ManufacturerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_ReviewId",
-                table: "Products",
-                column: "ReviewId");
+                name: "IX_Reviews_EntityProductId",
+                table: "Reviews",
+                column: "EntityProductId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Reviews");
+
             migrationBuilder.DropTable(
                 name: "Products");
 
@@ -121,9 +124,6 @@ namespace eshopBackend.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Manufacturers");
-
-            migrationBuilder.DropTable(
-                name: "Reviews");
         }
     }
 }

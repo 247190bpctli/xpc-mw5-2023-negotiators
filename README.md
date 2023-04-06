@@ -12,12 +12,14 @@ Make a file eshopBackend.DAL/appsettings.json
 ```
 
 ### Migrations
-Migration create command
+Execute in DAL folder
+
+## Migration create command
 ```bash
-dotnet ef --startup-project ../eshopBackend.DAL/eshopBackend.DAL.csproj migrations add "init"--context DbConnector --output-dir Migrations --project ../eshopBackend.DAL/eshopBackend.DAL.csproj
+dotnet ef --startup-project ../eshopBackend.DAL/eshopBackend.DAL.csproj migrations add "init"--context DbConnectorFactory --output-dir Migrations --project ../eshopBackend.DAL/eshopBackend.DAL.csproj
 ```
 
-Migration update command
+## Migration update command
 ```bash
 dotnet ef database update
 ```
