@@ -1,6 +1,6 @@
 ﻿namespace eshopBackend.DAL.Entities;
 
-public class EntityReview : EntityBase
+public record EntityReview : EntityBase
 {
     public required string Stars { get; set; }
     

@@ -1,6 +1,6 @@
 ﻿namespace eshopBackend.DAL.Entities;
 
-public class EntityManufacturer : EntityBase
+public record EntityManufacturer : EntityBase
 {
     public required string Name { get; set; }
 
