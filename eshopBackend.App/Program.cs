@@ -15,6 +15,7 @@ class Program
         
         //service access below [test]
         DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().CreateTest();
+        DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().ViewTest();
         
         DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Bye!");
     }

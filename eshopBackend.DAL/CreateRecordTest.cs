@@ -12,21 +12,28 @@ public class CreateRecordTest
         _db = db;
     }
 
+    private static readonly EntityProduct _test = new()
+    {
+        Id = Guid.NewGuid(),
+        Name = "Kokot Jumbo",
+        Price = (float)59.99,
+        Weight = (float)5.501,
+        Stock = 56,
+        Reviews = Array.Empty<EntityReview>()
+    };
+    
     public void CreateTest()
     {
         //add row to db test
-        EntityProduct test = new()
-        {
-            Name = "Kokot Jumbo",
-            Price = (float)59.99,
-            Weight = (float)5.501,
-            Stock = 56,
-            Id = default
-        };
-
         DbSet<EntityProduct> products = _db.Set<EntityProduct>();
 
-        products.Add(test);
+        products.Add(_test);
         _db.SaveChanges();
+    }
+    
+    public void ViewTest()
+    {
+        List<EntityProduct> products = _db.Products.ToList();
+        Console.WriteLine(products);
     }
 }
