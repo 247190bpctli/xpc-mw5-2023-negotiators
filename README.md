@@ -1,8 +1,7 @@
 # Eshop backend project
 Eshop backend with MySQL DB connector - C# .NET project
 
-Team
-: Negotiators
+> Team: Negotiators
 
 | Team members | Main focus |
 |---|---|
