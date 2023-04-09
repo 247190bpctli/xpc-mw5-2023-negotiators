@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using eshopBackend.DAL.Factories;
+using eshopBackend.DAL.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -13,13 +15,21 @@ public class DataAccessLayer
         //build dependency services
         var serviceCollection = new ServiceCollection();
         
+        //DAL services
         serviceCollection.AddSingleton<ConfigFactory>();
         serviceCollection.AddSingleton<LoggerFactory>();
         serviceCollection.AddDbContext<DbConnectorFactory>(options =>
         {
             options.UseMySQL(serviceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
         });
-        serviceCollection.AddTransient<CreateRecordTest>();
+        
+        //public functions
+        serviceCollection.AddTransient<Cart>();
+        serviceCollection.AddTransient<Categories>();
+        serviceCollection.AddTransient<Manufacturers>();
+        serviceCollection.AddTransient<MockDataGenerator>();
+        serviceCollection.AddTransient<Products>();
+        serviceCollection.AddTransient<SearchProvider>();
 
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
@@ -30,9 +40,5 @@ public class DataAccessLayer
         {
             scope.ServiceProvider.GetRequiredService<Service>();
         }*/
-        
-        serviceProvider.GetRequiredService<ConfigFactory>().LogConfigDebugView();
-        
-        serviceProvider.GetRequiredService<LoggerFactory>().Log.LogTrace("Hello, DAL!");
     }
 }

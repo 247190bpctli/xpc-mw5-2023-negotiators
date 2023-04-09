@@ -14,8 +14,12 @@ class Program
         DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Hello!");
         
         //service access below [test]
-        DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().CreateTest();
-        DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().ViewTest();
+        //DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().CreateTest();
+        //DataAccessLayer.serviceProvider.GetRequiredService<CreateRecordTest>().ViewTest();
+        //todo test services
+        
+        //config to log
+        //serviceProvider.GetRequiredService<ConfigFactory>().LogConfigDebugView();
         
         DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Bye!");
     }
