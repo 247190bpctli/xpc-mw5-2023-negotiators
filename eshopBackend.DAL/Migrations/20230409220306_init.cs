@@ -15,11 +15,29 @@ namespace eshopBackend.DAL.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false),
+                    DeliveryType = table.Column<int>(type: "int", nullable: true),
+                    DeliveryAddress = table.Column<string>(type: "longtext", nullable: true),
+                    PaymentType = table.Column<int>(type: "int", nullable: true),
+                    PaymentDetails = table.Column<string>(type: "longtext", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "longtext", nullable: false),
+                    ImageUrl = table.Column<string>(type: "longtext", nullable: true),
+                    Description = table.Column<string>(type: "longtext", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -44,6 +62,23 @@ namespace eshopBackend.DAL.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "PlacedOrders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false),
+                    DeliveryType = table.Column<int>(type: "int", nullable: true),
+                    DeliveryAddress = table.Column<string>(type: "longtext", nullable: true),
+                    PaymentType = table.Column<int>(type: "int", nullable: true),
+                    PaymentDetails = table.Column<string>(type: "longtext", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "datetime(6)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlacedOrders", x => x.Id);
+                })
+                .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -51,15 +86,22 @@ namespace eshopBackend.DAL.Migrations
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     ImageUrl = table.Column<string>(type: "longtext", nullable: true),
                     Description = table.Column<string>(type: "longtext", nullable: true),
-                    Price = table.Column<float>(type: "float", nullable: false),
-                    Weight = table.Column<float>(type: "float", nullable: false),
+                    Price = table.Column<double>(type: "double", nullable: false),
+                    Weight = table.Column<double>(type: "double", nullable: false),
                     Stock = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<Guid>(type: "char(36)", nullable: true),
-                    ManufacturerId = table.Column<Guid>(type: "char(36)", nullable: true)
+                    ManufacturerId = table.Column<Guid>(type: "char(36)", nullable: true),
+                    EntityCartId = table.Column<Guid>(type: "char(36)", nullable: true),
+                    EntityPlacedOrderId = table.Column<Guid>(type: "char(36)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_Carts_EntityCartId",
+                        column: x => x.EntityCartId,
+                        principalTable: "Carts",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -70,6 +112,11 @@ namespace eshopBackend.DAL.Migrations
                         column: x => x.ManufacturerId,
                         principalTable: "Manufacturers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_PlacedOrders_EntityPlacedOrderId",
+                        column: x => x.EntityPlacedOrderId,
+                        principalTable: "PlacedOrders",
+                        principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -78,8 +125,8 @@ namespace eshopBackend.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Stars = table.Column<string>(type: "longtext", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: false),
+                    Stars = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    User = table.Column<string>(type: "longtext", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: true),
                     EntityProductId = table.Column<Guid>(type: "char(36)", nullable: true)
                 },
@@ -98,6 +145,16 @@ namespace eshopBackend.DAL.Migrations
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_EntityCartId",
+                table: "Products",
+                column: "EntityCartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_EntityPlacedOrderId",
+                table: "Products",
+                column: "EntityPlacedOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ManufacturerId",
@@ -120,10 +177,16 @@ namespace eshopBackend.DAL.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Manufacturers");
+
+            migrationBuilder.DropTable(
+                name: "PlacedOrders");
         }
     }
 }
