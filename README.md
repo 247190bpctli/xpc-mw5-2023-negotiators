@@ -10,7 +10,10 @@ Eshop backend with MySQL DB connector - C# .NET project
 
 ## How to run
 ### Compiled binaries
-To be added later to the release tab.
+Should be uploaded by CI to every release tab.
+
+> **Warning**
+> You need to make configuration file before you run the project
 
 ### Build from source
 You can build the project from source by cloning the repo or downloading the packed sources from release tab.
