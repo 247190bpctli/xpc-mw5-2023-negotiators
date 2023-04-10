@@ -1,7 +1,6 @@
 using System.Data;
 using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +19,24 @@ public class Cart
     
     public EntityCart? CartDetails(Guid cartId)
     {
-        return _db.Carts.SingleOrDefault(cart => cart.Id == cartId);
+        try
+        {
+            EntityCart cart = _db.Carts.Single(cart => cart.Id == cartId);
+
+            return cart;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Cart cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Cart cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public Guid? CartAdd()

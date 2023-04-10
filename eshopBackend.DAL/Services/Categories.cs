@@ -17,15 +17,49 @@ public class Categories
         _logger = logger;
     }
 
-    public List<EntityCategory> CategoriesOverview(byte page)
+    public List<EntityCategory>? CategoriesOverview(byte page)
     {
-        int skipRange = (page - 1) * 25;
-        return _db.Categories.Skip(skipRange).Take(25).ToList();
+        try
+        {
+            int skipRange = (page - 1) * 25;
+            List<EntityCategory> categories = _db.Categories.Skip(skipRange).Take(25).ToList();
+
+            return categories;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public EntityCategory? CategoryDetails(Guid id)
     {
-        return _db.Categories.SingleOrDefault(category => category.Id == id);
+        try
+        {
+            EntityCategory category = _db.Categories.Single(category => category.Id == id);
+
+            return category;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public Guid? CategoryAdd(string name, string? imageUrl, string? description)

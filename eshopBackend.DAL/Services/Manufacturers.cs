@@ -17,15 +17,49 @@ public class Manufacturers
         _logger = logger;
     }
 
-    public List<EntityManufacturer> ManufacturersOverview(byte page)
+    public List<EntityManufacturer>? ManufacturersOverview(byte page)
     {
-        int skipRange = (page - 1) * 25;
-        return _db.Manufacturers.Skip(skipRange).Take(25).ToList();
+        try
+        {
+            int skipRange = (page - 1) * 25;
+            List<EntityManufacturer> manufacturers = _db.Manufacturers.Skip(skipRange).Take(25).ToList();
+
+            return manufacturers;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Manufacturers cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Manufacturers cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public EntityManufacturer? ManufacturerDetails(Guid id)
     {
-        return _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id);
+        try
+        {
+            EntityManufacturer manufacturer = _db.Manufacturers.Single(manufacturer => manufacturer.Id == id);
+
+            return manufacturer;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Manufacturer cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Manufacturer cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public Guid? ManufacturerAdd(string name, string? description, string? logoUrl, string? origin)

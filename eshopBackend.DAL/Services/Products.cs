@@ -17,15 +17,49 @@ public class Products
         _logger = logger;
     }
 
-    public List<EntityProduct> ProductsOverview(byte page)
+    public List<EntityProduct>? ProductsOverview(byte page)
     {
-        int skipRange = (page - 1) * 25;
-        return _db.Products.Skip(skipRange).Take(25).ToList();
+        try
+        {
+            int skipRange = (page - 1) * 25;
+            List<EntityProduct> products = _db.Products.Skip(skipRange).Take(25).ToList();
+
+            return products;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public EntityProduct? ProductDetails(Guid id)
     {
-        return _db.Products.SingleOrDefault(product => product.Id == id);
+        try
+        {
+            EntityProduct product = _db.Products.Single(product => product.Id == id);
+
+            return product;
+        }
+        catch (DbUpdateException e)
+        {
+            _logger.Log.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
+        catch (DBConcurrencyException e)
+        {
+            _logger.Log.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            return null;
+        }
     }
 
     public Guid? ProductAdd(string name, string? imageUrl, string? description, double price, double weight, int stock, Guid? categoryId, Guid? manufacturerId)
