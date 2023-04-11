@@ -23,7 +23,11 @@ public class Products
         try
         {
             int skipRange = (page - 1) * 25;
-            List<EntityProduct> products = _db.Products.Skip(skipRange).Take(25).ToList();
+            List<EntityProduct> products = _db.Products.Skip(skipRange).Take(25)
+                .Include(x => x.Category)
+                .Include(x => x.Manufacturer)
+                .Include(x => x.Reviews)
+                .ToList();
 
             return products;
         }
@@ -45,7 +49,11 @@ public class Products
     {
         try
         {
-            EntityProduct product = _db.Products.Single(product => product.Id == id);
+            EntityProduct product = _db.Products
+                .Include(x => x.Category)
+                .Include(x => x.Manufacturer)
+                .Include(x => x.Reviews)
+                .Single(product => product.Id == id);
 
             return product;
         }
@@ -223,7 +231,9 @@ public class Products
             //add row to db
             DbSet<EntityProduct> productUpdate = _db.Set<EntityProduct>();
 
-            productUpdate.Single(product => product.Id == productId).Reviews.Add(newReview);
+            productUpdate
+                .Include(x => x.Reviews)
+                .Single(product => product.Id == productId).Reviews.Add(newReview);
             _db.SaveChanges();
             
             return true;
