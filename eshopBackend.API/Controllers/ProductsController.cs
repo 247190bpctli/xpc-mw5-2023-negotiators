@@ -8,11 +8,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace eshopBackend.API.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
     {
 
+        private readonly ILogger<ProductsController> _logger;
+        public ProductsController(ILogger<ProductsController> logger) => _logger = logger;
+       
 
         //list products
         [HttpGet("/list/{page}")]
@@ -25,9 +29,20 @@ namespace eshopBackend.API.Controllers
 
         //product detail
         [HttpGet("/detail/{id}")]
-        public EntityProduct? Get(string id)
+        public EntityProduct? Get(Guid id)
         {
-            return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductDetails(Guid.Parse(id));
+            try
+            {
+                EntityProduct? details = DataAccessLayer.serviceProvider?.GetService<Products>()?.ProductDetails(id);
+                return details;
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError("Product cannot be found: {ExceptionMsg}", ex.Message);
+                _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
+                
+                return null;
+            }
         }
 
         //product add

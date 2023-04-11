@@ -1,7 +1,16 @@
+using eshopBackend.DAL;
+using System.Configuration;
+
+
+DataAccessLayer dataAccessLayer = new();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddLogging(b => b
+                .AddDebug()
+                .AddConsole());
+                
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
