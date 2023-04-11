@@ -18,7 +18,7 @@ public class Categories
         _logger = logger;
     }
 
-    public List<EntityCategory>? CategoriesOverview(byte page)
+    public List<EntityCategory>? CategoriesOverview(byte page = 1)
     {
         try
         {
@@ -63,7 +63,7 @@ public class Categories
         }
     }
 
-    public Guid? CategoryAdd(string name, string? imageUrl, string? description)
+    public Guid? CategoryAdd(string name, string? imageUrl = null, string? description = null)
     {
         try
         {
@@ -100,7 +100,7 @@ public class Categories
         }
     }
 
-    public bool CategoryEdit(Guid id, string? name, string? imageUrl, string? description)
+    public bool CategoryEdit(Guid id, string? name = null, string? imageUrl = null, string? description = null)
     {
         try
         {

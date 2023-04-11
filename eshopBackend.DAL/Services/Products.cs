@@ -18,7 +18,7 @@ public class Products
         _logger = logger;
     }
 
-    public List<EntityProduct>? ProductsOverview(byte page)
+    public List<EntityProduct>? ProductsOverview(byte page = 1)
     {
         try
         {
@@ -114,7 +114,7 @@ public class Products
         }
     }
     
-    public bool ProductEdit(Guid id, string? name, string? imageUrl, string? description, double? price, double? weight, int? stock, Guid? categoryId, Guid? manufacturerId)
+    public bool ProductEdit(Guid id, string? name = null, string? imageUrl = null, string? description = null, double? price = null, double? weight = null, int? stock = null, Guid? categoryId = null, Guid? manufacturerId = null)
     {
         try
         {
@@ -215,7 +215,7 @@ public class Products
         }
     }
 
-    public bool ReviewAdd(Guid productId, byte stars, string user, string? description)
+    public bool ReviewAdd(Guid productId, byte stars, string user, string? description = null)
     {
         try
         {
