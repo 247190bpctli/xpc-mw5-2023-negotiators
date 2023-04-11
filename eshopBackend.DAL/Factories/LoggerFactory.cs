@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
 
-namespace eshopBackend.DAL;
+namespace eshopBackend.DAL.Factories;
 
 public class LoggerFactory
 {
-    public ILogger Log;
+    public readonly ILogger Log;
     private readonly ConfigFactory _config;
 
     public LoggerFactory(ConfigFactory config)
