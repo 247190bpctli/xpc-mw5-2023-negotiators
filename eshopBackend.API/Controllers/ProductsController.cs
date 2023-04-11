@@ -16,12 +16,19 @@ namespace eshopBackend.API.Controllers
 
         //list products
         [HttpGet("/list/{page}")]
-        public List<EntityProduct>? Get(byte page) => DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductsOverview(page);
+        public List<EntityProduct>? Get(byte page)
+        {
+            List<EntityProduct>? products = DataAccessLayer.serviceProvider?.GetService<Products>()?.ProductsOverview(page);
+            return products;// new List<EntityProduct>();
+        }
 
 
         //product detail
-        [HttpGet ("/detail/{id}")]
-        public EntityProduct? Get(string id) => DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductDetails(Guid.Parse(id));
+        [HttpGet("/detail/{id}")]
+        public EntityProduct? Get(string id)
+        {
+            return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductDetails(Guid.Parse(id));
+        }
 
         //product add
         [HttpPost("/add/{name},{imageUrl},{description},{price},{weight},{stock},{categoryId},{manufacturerId}")]
