@@ -1,0 +1,12 @@
+dal:
+- eshopBackend.DAL/**/*
+
+api:
+- eshopBackend.API/**/*
+
+documentation:
+- README.md
+- wiki/**/*
+
+actions:
+- .github/**/*
