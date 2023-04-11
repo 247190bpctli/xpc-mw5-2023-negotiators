@@ -11,4 +11,8 @@
     <ItemGroup>
         <ProjectReference Include="..\eshopBackend.DAL\eshopBackend.DAL.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Text.Json" Version="8.0.0-preview.3.23174.8" />
+    </ItemGroup>
 </Project>
