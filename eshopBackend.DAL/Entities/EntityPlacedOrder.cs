@@ -1,5 +1,3 @@
-using Google.Protobuf.WellKnownTypes;
-
 namespace eshopBackend.DAL.Entities;
 
 public record EntityPlacedOrder : EntityBase

@@ -4,6 +4,7 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
@@ -30,7 +31,7 @@ public class MockDataGenerator
             }
 
             EntityCategory bogusCategory = new Faker<EntityCategory>()
-                .RuleFor(o => o.Id, f => mockGuid)
+                .RuleFor(o => o.Id, _ => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Type())
                 .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
                 .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
@@ -66,7 +67,7 @@ public class MockDataGenerator
             }
             
             EntityManufacturer bogusManufacturer = new Faker<EntityManufacturer>()
-                .RuleFor(o => o.Id, f => mockGuid)
+                .RuleFor(o => o.Id, _ => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
                 .RuleFor(o => o.Description, f => f.Lorem.Lines(1))
                 .RuleFor(o => o.LogoUrl, f => f.Image.DataUri(200, 100))
@@ -106,7 +107,7 @@ public class MockDataGenerator
             }
 
             EntityProduct bogusProduct = new Faker<EntityProduct>()
-                .RuleFor(o => o.Id, f => mockGuid)
+                .RuleFor(o => o.Id, _ => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
                 .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
                 .RuleFor(o => o.Description, f => f.Lorem.Lines(1))

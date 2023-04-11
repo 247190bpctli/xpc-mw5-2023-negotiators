@@ -3,6 +3,7 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
