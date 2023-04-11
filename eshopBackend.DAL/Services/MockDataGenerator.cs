@@ -16,40 +16,29 @@ public class MockDataGenerator
     {
         _db = db;
         _logger = logger;
-        
-        //bogus strict mode - all properties have to be defined
-        Faker.DefaultStrictMode = true;
     }
 
-    public bool MakeMockData(byte categoryAmount, byte manufacturerAmount, byte productAmount, int? seed)
-    {
-        //todo bogus
-        return false;
-    }
-
-    /*public int? MakeMockCategory(byte amount, int? seed)
+    private Guid? MakeMockCategory(int? seed = null) //todo call createsvc??
     {
         try
         {
-            //make seed if not specified
-            int actualSeed = seed ?? new Random().Next(99999);
-
-            Randomizer.Seed = new Random(actualSeed);
-        
-            for(byte i = 0; i < amount; i++)
+            Guid mockGuid = Guid.NewGuid();
+            
+            if (seed != null)
             {
-                EntityCategory bogusCategory = new Faker<EntityCategory>()
-                    .RuleFor(o => o.Id, f => f.Random.Guid())
-                    .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
-                    .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
-                    .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
-
-                _db.Categories.Add(bogusCategory);
+                Randomizer.Seed = new Random((int)seed);
             }
 
+            EntityCategory bogusCategory = new Faker<EntityCategory>()
+                .RuleFor(o => o.Id, f => mockGuid)
+                .RuleFor(o => o.Name, f => f.Vehicle.Type())
+                .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
+                .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
+
+            _db.Categories.Add(bogusCategory);
             _db.SaveChanges();
 
-            return actualSeed;
+            return mockGuid;
         }
         catch (DbUpdateException e)
         {
@@ -65,29 +54,28 @@ public class MockDataGenerator
         }
     }
     
-    public int? MakeMockManufacturer(byte amount, int? seed)
+    private Guid? MakeMockManufacturer(int? seed = null) //todo call createsvc??
     {
         try
         {
-            //make seed if not specified
-            int actualSeed = seed ?? new Random().Next(99999);
-
-            Randomizer.Seed = new Random(actualSeed);
-        
-            for(byte i = 0; i < amount; i++)
+            Guid mockGuid = Guid.NewGuid();
+            
+            if (seed != null)
             {
-                EntityManufacturer bogusManufacturer = new Faker<EntityManufacturer>()
-                    .RuleFor(o => o.Id, f => f.Random.Guid()) //todo props
-                    .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
-                    .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
-                    .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
-
-                _db.Manufacturers.Add(bogusManufacturer);
+                Randomizer.Seed = new Random((int)seed);
             }
+            
+            EntityManufacturer bogusManufacturer = new Faker<EntityManufacturer>()
+                .RuleFor(o => o.Id, f => mockGuid)
+                .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
+                .RuleFor(o => o.Description, f => f.Lorem.Lines(1))
+                .RuleFor(o => o.LogoUrl, f => f.Image.DataUri(200, 100))
+                .RuleFor(o => o.Origin, f => f.Address.Country());
 
+            _db.Manufacturers.Add(bogusManufacturer);
             _db.SaveChanges();
 
-            return actualSeed;
+            return mockGuid;
         }
         catch (DbUpdateException e)
         {
@@ -103,29 +91,34 @@ public class MockDataGenerator
         }
     }
     
-    public int? MakeMockProduct(byte amount, int? seed)
+    private Guid? MakeMockProduct(Guid categoryId, Guid manufacturerId, int? seed = null) //todo call createsvc??
     {
         try
         {
-            //make seed if not specified
-            int actualSeed = seed ?? new Random().Next(99999);
+            Guid mockGuid = Guid.NewGuid();
 
-            Randomizer.Seed = new Random(actualSeed);
-        
-            for(byte i = 0; i < amount; i++)
+            EntityCategory category = _db.Categories.Single(category => category.Id == categoryId);
+            EntityManufacturer manufacturer = _db.Manufacturers.Single(manufacturer => manufacturer.Id == manufacturerId);
+            
+            if (seed != null)
             {
-                EntityProduct bogusProduct = new Faker<EntityProduct>()
-                    .RuleFor(o => o.Id, f => f.Random.Guid()) //todo props
-                    .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
-                    .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
-                    .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
-
-                _db.Products.Add(bogusProduct);
+                Randomizer.Seed = new Random((int)seed);
             }
 
+            EntityProduct bogusProduct = new Faker<EntityProduct>()
+                .RuleFor(o => o.Id, f => mockGuid)
+                .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
+                .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
+                .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
+
+            bogusProduct.Category = category;
+            bogusProduct.Manufacturer = manufacturer;
+            bogusProduct.Reviews = new List<EntityReview>();
+            
+            _db.Products.Add(bogusProduct);
             _db.SaveChanges();
 
-            return actualSeed;
+            return mockGuid;
         }
         catch (DbUpdateException e)
         {
@@ -139,5 +132,27 @@ public class MockDataGenerator
             _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
-    }*/
+    }
+    
+    public bool MakeMockData(byte dataAmount, int? seed = null)
+    {
+        for (int i = 0; i < dataAmount; i++)
+        {
+            Guid? categoryId = MakeMockCategory(seed);
+            Guid? manufacturerId = MakeMockManufacturer(seed);
+
+            if (categoryId != null && manufacturerId != null)
+            {
+                Guid? product = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed);
+                _logger.Log.LogDebug("Mock data created");
+            }
+            else
+            {
+                _logger.Log.LogError("Mock data creation error - check logs above!");
+                return false;
+            }
+        }
+        
+        return true;
+    }
 }
