@@ -35,6 +35,9 @@ public class DataAccessLayer
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
         
+        //startup message
+        serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("DAL instance created");
+        
         //scopes
         /*var serviceScopeProvider = serviceProvider.GetRequiredService<IServiceScopeFactory>();
         using (var scope = serviceScopeProvider.CreateScope())
