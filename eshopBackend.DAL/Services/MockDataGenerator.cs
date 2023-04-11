@@ -19,7 +19,7 @@ public class MockDataGenerator
         _logger = logger;
     }
 
-    private Guid? MakeMockCategory(int? seed = null) //todo call createsvc??
+    private Guid? MakeMockCategory(int? seed = null)
     {
         try
         {
@@ -55,7 +55,7 @@ public class MockDataGenerator
         }
     }
     
-    private Guid? MakeMockManufacturer(int? seed = null) //todo call createsvc??
+    private Guid? MakeMockManufacturer(int? seed = null)
     {
         try
         {
@@ -92,7 +92,7 @@ public class MockDataGenerator
         }
     }
     
-    private Guid? MakeMockProduct(Guid categoryId, Guid manufacturerId, int? seed = null) //todo call createsvc??
+    private Guid? MakeMockProduct(Guid categoryId, Guid manufacturerId, int? seed = null)
     {
         try
         {
