@@ -109,7 +109,10 @@ public class MockDataGenerator
                 .RuleFor(o => o.Id, f => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
                 .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
-                .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
+                .RuleFor(o => o.Description, f => f.Lorem.Lines(1))
+                .RuleFor(o => o.Price, f => f.Random.Number(499))
+                .RuleFor(o => o.Weight, f => f.Random.Number(60))
+                .RuleFor(o => o.Stock, f => f.Random.Number(5));
 
             bogusProduct.Category = category;
             bogusProduct.Manufacturer = manufacturer;
@@ -141,7 +144,7 @@ public class MockDataGenerator
             Guid? categoryId = MakeMockCategory(seed);
             Guid? manufacturerId = MakeMockManufacturer(seed);
 
-            if (categoryId != null && manufacturerId != null)
+            if (categoryId != null && manufacturerId != null) //todo bug creating more categories and manufacturers that needed
             {
                 Guid? product = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed);
                 _logger.Log.LogDebug("Mock data created");
