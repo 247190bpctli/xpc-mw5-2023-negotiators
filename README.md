@@ -22,9 +22,16 @@ You can build the project from source by cloning the repo or downloading the pac
 > You need to make configuration file before you run the project
 
 ## DB config
-Make a file eshopBackend.DAL/appsettings.json
+Make a file eshopBackend.API/appsettings.json
 ```json
 {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
   "ConnectionStrings": {
     "DefaultConnection": "Server=localhost;Database=eshopBackend;User Id=eshopBackend;Password=secret;"
   }
