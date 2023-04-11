@@ -1,28 +1,42 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using eshopBackend.DAL.Factories;
+using eshopBackend.DAL.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL;
 
 public class DataAccessLayer
 {
-    public static ServiceProvider serviceProvider;
+    public static ServiceProvider serviceProvider = null!;
     
     public DataAccessLayer()
     {
         //build dependency services
         var serviceCollection = new ServiceCollection();
         
+        //DAL services
         serviceCollection.AddSingleton<ConfigFactory>();
         serviceCollection.AddSingleton<LoggerFactory>();
         serviceCollection.AddDbContext<DbConnectorFactory>(options =>
         {
             options.UseMySQL(serviceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
         });
-        serviceCollection.AddTransient<CreateRecordTest>();
+        
+        //public functions
+        serviceCollection.AddTransient<Cart>();
+        serviceCollection.AddTransient<Categories>();
+        serviceCollection.AddTransient<Manufacturers>();
+        serviceCollection.AddTransient<MockDataGenerator>();
+        serviceCollection.AddTransient<Products>();
+        serviceCollection.AddTransient<SearchProvider>();
 
         // Build ServiceProvider - any registrations after this line will not take effect 
         serviceProvider = serviceCollection.BuildServiceProvider();
+        
+        //startup message
+        serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("DAL instance created");
         
         //scopes
         /*var serviceScopeProvider = serviceProvider.GetRequiredService<IServiceScopeFactory>();
@@ -30,9 +44,5 @@ public class DataAccessLayer
         {
             scope.ServiceProvider.GetRequiredService<Service>();
         }*/
-        
-        serviceProvider.GetRequiredService<ConfigFactory>().LogConfigDebugView();
-        
-        serviceProvider.GetRequiredService<LoggerFactory>().Log.LogTrace("Hello, DAL!");
     }
 }

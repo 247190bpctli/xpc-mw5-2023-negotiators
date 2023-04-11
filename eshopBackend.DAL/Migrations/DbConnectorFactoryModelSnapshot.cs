@@ -3,7 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using eshopBackend.DAL;
+using eshopBackend.DAL.Factories;
 
 #nullable disable
 
@@ -19,11 +19,40 @@ namespace eshopBackend.DAL.Migrations
                 .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityCart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("DeliveryType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentDetails")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Carts");
+                });
+
             modelBuilder.Entity("eshopBackend.DAL.Entities.EntityCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -58,6 +87,32 @@ namespace eshopBackend.DAL.Migrations
                     b.ToTable("Manufacturers");
                 });
 
+            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityPlacedOrder", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("DeliveryAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("DeliveryType")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentDetails")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("PaymentType")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlacedOrders");
+                });
+
             modelBuilder.Entity("eshopBackend.DAL.Entities.EntityProduct", b =>
                 {
                     b.Property<Guid>("Id")
@@ -70,6 +125,12 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<Guid?>("EntityCartId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("EntityPlacedOrderId")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
@@ -80,18 +141,22 @@ namespace eshopBackend.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("float");
+                    b.Property<double>("Price")
+                        .HasColumnType("double");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<float>("Weight")
-                        .HasColumnType("float");
+                    b.Property<double>("Weight")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("EntityCartId");
+
+                    b.HasIndex("EntityPlacedOrderId");
 
                     b.HasIndex("ManufacturerId");
 
@@ -110,11 +175,10 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<Guid?>("EntityProductId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<byte>("Stars")
+                        .HasColumnType("tinyint unsigned");
 
-                    b.Property<string>("Stars")
+                    b.Property<string>("User")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -131,6 +195,14 @@ namespace eshopBackend.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("eshopBackend.DAL.Entities.EntityCart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("EntityCartId");
+
+                    b.HasOne("eshopBackend.DAL.Entities.EntityPlacedOrder", null)
+                        .WithMany("Products")
+                        .HasForeignKey("EntityPlacedOrderId");
+
                     b.HasOne("eshopBackend.DAL.Entities.EntityManufacturer", "Manufacturer")
                         .WithMany()
                         .HasForeignKey("ManufacturerId");
@@ -145,6 +217,16 @@ namespace eshopBackend.DAL.Migrations
                     b.HasOne("eshopBackend.DAL.Entities.EntityProduct", null)
                         .WithMany("Reviews")
                         .HasForeignKey("EntityProductId");
+                });
+
+            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityCart", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityPlacedOrder", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("eshopBackend.DAL.Entities.EntityProduct", b =>
