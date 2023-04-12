@@ -1,8 +1,6 @@
 using eshopBackend.DAL;
-using System.Configuration;
 
-
-DataAccessLayer dataAccessLayer = new();
+DataAccessLayer _ = new(); //create instance of DependencyInjection
 
 var builder = WebApplication.CreateBuilder(args);
 
