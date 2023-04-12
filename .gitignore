@@ -38,4 +38,5 @@ msbuild.wrn
 .vs/
 
 # Project specific files/configs
-/eshopBackend.DAL/appsettings.json
+appsettings.json
+appsettings.Development.json
