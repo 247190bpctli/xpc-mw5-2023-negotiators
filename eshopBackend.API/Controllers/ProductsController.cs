@@ -16,14 +16,14 @@ namespace eshopBackend.API.Controllers
         public ProductsController(ILogger<ProductsController> logger) => _logger = logger;
 
 
-        [HttpGet("/list/{page}")]
+        [HttpGet("list/{page}")]
         public List<EntityProduct>? Get(byte page)
         {
             List<EntityProduct>? products = DataAccessLayer.serviceProvider?.GetService<Products>()?.ProductsOverview(page);
-            return products;// new List<EntityProduct>();
+            return products;
         }
 
-        [HttpGet("/detail/{id}")]
+        [HttpGet("detail/{id}")]
         public EntityProduct? Get(Guid id)
         {
             try
@@ -40,25 +40,25 @@ namespace eshopBackend.API.Controllers
             }
         }
 
-        [HttpPost("/add/{name},{imageUrl},{description},{price},{weight},{stock},{categoryId},{manufacturerId}")]
+        [HttpPost("add/{name},{imageUrl},{description},{price},{weight},{stock},{categoryId},{manufacturerId}")]
         public Guid? Post(string name, string? imageUrl, string? description, double price, double weight, int stock, Guid? categoryId, Guid? manufacturerId)
         {
             return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductAdd(name, imageUrl, description, price, weight, stock, categoryId, manufacturerId);
         }
 
-        [HttpPut("/edit/{id},{name},{imageUrl},{description},{price},{weight},{stock},{categoryId},{manufacturerId}")]
+        [HttpPut("edit/{id},{name},{imageUrl},{description},{price},{weight},{stock},{categoryId},{manufacturerId}")]
         public bool Put(Guid id, string? name, string? imageUrl, string? description, double? price, double? weight, int? stock, Guid? categoryId, Guid? manufacturerId)
         {
             return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductEdit(id, name, imageUrl, description, price, weight, stock, categoryId, manufacturerId);
         }
 
-        [HttpDelete("/delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public bool Delete(Guid id)
         {
             return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductDelete(id);
         }
 
-        [HttpPost("/Review/{productId},{stars},{user},{description})")]
+        [HttpPost("Review/{productId},{stars},{user},{description})")]
         public bool Post(Guid productId, byte stars, string user, string? description)
         {
             return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ReviewAdd(productId, stars, user, description);
