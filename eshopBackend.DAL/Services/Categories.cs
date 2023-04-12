@@ -3,16 +3,15 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
 public class Categories
 {
     private readonly DbConnectorFactory _db;
-    private readonly LoggerFactory _logger;
+    private readonly ILogger<Categories> _logger;
 
-    public Categories(DbConnectorFactory db, LoggerFactory logger)
+    public Categories(DbConnectorFactory db, ILogger<Categories> logger)
     {
         _db = db;
         _logger = logger;
@@ -29,14 +28,14 @@ public class Categories
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -51,14 +50,14 @@ public class Categories
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -88,14 +87,14 @@ public class Categories
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Category cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Category cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -127,26 +126,26 @@ public class Categories
         }
         catch (ArgumentNullException e)
         {
-            _logger.Log.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (InvalidOperationException e)
         {
-            _logger.Log.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }
@@ -164,14 +163,14 @@ public class Categories
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Category cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be deleted: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Category cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Category cannot be deleted: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }

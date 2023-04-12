@@ -3,16 +3,15 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
 public class Manufacturers
 {
     private readonly DbConnectorFactory _db;
-    private readonly LoggerFactory _logger;
+    private readonly ILogger<Manufacturers> _logger;
 
-    public Manufacturers(DbConnectorFactory db, LoggerFactory logger)
+    public Manufacturers(DbConnectorFactory db, ILogger<Manufacturers> logger)
     {
         _db = db;
         _logger = logger;
@@ -29,14 +28,14 @@ public class Manufacturers
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Manufacturers cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturers cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Manufacturers cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturers cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -51,14 +50,14 @@ public class Manufacturers
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -89,14 +88,14 @@ public class Manufacturers
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -133,26 +132,26 @@ public class Manufacturers
         }
         catch (ArgumentNullException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (InvalidOperationException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }
@@ -170,14 +169,14 @@ public class Manufacturers
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be deleted: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Manufacturer cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Manufacturer cannot be deleted: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }
