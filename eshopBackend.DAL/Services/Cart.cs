@@ -169,7 +169,9 @@ public class Cart
                 .Single(cart => cart.Id == cartId);
 
             //we don't need category and manufacturer here
-            cart.Products.Add(_db.Products.Single(product => product.Id == productId));
+            EntityProduct product = _db.Products.Single(product => product.Id == productId) with { Stock = amount };
+            
+            cart.Products.Add(product);
             _db.SaveChanges();
             
             return true;
