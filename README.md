@@ -13,13 +13,13 @@ Eshop backend with MySQL DB connector - C# .NET project
 Should be uploaded by CI to every release tab.
 
 > **Warning**
-> You need to make configuration file before you run the project
+> You need to make configuration file and migrate database before you run the project
 
 ### Build from source
 You can build the project from source by cloning the repo or downloading the packed sources from release tab.
 
 > **Warning**
-> You need to make configuration file before you run the project
+> You need to make configuration file and migrate database before you run the project
 
 ## DB config
 Make a file eshopBackend.API/appsettings.json
