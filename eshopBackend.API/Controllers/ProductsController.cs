@@ -11,7 +11,6 @@ namespace eshopBackend.API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-
         private readonly ILogger<ProductsController> _logger;
         public ProductsController(ILogger<ProductsController> logger) => _logger = logger;
 
