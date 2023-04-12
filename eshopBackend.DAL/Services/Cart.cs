@@ -22,7 +22,9 @@ public class Cart
     {
         try
         {
-            EntityCart cart = _db.Carts.Single(cart => cart.Id == cartId);
+            EntityCart cart = _db.Carts
+                .Include(x => x.Products)
+                .Single(cart => cart.Id == cartId);
 
             return cart;
         }
@@ -79,7 +81,9 @@ public class Cart
     {
         try
         {
-            EntityCart cartToEdit = _db.Carts.Single(cart => cart.Id == cartId);
+            EntityCart cartToEdit = _db.Carts
+                .Include(x => x.Products)
+                .Single(cart => cart.Id == cartId);
 
             if (deliveryType != null)
             {
@@ -160,8 +164,11 @@ public class Cart
     {
         try
         {
-            EntityCart cart = _db.Carts.Single(cart => cart.Id == cartId);
+            EntityCart cart = _db.Carts
+                .Include(x => x.Products)
+                .Single(cart => cart.Id == cartId);
 
+            //we don't need category and manufacturer here
             cart.Products.Add(_db.Products.Single(product => product.Id == productId));
             _db.SaveChanges();
             
@@ -197,7 +204,9 @@ public class Cart
     {
         try
         {
-            EntityCart cart = _db.Carts.Single(cart => cart.Id == cartId);
+            EntityCart cart = _db.Carts
+                .Include(x => x.Products)
+                .Single(cart => cart.Id == cartId);
 
             if (cart.DeliveryType == null || cart.PaymentType == null)
             {
