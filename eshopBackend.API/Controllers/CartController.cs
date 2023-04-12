@@ -62,15 +62,5 @@ namespace eshopBackend.API.Controllers
             return DataAccessLayer.serviceProvider.GetRequiredService<Cart>().FinalizeOrder(cartId);
         }
 
-
-
-
-
-
-        ////[HttpPost("Review/{productId},{stars},{user},{description})")]
-        //public bool Post(Guid productId, byte stars, string user, string? description)
-        //{
-        //    return DataAccessLayer.serviceProvider.GetRequiredService<Products>().ReviewAdd(productId, stars, user, description);
-        //}
     }
 }
