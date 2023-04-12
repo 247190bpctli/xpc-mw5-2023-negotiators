@@ -147,7 +147,7 @@ public class MockDataGenerator
 
             if (categoryId != null && manufacturerId != null) //todo bug creating more categories and manufacturers that needed
             {
-                Guid? product = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed);
+                Guid? _ = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed); //return Guid is not used
                 _logger.Log.LogDebug("Mock data created");
             }
             else
