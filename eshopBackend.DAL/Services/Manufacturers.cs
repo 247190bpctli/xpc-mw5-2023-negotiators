@@ -18,7 +18,7 @@ public class Manufacturers
         _logger = logger;
     }
 
-    public List<EntityManufacturer>? ManufacturersOverview(byte page)
+    public List<EntityManufacturer>? ManufacturersOverview(byte page = 1)
     {
         try
         {
@@ -63,7 +63,7 @@ public class Manufacturers
         }
     }
 
-    public Guid? ManufacturerAdd(string name, string? description, string? logoUrl, string? origin)
+    public Guid? ManufacturerAdd(string name, string? description = null, string? logoUrl = null, string? origin = null)
     {
         try
         {
@@ -101,7 +101,7 @@ public class Manufacturers
         }
     }
     
-    public bool ManufacturerEdit(Guid id, string? name, string? description, string? logoUrl, string? origin)
+    public bool ManufacturerEdit(Guid id, string? name = null, string? description = null, string? logoUrl = null, string? origin = null)
     {
         try
         {

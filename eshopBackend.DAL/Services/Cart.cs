@@ -75,7 +75,7 @@ public class Cart
         }
     }
     
-    public bool CartEdit(Guid cartId, int? deliveryType, string? deliveryAddress, int? paymentType, string? paymentDetails)
+    public bool CartEdit(Guid cartId, int? deliveryType = null, string? deliveryAddress = null, int? paymentType = null, string? paymentDetails = null)
     {
         try
         {

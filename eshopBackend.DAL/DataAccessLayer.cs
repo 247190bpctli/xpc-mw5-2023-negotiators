@@ -9,7 +9,7 @@ namespace eshopBackend.DAL;
 
 public class DataAccessLayer
 {
-    public static ServiceProvider serviceProvider;
+    public static ServiceProvider serviceProvider = null!;
     
     public DataAccessLayer()
     {

@@ -18,12 +18,16 @@ public class Products
         _logger = logger;
     }
 
-    public List<EntityProduct>? ProductsOverview(byte page)
+    public List<EntityProduct>? ProductsOverview(byte page = 1)
     {
         try
         {
             int skipRange = (page - 1) * 25;
-            List<EntityProduct> products = _db.Products.Skip(skipRange).Take(25).ToList();
+            List<EntityProduct> products = _db.Products.Skip(skipRange).Take(25)
+                .Include(x => x.Category)
+                .Include(x => x.Manufacturer)
+                .Include(x => x.Reviews)
+                .ToList();
 
             return products;
         }
@@ -45,7 +49,11 @@ public class Products
     {
         try
         {
-            EntityProduct product = _db.Products.Single(product => product.Id == id);
+            EntityProduct product = _db.Products
+                .Include(x => x.Category)
+                .Include(x => x.Manufacturer)
+                .Include(x => x.Reviews)
+                .Single(product => product.Id == id);
 
             return product;
         }
@@ -106,7 +114,7 @@ public class Products
         }
     }
     
-    public bool ProductEdit(Guid id, string? name, string? imageUrl, string? description, double? price, double? weight, int? stock, Guid? categoryId, Guid? manufacturerId)
+    public bool ProductEdit(Guid id, string? name = null, string? imageUrl = null, string? description = null, double? price = null, double? weight = null, int? stock = null, Guid? categoryId = null, Guid? manufacturerId = null)
     {
         try
         {
@@ -207,7 +215,7 @@ public class Products
         }
     }
 
-    public bool ReviewAdd(Guid productId, byte stars, string user, string? description)
+    public bool ReviewAdd(Guid productId, byte stars, string user, string? description = null)
     {
         try
         {
@@ -223,7 +231,9 @@ public class Products
             //add row to db
             DbSet<EntityProduct> productUpdate = _db.Set<EntityProduct>();
 
-            productUpdate.Single(product => product.Id == productId).Reviews.Add(newReview);
+            productUpdate
+                .Include(x => x.Reviews)
+                .Single(product => product.Id == productId).Reviews.Add(newReview);
             _db.SaveChanges();
             
             return true;
