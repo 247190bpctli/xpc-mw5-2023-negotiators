@@ -4,16 +4,15 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
 public class MockDataGenerator
 {
     private readonly DbConnectorFactory _db;
-    private readonly LoggerFactory _logger;
+    private readonly ILogger<MockDataGenerator> _logger;
 
-    public MockDataGenerator(DbConnectorFactory db, LoggerFactory logger)
+    public MockDataGenerator(DbConnectorFactory db, ILogger<MockDataGenerator> logger)
     {
         _db = db;
         _logger = logger;
@@ -43,14 +42,14 @@ public class MockDataGenerator
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Mock category cannot be created: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Mock category cannot be created: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Mock category cannot be created: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Mock category cannot be created: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -80,14 +79,14 @@ public class MockDataGenerator
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Mock manufacturer cannot be created: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Mock manufacturer cannot be created: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Mock manufacturer cannot be created: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Mock manufacturer cannot be created: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -126,14 +125,14 @@ public class MockDataGenerator
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Mock product cannot be created: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Mock product cannot be created: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Mock product cannot be created: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Mock product cannot be created: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -147,12 +146,12 @@ public class MockDataGenerator
 
             if (categoryId != null && manufacturerId != null) //todo bug creating more categories and manufacturers that needed
             {
-                Guid? product = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed);
-                _logger.Log.LogDebug("Mock data created");
+                Guid? _ = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed); //return Guid is not used
+                _logger.LogDebug("Mock data created");
             }
             else
             {
-                _logger.Log.LogError("Mock data creation error - check logs above!");
+                _logger.LogError("Mock data creation error - check logs above!");
                 return false;
             }
         }

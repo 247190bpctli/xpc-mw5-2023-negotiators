@@ -3,16 +3,15 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
 public class SearchProvider
 {
     private readonly DbConnectorFactory _db;
-    private readonly LoggerFactory _logger;
+    private readonly ILogger<SearchProvider> _logger;
 
-    public SearchProvider(DbConnectorFactory db, LoggerFactory logger)
+    public SearchProvider(DbConnectorFactory db, ILogger<SearchProvider> logger)
     {
         _db = db;
         _logger = logger;
@@ -28,14 +27,14 @@ public class SearchProvider
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Cannot look for category: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Cannot look for category: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Cannot look for category: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Cannot look for category: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -50,14 +49,14 @@ public class SearchProvider
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Cannot look for manufacturer: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Cannot look for manufacturer: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Cannot look for manufacturer: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Cannot look for manufacturer: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -66,20 +65,24 @@ public class SearchProvider
     {
         try
         {
-            List<EntityProduct> foundProducts = _db.Products.Where(product => product.Name.Contains(searchTerm)).ToList();
+            List<EntityProduct> foundProducts = _db.Products
+                .Include(x => x.Category)
+                .Include(x => x.Manufacturer)
+                .Include(x => x.Reviews)
+                .Where(product => product.Name.Contains(searchTerm)).ToList();
             
             return foundProducts;
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Cannot look for product: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Cannot look for product: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Cannot look for product: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Cannot look for product: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }

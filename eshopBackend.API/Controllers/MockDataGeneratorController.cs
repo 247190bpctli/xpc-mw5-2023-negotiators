@@ -3,18 +3,17 @@ using eshopBackend.DAL;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace eshopBackend.API.Controllers
+namespace eshopBackend.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class MockDataGeneratorController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MockDataGeneratorController : ControllerBase
+
+    [HttpPost("MakeMockData/{dataAmount}/{seed}")]
+    public bool CreateData(byte dataAmount, int? seed)
     {
-
-        [HttpPost("MakeMockData/{dataAmount},{seed}")]
-        public bool Post(byte dataAmount, int? seed)
-        {
-            return DataAccessLayer.serviceProvider.GetRequiredService<MockDataGenerator>().MakeMockData(dataAmount,seed);
-        }
-
+        return DataAccessLayer.ServiceProvider.GetRequiredService<MockDataGenerator>().MakeMockData(dataAmount,seed);
     }
+
 }

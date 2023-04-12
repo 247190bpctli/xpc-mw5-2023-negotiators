@@ -1,25 +1,25 @@
 # Eshop backend project
-Eshop backend with MySQL DB connector - C# .NET project
+Eshop backend with MySQL DB connector - C# .NET project. Project version A.
 
 > Team: Negotiators
 
-| Team members | Main focus |
-|---|---|
-| Vojtěch Trunda | Data Application Layer |
-| Filip Žádník | Application Programming Interface |
+| Team members   | E-mail             | Main focus                        |
+|----------------|--------------------|-----------------------------------|
+| Vojtěch Trunda | vojta478@gmail.com | Data Application Layer            |
+| Filip Žádník   | 246976@vutbr.cz    | Application Programming Interface |
 
 ## How to run
 ### Compiled binaries
 Should be uploaded by CI to every release tab.
 
 > **Warning**
-> You need to make configuration file before you run the project
+> You need to make configuration file and migrate database before you run the project
 
 ### Build from source
 You can build the project from source by cloning the repo or downloading the packed sources from release tab.
 
 > **Warning**
-> You need to make configuration file before you run the project
+> You need to make configuration file and migrate database before you run the project
 
 ## DB config
 Make a file eshopBackend.API/appsettings.json

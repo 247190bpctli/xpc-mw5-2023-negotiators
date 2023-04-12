@@ -3,16 +3,15 @@ using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using LoggerFactory = eshopBackend.DAL.Factories.LoggerFactory;
 
 namespace eshopBackend.DAL.Services;
 
 public class Products
 {
     private readonly DbConnectorFactory _db;
-    private readonly LoggerFactory _logger;
+    private readonly ILogger<Products> _logger;
 
-    public Products(DbConnectorFactory db, LoggerFactory logger)
+    public Products(DbConnectorFactory db, ILogger<Products> logger)
     {
         _db = db;
         _logger = logger;
@@ -33,14 +32,14 @@ public class Products
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -59,14 +58,14 @@ public class Products
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -102,14 +101,14 @@ public class Products
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Product cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Product cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return null;
         }
     }
@@ -166,26 +165,26 @@ public class Products
         }
         catch (ArgumentNullException e)
         {
-            _logger.Log.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (InvalidOperationException e)
         {
-            _logger.Log.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }
@@ -203,14 +202,14 @@ public class Products
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Product cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be deleted: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Product cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Product cannot be deleted: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }
@@ -240,26 +239,26 @@ public class Products
         }
         catch (ArgumentNullException e)
         {
-            _logger.Log.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (InvalidOperationException e)
         {
-            _logger.Log.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DbUpdateException e)
         {
-            _logger.Log.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
         catch (DBConcurrencyException e)
         {
-            _logger.Log.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.Log.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
+            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
+            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
             return false;
         }
     }

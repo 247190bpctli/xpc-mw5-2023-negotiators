@@ -4,37 +4,33 @@ using eshopBackend.DAL;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace eshopBackend.API.Controllers
+namespace eshopBackend.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class SearchProviderController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class SearchProviderController : ControllerBase
+
+    [HttpGet("Category/{SearchTerm}")]
+    public List<EntityCategory>? GetCategory(string searchTerm)
     {
-        private readonly ILogger<SearchProviderController> _logger;
-        public SearchProviderController(ILogger<SearchProviderController> logger) => _logger = logger;
-
-
-        [HttpGet("Category/{SearchTerm}")]
-        public List<EntityCategory>? GetCategory(string searchTerm)
-        {
-            List<EntityCategory>? FoundCategory = DataAccessLayer.serviceProvider?.GetService<SearchProvider>()?.SearchCategoryByName(searchTerm);
-            return FoundCategory;
-        }
-
-        [HttpGet("Manufacturer/{SearchTerm}")]
-        public List<EntityManufacturer>? GetManufacturer(string searchTerm)
-        {
-            List<EntityManufacturer>? FoundManufacturer = DataAccessLayer.serviceProvider?.GetService<SearchProvider>()?.SearchManufacturerByName(searchTerm);
-            return FoundManufacturer;
-        }
-
-        [HttpGet("Product/{SearchTerm}")]
-        public List<EntityProduct>? GetProduct(string searchTerm)
-        {
-            List<EntityProduct>? FoundProduct = DataAccessLayer.serviceProvider?.GetService<SearchProvider>()?.SearchProductByName(searchTerm);
-            return FoundProduct;
-        }
-
-
+        List<EntityCategory>? FoundCategory = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchCategoryByName(searchTerm);
+        return FoundCategory;
     }
+
+    [HttpGet("Manufacturer/{SearchTerm}")]
+    public List<EntityManufacturer>? GetManufacturer(string searchTerm)
+    {
+        List<EntityManufacturer>? FoundManufacturer = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchManufacturerByName(searchTerm);
+        return FoundManufacturer;
+    }
+
+    [HttpGet("Product/{SearchTerm}")]
+    public List<EntityProduct>? GetProduct(string searchTerm)
+    {
+        List<EntityProduct>? FoundProduct = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchProductByName(searchTerm);
+        return FoundProduct;
+    }
+
+
 }
