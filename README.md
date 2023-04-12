@@ -1,12 +1,12 @@
 # Eshop backend project
-Eshop backend with MySQL DB connector - C# .NET project
+Eshop backend with MySQL DB connector - C# .NET project. Project version A.
 
 > Team: Negotiators
 
-| Team members | Main focus |
-|---|---|
-| Vojtěch Trunda | Data Application Layer |
-| Filip Žádník | Application Programming Interface |
+| Team members   | E-mail             | Main focus                        |
+|----------------|--------------------|-----------------------------------|
+| Vojtěch Trunda | vojta478@gmail.com | Data Application Layer            |
+| Filip Žádník   | 246976@vutbr.cz    | Application Programming Interface |
 
 ## How to run
 ### Compiled binaries
