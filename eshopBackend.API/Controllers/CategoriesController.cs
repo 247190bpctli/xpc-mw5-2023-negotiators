@@ -15,19 +15,19 @@ public class CategoriesController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<EntityCategory>? Get(byte page)
+    public List<EntityCategory>? GetCategories(byte page)
     {
-        List<EntityCategory>? category = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoriesOverview(page);
-        return category;
+        List<EntityCategory>? categories = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoriesOverview(page);
+        return categories;
     }
 
-    [HttpGet("detail/{id}")]
-    public EntityCategory? Get(Guid id)
+    [HttpGet("details/{id}")]
+    public EntityCategory? GetCategoryDetails(Guid id)
     {
         try
         {
-            EntityCategory? details = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoryDetails(id);
-            return details;
+            EntityCategory? category = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoryDetails(id);
+            return category;
         }
         catch (InvalidOperationException ex)
         {
@@ -38,20 +38,20 @@ public class CategoriesController : ControllerBase
         }
     }
 
-    [HttpPost("add/{name},{imageUrl},{description}")]
-    public Guid? Post(string name, string? imageUrl, string? description)
+    [HttpPost("add/{name}/{imageUrl}/{description}")]
+    public Guid? AddCategory(string name, string? imageUrl, string? description)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryAdd(name, imageUrl, description);
     }
 
-    [HttpPut("edit/{id},{name},{imageUrl},{description}")]
-    public bool Put(Guid id, string? name, string? imageUrl, string? description)
+    [HttpPut("edit/{id}/{name}/{imageUrl}/{description}")]
+    public bool EditCategory(Guid id, string? name, string? imageUrl, string? description)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryEdit(id, name, imageUrl, description);
     }
 
     [HttpDelete("delete/{id}")]
-    public bool Delete(Guid id)
+    public bool DeleteCategory(Guid id)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryDelete(id);
     }

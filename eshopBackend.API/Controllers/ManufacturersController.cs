@@ -16,14 +16,14 @@ public class ManufacturersController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<EntityManufacturer>? Get(byte page)
+    public List<EntityManufacturer>? GetManufacturers(byte page)
     {
-        List<EntityManufacturer>? manufacturer = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
-        return manufacturer;
+        List<EntityManufacturer>? manufacturers = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
+        return manufacturers;
     }
 
-    [HttpGet("detail/{id}")]
-    public EntityManufacturer? Get(Guid id)
+    [HttpGet("details/{id}")]
+    public EntityManufacturer? GetManufacturerDetails(Guid id)
     {
         try
         {
@@ -39,20 +39,20 @@ public class ManufacturersController : ControllerBase
         }
     }
 
-    [HttpPost("add/{name},{description},{logoUrl},{origin}")]
-    public Guid? Post(string name, string? description, string? logoUrl, string? origin)
+    [HttpPost("add/{name}/{description}/{logoUrl}/{origin}")]
+    public Guid? AddManufacturer(string name, string? description, string? logoUrl, string? origin)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerAdd(name, description, logoUrl, origin);
     }
 
-    [HttpPut("edit/{id},{name},{description},{logoUrl},{origin}")]
-    public bool Put(Guid id, string? name, string? description, string? logoUrl, string? origin)
+    [HttpPut("edit/{id}/{name}/{description}/{logoUrl}/{origin}")]
+    public bool EditManufacturer(Guid id, string? name, string? description, string? logoUrl, string? origin)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerEdit(id, name, description, logoUrl, origin);
     }
 
     [HttpDelete("delete/{id}")]
-    public bool Delete(Guid id)
+    public bool DeleteManufacturer(Guid id)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerDelete(id);
     }

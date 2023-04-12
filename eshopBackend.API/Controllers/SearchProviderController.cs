@@ -10,9 +10,6 @@ namespace eshopBackend.API.Controllers;
 [ApiController]
 public class SearchProviderController : ControllerBase
 {
-    private readonly ILogger<SearchProviderController> _logger;
-    public SearchProviderController(ILogger<SearchProviderController> logger) => _logger = logger;
-
 
     [HttpGet("Category/{SearchTerm}")]
     public List<EntityCategory>? GetCategory(string searchTerm)

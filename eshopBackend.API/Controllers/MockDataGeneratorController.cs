@@ -10,8 +10,8 @@ namespace eshopBackend.API.Controllers;
 public class MockDataGeneratorController : ControllerBase
 {
 
-    [HttpPost("MakeMockData/{dataAmount},{seed}")]
-    public bool Post(byte dataAmount, int? seed)
+    [HttpPost("MakeMockData/")]
+    public bool CreateData([FromBody] byte dataAmount, int? seed)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<MockDataGenerator>().MakeMockData(dataAmount,seed);
     }

@@ -14,8 +14,8 @@ public class CartController : ControllerBase
     public CartController(ILogger<CartController> logger) => _logger = logger;
 
 
-    [HttpGet("detail/{id}")]
-    public EntityCart? Get(Guid id)
+    [HttpGet("details/{id}")]
+    public EntityCart? GetCartDetails(Guid id)
     {
         try
         {
@@ -24,7 +24,7 @@ public class CartController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError("Product cannot be found: {ExceptionMsg}", ex.Message);
+            _logger.LogError("Cart details cannot be found: {ExceptionMsg}", ex.Message);
             _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
 
             return null;
@@ -32,24 +32,24 @@ public class CartController : ControllerBase
     }
 
     [HttpGet("Create/")]
-    public Guid? Create()
+    public Guid? CreateCart()
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartAdd();
     }
 
-    [HttpPut("edit/{cartId},{deliveryType},{deliveryAddress},{paymentType},{paymentDetails}")]
+    [HttpPut("edit/{cartId}/{deliveryType}/{deliveryAddress}/{paymentType}/{paymentDetails}")]
     public bool Put(Guid cartId, int? deliveryType, string? deliveryAddress, int? paymentType, string? paymentDetails)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartEdit(cartId, deliveryType, deliveryAddress, paymentType, paymentDetails);
     }
 
     [HttpDelete("delete/{id}")]
-    public bool Delete(Guid id)
+    public bool DeleteCart(Guid id)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartDelete(id);
     }
 
-    [HttpPatch("AddToCart/{cartId},{productId},{amount}")]
+    [HttpPatch("AddToCart/{cartId}/{productId}/{amount}")]
     public bool AddToCart(Guid cartId, Guid productId, int amount)
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().AddToCart(cartId, productId, amount);
@@ -60,5 +60,4 @@ public class CartController : ControllerBase
     {
         return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().FinalizeOrder(cartId);
     }
-
 }
