@@ -4,7 +4,6 @@ using eshopBackend.DAL;
 using Microsoft.AspNetCore.Mvc;
 
 
-
 namespace eshopBackend.API.Controllers
 {
     [Route("api/[controller]")]
