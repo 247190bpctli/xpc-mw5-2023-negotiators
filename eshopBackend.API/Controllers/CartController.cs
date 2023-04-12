@@ -19,7 +19,7 @@ public class CartController : ControllerBase
     {
         try
         {
-            EntityCart? details = DataAccessLayer.serviceProvider.GetService<Cart>()?.CartDetails(id);
+            EntityCart? details = DataAccessLayer.ServiceProvider.GetService<Cart>()?.CartDetails(id);
             return details;
         }
         catch (InvalidOperationException ex)
@@ -34,31 +34,31 @@ public class CartController : ControllerBase
     [HttpGet("Create/")]
     public Guid? Create()
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Cart>().CartAdd();
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartAdd();
     }
 
     [HttpPut("edit/{cartId},{deliveryType},{deliveryAddress},{paymentType},{paymentDetails}")]
     public bool Put(Guid cartId, int? deliveryType, string? deliveryAddress, int? paymentType, string? paymentDetails)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Cart>().CartEdit(cartId, deliveryType, deliveryAddress, paymentType, paymentDetails);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartEdit(cartId, deliveryType, deliveryAddress, paymentType, paymentDetails);
     }
 
     [HttpDelete("delete/{id}")]
     public bool Delete(Guid id)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Cart>().CartDelete(id);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartDelete(id);
     }
 
     [HttpPatch("AddToCart/{cartId},{productId},{amount}")]
     public bool AddToCart(Guid cartId, Guid productId, int amount)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Cart>().AddToCart(cartId, productId, amount);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().AddToCart(cartId, productId, amount);
     }
 
     [HttpGet("finalizeOrder/{cartId}")]
     public bool FinalizeOrder(Guid cartId)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Cart>().FinalizeOrder(cartId);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().FinalizeOrder(cartId);
     }
 
 }

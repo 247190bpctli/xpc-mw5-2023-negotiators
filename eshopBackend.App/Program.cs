@@ -15,7 +15,7 @@ class Program
     {
         DataAccessLayer dataAccessLayer = new();
 
-        DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Hello!");
+        DataAccessLayer.ServiceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Hello!");
         
         //service access below [test]
         //DataAccessLayer.serviceProvider.GetRequiredService<MockDataGenerator>().MakeMockData(3);
@@ -27,7 +27,7 @@ class Program
         };
 
         //List<EntityProduct> pr = DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductsOverview(1);
-        EntityProduct pr = DataAccessLayer.serviceProvider.GetRequiredService<Products>().ProductDetails(Guid.Parse("396820f9-3259-4906-a06c-a4654bf6bf59"));
+        EntityProduct pr = DataAccessLayer.ServiceProvider.GetRequiredService<Products>().ProductDetails(Guid.Parse("396820f9-3259-4906-a06c-a4654bf6bf59"));
         
         Console.WriteLine(JsonSerializer.Serialize(pr, opts));
 
@@ -36,6 +36,6 @@ class Program
         //config to log
         //serviceProvider.GetRequiredService<ConfigFactory>().LogConfigDebugView();
         
-        DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Bye!");
+        DataAccessLayer.ServiceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Bye!");
     }
 }

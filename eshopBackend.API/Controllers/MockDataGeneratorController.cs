@@ -13,7 +13,7 @@ public class MockDataGeneratorController : ControllerBase
     [HttpPost("MakeMockData/{dataAmount},{seed}")]
     public bool Post(byte dataAmount, int? seed)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<MockDataGenerator>().MakeMockData(dataAmount,seed);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<MockDataGenerator>().MakeMockData(dataAmount,seed);
     }
 
 }

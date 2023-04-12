@@ -21,7 +21,7 @@ public class ConfigFactory
 
     public void LogConfigDebugView()
     {
-        DataAccessLayer.serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Config debug view:\n{DebugView}", _config.GetDebugView());
+        DataAccessLayer.ServiceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("Config debug view:\n{DebugView}", _config.GetDebugView());
     }
 
     public string GetFirstConnectionString()

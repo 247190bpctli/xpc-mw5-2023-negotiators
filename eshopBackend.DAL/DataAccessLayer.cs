@@ -9,7 +9,7 @@ namespace eshopBackend.DAL;
 
 public class DataAccessLayer
 {
-    public static ServiceProvider serviceProvider = null!;
+    public static ServiceProvider ServiceProvider = null!;
     
     public DataAccessLayer()
     {
@@ -21,7 +21,7 @@ public class DataAccessLayer
         serviceCollection.AddSingleton<LoggerFactory>();
         serviceCollection.AddDbContext<DbConnectorFactory>(options =>
         {
-            options.UseMySQL(serviceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
+            options.UseMySQL(ServiceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
         });
         
         //public functions
@@ -33,10 +33,10 @@ public class DataAccessLayer
         serviceCollection.AddTransient<SearchProvider>();
 
         // Build ServiceProvider - any registrations after this line will not take effect 
-        serviceProvider = serviceCollection.BuildServiceProvider();
+        ServiceProvider = serviceCollection.BuildServiceProvider();
         
         //startup message
-        serviceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("DAL instance created");
+        ServiceProvider.GetRequiredService<LoggerFactory>().Log.LogDebug("DAL instance created");
         
         //scopes
         /*var serviceScopeProvider = serviceProvider.GetRequiredService<IServiceScopeFactory>();

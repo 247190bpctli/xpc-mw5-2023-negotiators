@@ -17,7 +17,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("list/{page}")]
     public List<EntityCategory>? Get(byte page)
     {
-        List<EntityCategory>? category = DataAccessLayer.serviceProvider?.GetService<Categories>()?.CategoriesOverview(page);
+        List<EntityCategory>? category = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoriesOverview(page);
         return category;
     }
 
@@ -26,7 +26,7 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            EntityCategory? details = DataAccessLayer.serviceProvider?.GetService<Categories>()?.CategoryDetails(id);
+            EntityCategory? details = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoryDetails(id);
             return details;
         }
         catch (InvalidOperationException ex)
@@ -41,18 +41,18 @@ public class CategoriesController : ControllerBase
     [HttpPost("add/{name},{imageUrl},{description}")]
     public Guid? Post(string name, string? imageUrl, string? description)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Categories>().CategoryAdd(name, imageUrl, description);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryAdd(name, imageUrl, description);
     }
 
     [HttpPut("edit/{id},{name},{imageUrl},{description}")]
     public bool Put(Guid id, string? name, string? imageUrl, string? description)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Categories>().CategoryEdit(id, name, imageUrl, description);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryEdit(id, name, imageUrl, description);
     }
 
     [HttpDelete("delete/{id}")]
     public bool Delete(Guid id)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Categories>().CategoryDelete(id);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryDelete(id);
     }
 }

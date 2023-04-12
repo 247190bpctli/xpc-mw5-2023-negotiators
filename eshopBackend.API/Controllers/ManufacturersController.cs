@@ -18,7 +18,7 @@ public class ManufacturersController : ControllerBase
     [HttpGet("list/{page}")]
     public List<EntityManufacturer>? Get(byte page)
     {
-        List<EntityManufacturer>? manufacturer = DataAccessLayer.serviceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
+        List<EntityManufacturer>? manufacturer = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
         return manufacturer;
     }
 
@@ -27,7 +27,7 @@ public class ManufacturersController : ControllerBase
     {
         try
         {
-            EntityManufacturer? details = DataAccessLayer.serviceProvider?.GetService<Manufacturers>()?.ManufacturerDetails(id);
+            EntityManufacturer? details = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturerDetails(id);
             return details;
         }
         catch (InvalidOperationException ex)
@@ -42,19 +42,19 @@ public class ManufacturersController : ControllerBase
     [HttpPost("add/{name},{description},{logoUrl},{origin}")]
     public Guid? Post(string name, string? description, string? logoUrl, string? origin)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Manufacturers>().ManufacturerAdd(name, description, logoUrl, origin);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerAdd(name, description, logoUrl, origin);
     }
 
     [HttpPut("edit/{id},{name},{description},{logoUrl},{origin}")]
     public bool Put(Guid id, string? name, string? description, string? logoUrl, string? origin)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Manufacturers>().ManufacturerEdit(id, name, description, logoUrl, origin);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerEdit(id, name, description, logoUrl, origin);
     }
 
     [HttpDelete("delete/{id}")]
     public bool Delete(Guid id)
     {
-        return DataAccessLayer.serviceProvider.GetRequiredService<Manufacturers>().ManufacturerDelete(id);
+        return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerDelete(id);
     }
 
 }
