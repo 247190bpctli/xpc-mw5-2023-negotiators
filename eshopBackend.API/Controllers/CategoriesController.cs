@@ -11,13 +11,19 @@ namespace eshopBackend.API.Controllers;
 public class CategoriesController : ControllerBase
 {
     private readonly ILogger<CategoriesController> _logger;
-    public CategoriesController(ILogger<CategoriesController> logger) => _logger = logger;
+    private readonly CategoryRepository _categoryRepository;
+
+    public CategoriesController(ILogger<CategoriesController> logger, CategoryRepository categoryRepository)
+    {
+        _logger = logger;
+        _categoryRepository = categoryRepository;
+    }
 
 
     [HttpGet("list/{page}")]
     public List<CategoryEntity>? GetCategories(byte page)
     {
-        List<CategoryEntity>? categories = DataAccessLayer.ServiceProvider?.GetService<CategoryRepository>()?.CategoriesOverview(page);
+        List<CategoryEntity>? categories = _categoryRepository.CategoriesOverview(page);
         return categories;
     }
 
@@ -26,7 +32,7 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            CategoryEntity? category = DataAccessLayer.ServiceProvider?.GetService<CategoryRepository>()?.CategoryDetails(id);
+            CategoryEntity? category = _categoryRepository.CategoryDetails(id);
             return category;
         }
         catch (InvalidOperationException ex)
@@ -41,18 +47,18 @@ public class CategoriesController : ControllerBase
     [HttpPost("add/{name}/{imageUrl}/{description}")]
     public Guid? AddCategory(string name, string? imageUrl, string? description)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<CategoryRepository>().CategoryAdd(name, imageUrl, description);
+        return _categoryRepository.CategoryAdd(name, imageUrl, description);
     }
 
     [HttpPut("edit/{id}/{name}/{imageUrl}/{description}")]
     public bool EditCategory(Guid id, string? name, string? imageUrl, string? description)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<CategoryRepository>().CategoryEdit(id, name, imageUrl, description);
+        return _categoryRepository.CategoryEdit(id, name, imageUrl, description);
     }
 
     [HttpDelete("delete/{id}")]
     public bool DeleteCategory(Guid id)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<CategoryRepository>().CategoryDelete(id);
+        return _categoryRepository.CategoryDelete(id);
     }
 }

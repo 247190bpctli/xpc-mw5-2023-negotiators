@@ -10,25 +10,32 @@ namespace eshopBackend.API.Controllers;
 [ApiController]
 public class SearchProviderController : ControllerBase
 {
+    private readonly SearchProvider _searchProvider;
 
+    public SearchProviderController(SearchProvider searchProvider,
+        ManufacturerRepository manufacturerRepository, ProductRepository productRepository)
+    {
+        _searchProvider = searchProvider;
+    }
+    
     [HttpGet("Category/{SearchTerm}")]
     public List<CategoryEntity>? GetCategory(string searchTerm)
     {
-        List<CategoryEntity>? FoundCategory = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchCategoryByName(searchTerm);
+        List<CategoryEntity>? FoundCategory = _searchProvider.SearchCategoryByName(searchTerm);
         return FoundCategory;
     }
 
     [HttpGet("Manufacturer/{SearchTerm}")]
     public List<ManufacturerEntity>? GetManufacturer(string searchTerm)
     {
-        List<ManufacturerEntity>? FoundManufacturer = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchManufacturerByName(searchTerm);
+        List<ManufacturerEntity>? FoundManufacturer = _searchProvider.SearchManufacturerByName(searchTerm);
         return FoundManufacturer;
     }
 
     [HttpGet("Product/{SearchTerm}")]
     public List<ProductEntity>? GetProduct(string searchTerm)
     {
-        List<ProductEntity>? FoundProduct = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchProductByName(searchTerm);
+        List<ProductEntity>? FoundProduct = _searchProvider.SearchProductByName(searchTerm);
         return FoundProduct;
     }
 
