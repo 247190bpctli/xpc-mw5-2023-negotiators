@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Repositories;
 
-public class Cart
+public class CartRepository
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<ConfigFactory> _logger;
+    private readonly ILogger<CartRepository> _logger;
 
-    public Cart(AppDbContext db, ILogger<ConfigFactory> logger)
+    public CartRepository(AppDbContext db, ILogger<CartRepository> logger)
     {
         _db = db;
         _logger = logger;
@@ -168,8 +168,10 @@ public class Cart
                 .Single(cart => cart.Id == cartId);
 
             //we don't need category and manufacturer here
-            ProductEntity product = _db.Products.Single(product => product.Id == productId) with { Stock = amount };
-            
+            ProductEntity product = _db.Products.Single(product => product.Id == productId);
+            ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
+            productWithAmount.Amount = amount;
+
             cart.Products.Add(product);
             _db.SaveChanges();
             

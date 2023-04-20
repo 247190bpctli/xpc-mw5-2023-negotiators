@@ -30,11 +30,11 @@ public class DataAccessLayer
         });
         
         //public functions
-        serviceCollection.AddTransient<Cart>();
-        serviceCollection.AddTransient<Categories>();
-        serviceCollection.AddTransient<Manufacturers>();
+        serviceCollection.AddTransient<CartRepository>();
+        serviceCollection.AddTransient<CategoryRepository>();
+        serviceCollection.AddTransient<ManufacturerRepository>();
         serviceCollection.AddTransient<MockDataGenerator>();
-        serviceCollection.AddTransient<Products>();
+        serviceCollection.AddTransient<ProductRepository>();
         serviceCollection.AddTransient<SearchProvider>();
 
         // Build ServiceProvider - any registrations after this line will not take effect 

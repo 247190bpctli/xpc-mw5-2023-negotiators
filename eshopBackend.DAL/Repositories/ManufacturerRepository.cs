@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Repositories;
 
-public class Manufacturers
+public class ManufacturerRepository
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<Manufacturers> _logger;
+    private readonly ILogger<ManufacturerRepository> _logger;
 
-    public Manufacturers(AppDbContext db, ILogger<Manufacturers> logger)
+    public ManufacturerRepository(AppDbContext db, ILogger<ManufacturerRepository> logger)
     {
         _db = db;
         _logger = logger;
