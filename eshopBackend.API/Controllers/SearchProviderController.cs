@@ -18,21 +18,21 @@ public class SearchProviderController : ControllerBase
         _searchProvider = searchProvider;
     }
     
-    [HttpGet("Category/{SearchTerm}")]
+    [HttpGet("Category/{searchTerm}")]
     public List<CategoryEntity>? GetCategory(string searchTerm)
     {
         List<CategoryEntity>? FoundCategory = _searchProvider.SearchCategoryByName(searchTerm);
         return FoundCategory;
     }
 
-    [HttpGet("Manufacturer/{SearchTerm}")]
+    [HttpGet("Manufacturer/{searchTerm}")]
     public List<ManufacturerEntity>? GetManufacturer(string searchTerm)
     {
         List<ManufacturerEntity>? FoundManufacturer = _searchProvider.SearchManufacturerByName(searchTerm);
         return FoundManufacturer;
     }
 
-    [HttpGet("Product/{SearchTerm}")]
+    [HttpGet("Product/{searchTerm}")]
     public List<ProductEntity>? GetProduct(string searchTerm)
     {
         List<ProductEntity>? FoundProduct = _searchProvider.SearchProductByName(searchTerm);
