@@ -12,7 +12,7 @@ public static class ServiceCollectionExtension
         //DAL services
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseMySQL(config.GetConnectionString("DefaultConnectionString") ?? string.Empty);
+            options.UseMySQL(config.GetConnectionString("DefaultConnection") ?? string.Empty);
         });
         
         //public functions
