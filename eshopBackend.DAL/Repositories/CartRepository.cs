@@ -8,10 +8,10 @@ namespace eshopBackend.DAL.Repositories;
 
 public class Cart
 {
-    private readonly DbConnectorFactory _db;
+    private readonly AppDbContext _db;
     private readonly ILogger<ConfigFactory> _logger;
 
-    public Cart(DbConnectorFactory db, ILogger<ConfigFactory> logger)
+    public Cart(AppDbContext db, ILogger<ConfigFactory> logger)
     {
         _db = db;
         _logger = logger;

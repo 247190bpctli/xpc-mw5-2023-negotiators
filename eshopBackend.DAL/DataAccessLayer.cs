@@ -24,7 +24,7 @@ public class DataAccessLayer
                 .AddConsole().SetMinimumLevel(LogLevel.Warning)
             #endif
         );
-        serviceCollection.AddDbContext<DbConnectorFactory>(options =>
+        serviceCollection.AddDbContext<AppDbContext>(options =>
         {
             options.UseMySQL(ServiceProvider.GetRequiredService<ConfigFactory>().GetFirstConnectionString());
         });

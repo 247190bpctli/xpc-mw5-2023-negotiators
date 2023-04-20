@@ -8,10 +8,10 @@ namespace eshopBackend.DAL.Repositories;
 
 public class Manufacturers
 {
-    private readonly DbConnectorFactory _db;
+    private readonly AppDbContext _db;
     private readonly ILogger<Manufacturers> _logger;
 
-    public Manufacturers(DbConnectorFactory db, ILogger<Manufacturers> logger)
+    public Manufacturers(AppDbContext db, ILogger<Manufacturers> logger)
     {
         _db = db;
         _logger = logger;

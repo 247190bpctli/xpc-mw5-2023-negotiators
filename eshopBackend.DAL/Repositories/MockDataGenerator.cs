@@ -9,10 +9,10 @@ namespace eshopBackend.DAL.Repositories;
 
 public class MockDataGenerator
 {
-    private readonly DbConnectorFactory _db;
+    private readonly AppDbContext _db;
     private readonly ILogger<MockDataGenerator> _logger;
 
-    public MockDataGenerator(DbConnectorFactory db, ILogger<MockDataGenerator> logger)
+    public MockDataGenerator(AppDbContext db, ILogger<MockDataGenerator> logger)
     {
         _db = db;
         _logger = logger;

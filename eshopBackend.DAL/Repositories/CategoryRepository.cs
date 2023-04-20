@@ -8,10 +8,10 @@ namespace eshopBackend.DAL.Repositories;
 
 public class Categories
 {
-    private readonly DbConnectorFactory _db;
+    private readonly AppDbContext _db;
     private readonly ILogger<Categories> _logger;
 
-    public Categories(DbConnectorFactory db, ILogger<Categories> logger)
+    public Categories(AppDbContext db, ILogger<Categories> logger)
     {
         _db = db;
         _logger = logger;

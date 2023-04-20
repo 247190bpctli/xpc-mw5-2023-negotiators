@@ -8,10 +8,10 @@ namespace eshopBackend.DAL.Repositories;
 
 public class SearchProvider
 {
-    private readonly DbConnectorFactory _db;
+    private readonly AppDbContext _db;
     private readonly ILogger<SearchProvider> _logger;
 
-    public SearchProvider(DbConnectorFactory db, ILogger<SearchProvider> logger)
+    public SearchProvider(AppDbContext db, ILogger<SearchProvider> logger)
     {
         _db = db;
         _logger = logger;
