@@ -1,6 +1,5 @@
 using System.Data;
 using eshopBackend.DAL.Entities;
-using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
