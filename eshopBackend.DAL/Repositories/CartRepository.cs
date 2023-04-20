@@ -4,7 +4,7 @@ using eshopBackend.DAL.Factories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace eshopBackend.DAL.Services;
+namespace eshopBackend.DAL.Repositories;
 
 public class Cart
 {

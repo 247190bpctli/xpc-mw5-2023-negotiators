@@ -1,5 +1,5 @@
 ﻿using eshopBackend.DAL.Factories;
-using eshopBackend.DAL.Services;
+using eshopBackend.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

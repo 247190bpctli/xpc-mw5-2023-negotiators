@@ -1,6 +1,6 @@
 ﻿using eshopBackend.DAL;
 using eshopBackend.DAL.Entities;
-using eshopBackend.DAL.Services;
+using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 
