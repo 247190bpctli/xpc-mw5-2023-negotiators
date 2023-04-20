@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<CategoryEntity> Categories { get; set; } = null!;
     public DbSet<ManufacturerEntity> Manufacturers { get; set; } = null!;
     public DbSet<ProductEntity> Products { get; set; } = null!;
+    public DbSet<ProductInCartEntity> ProductsInCart { get; set; } = null!;
     public DbSet<ReviewEntity> Reviews { get; set; } = null!;
 
     //MIGRATION in-code connection string
