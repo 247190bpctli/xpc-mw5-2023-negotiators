@@ -3,14 +3,14 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using eshopBackend.DAL.Factories;
+using eshopBackend.DAL;
 
 #nullable disable
 
 namespace eshopBackend.DAL.Migrations
 {
-    [DbContext(typeof(DbConnectorFactory))]
-    partial class DbConnectorFactoryModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppDbContext))]
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,7 +19,7 @@ namespace eshopBackend.DAL.Migrations
                 .HasAnnotation("ProductVersion", "7.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityCart", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.CartEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace eshopBackend.DAL.Migrations
                     b.ToTable("Carts");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityCategory", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.CategoryEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,7 +63,7 @@ namespace eshopBackend.DAL.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityManufacturer", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ManufacturerEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace eshopBackend.DAL.Migrations
                     b.ToTable("Manufacturers");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityPlacedOrder", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.PlacedOrderEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,10 +113,13 @@ namespace eshopBackend.DAL.Migrations
                     b.ToTable("PlacedOrders");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityProduct", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ProductEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("CartEntityId")
                         .HasColumnType("char(36)");
 
                     b.Property<Guid?>("CategoryId")
@@ -125,11 +128,9 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("EntityCartId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid?>("EntityPlacedOrderId")
-                        .HasColumnType("char(36)");
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
@@ -140,6 +141,9 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<Guid?>("PlacedOrderEntityId")
+                        .HasColumnType("char(36)");
 
                     b.Property<double>("Price")
                         .HasColumnType("double");
@@ -152,18 +156,22 @@ namespace eshopBackend.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CartEntityId");
+
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("EntityCartId");
-
-                    b.HasIndex("EntityPlacedOrderId");
 
                     b.HasIndex("ManufacturerId");
 
+                    b.HasIndex("PlacedOrderEntityId");
+
                     b.ToTable("Products");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("ProductEntity");
+
+                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityReview", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ReviewEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,7 +180,7 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<Guid?>("EntityProductId")
+                    b.Property<Guid?>("ProductEntityId")
                         .HasColumnType("char(36)");
 
                     b.Property<byte>("Stars")
@@ -184,52 +192,62 @@ namespace eshopBackend.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EntityProductId");
+                    b.HasIndex("ProductEntityId");
 
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityProduct", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ProductInCartEntity", b =>
                 {
-                    b.HasOne("eshopBackend.DAL.Entities.EntityCategory", "Category")
+                    b.HasBaseType("eshopBackend.DAL.Entities.ProductEntity");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("ProductInCartEntity");
+                });
+
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ProductEntity", b =>
+                {
+                    b.HasOne("eshopBackend.DAL.Entities.CartEntity", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CartEntityId");
+
+                    b.HasOne("eshopBackend.DAL.Entities.CategoryEntity", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("eshopBackend.DAL.Entities.EntityCart", null)
-                        .WithMany("Products")
-                        .HasForeignKey("EntityCartId");
-
-                    b.HasOne("eshopBackend.DAL.Entities.EntityPlacedOrder", null)
-                        .WithMany("Products")
-                        .HasForeignKey("EntityPlacedOrderId");
-
-                    b.HasOne("eshopBackend.DAL.Entities.EntityManufacturer", "Manufacturer")
+                    b.HasOne("eshopBackend.DAL.Entities.ManufacturerEntity", "Manufacturer")
                         .WithMany()
                         .HasForeignKey("ManufacturerId");
+
+                    b.HasOne("eshopBackend.DAL.Entities.PlacedOrderEntity", null)
+                        .WithMany("Products")
+                        .HasForeignKey("PlacedOrderEntityId");
 
                     b.Navigation("Category");
 
                     b.Navigation("Manufacturer");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityReview", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ReviewEntity", b =>
                 {
-                    b.HasOne("eshopBackend.DAL.Entities.EntityProduct", null)
+                    b.HasOne("eshopBackend.DAL.Entities.ProductEntity", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("EntityProductId");
+                        .HasForeignKey("ProductEntityId");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityCart", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.CartEntity", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityPlacedOrder", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.PlacedOrderEntity", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("eshopBackend.DAL.Entities.EntityProduct", b =>
+            modelBuilder.Entity("eshopBackend.DAL.Entities.ProductEntity", b =>
                 {
                     b.Navigation("Reviews");
                 });

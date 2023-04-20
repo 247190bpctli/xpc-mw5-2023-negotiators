@@ -91,15 +91,17 @@ namespace eshopBackend.DAL.Migrations
                     Stock = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<Guid>(type: "char(36)", nullable: true),
                     ManufacturerId = table.Column<Guid>(type: "char(36)", nullable: true),
-                    EntityCartId = table.Column<Guid>(type: "char(36)", nullable: true),
-                    EntityPlacedOrderId = table.Column<Guid>(type: "char(36)", nullable: true)
+                    CartEntityId = table.Column<Guid>(type: "char(36)", nullable: true),
+                    Discriminator = table.Column<string>(type: "longtext", nullable: false),
+                    PlacedOrderEntityId = table.Column<Guid>(type: "char(36)", nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Carts_EntityCartId",
-                        column: x => x.EntityCartId,
+                        name: "FK_Products_Carts_CartEntityId",
+                        column: x => x.CartEntityId,
                         principalTable: "Carts",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -113,8 +115,8 @@ namespace eshopBackend.DAL.Migrations
                         principalTable: "Manufacturers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Products_PlacedOrders_EntityPlacedOrderId",
-                        column: x => x.EntityPlacedOrderId,
+                        name: "FK_Products_PlacedOrders_PlacedOrderEntityId",
+                        column: x => x.PlacedOrderEntityId,
                         principalTable: "PlacedOrders",
                         principalColumn: "Id");
                 })
@@ -128,18 +130,23 @@ namespace eshopBackend.DAL.Migrations
                     Stars = table.Column<byte>(type: "tinyint unsigned", nullable: false),
                     User = table.Column<string>(type: "longtext", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: true),
-                    EntityProductId = table.Column<Guid>(type: "char(36)", nullable: true)
+                    ProductEntityId = table.Column<Guid>(type: "char(36)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_Products_EntityProductId",
-                        column: x => x.EntityProductId,
+                        name: "FK_Reviews_Products_ProductEntityId",
+                        column: x => x.ProductEntityId,
                         principalTable: "Products",
                         principalColumn: "Id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_CartEntityId",
+                table: "Products",
+                column: "CartEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
@@ -147,24 +154,19 @@ namespace eshopBackend.DAL.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_EntityCartId",
-                table: "Products",
-                column: "EntityCartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_EntityPlacedOrderId",
-                table: "Products",
-                column: "EntityPlacedOrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Products_ManufacturerId",
                 table: "Products",
                 column: "ManufacturerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_EntityProductId",
+                name: "IX_Products_PlacedOrderEntityId",
+                table: "Products",
+                column: "PlacedOrderEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ProductEntityId",
                 table: "Reviews",
-                column: "EntityProductId");
+                column: "ProductEntityId");
         }
 
         /// <inheritdoc />
