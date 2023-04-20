@@ -1,6 +1,6 @@
 ﻿namespace eshopBackend.DAL.Entities;
 
-public record EntityReview : BaseEntity
+public class ReviewEntity : BaseEntity
 {
     public required byte Stars { get; set; }
     

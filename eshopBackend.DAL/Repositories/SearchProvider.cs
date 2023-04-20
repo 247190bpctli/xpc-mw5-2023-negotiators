@@ -61,11 +61,11 @@ public class SearchProvider
         }
     }
 
-    public List<EntityProduct>? SearchProductByName(string searchTerm)
+    public List<ProductEntity>? SearchProductByName(string searchTerm)
     {
         try
         {
-            List<EntityProduct> foundProducts = _db.Products
+            List<ProductEntity> foundProducts = _db.Products
                 .Include(x => x.Category)
                 .Include(x => x.Manufacturer)
                 .Include(x => x.Reviews)

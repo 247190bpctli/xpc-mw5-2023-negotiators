@@ -1,8 +1,8 @@
 namespace eshopBackend.DAL.Entities;
 
-public record EntityPlacedOrder : BaseEntity
+public class PlacedOrderEntity : BaseEntity
 {
-    public required List<EntityProduct> Products { get; set; }
+    public required List<ProductEntity> Products { get; set; }
 
     public int? DeliveryType { get; set; }
     

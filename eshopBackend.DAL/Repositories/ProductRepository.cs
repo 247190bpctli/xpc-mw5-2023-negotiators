@@ -17,12 +17,12 @@ public class Products
         _logger = logger;
     }
 
-    public List<EntityProduct>? ProductsOverview(byte page = 1)
+    public List<ProductEntity>? ProductsOverview(byte page = 1)
     {
         try
         {
             int skipRange = (page - 1) * 25;
-            List<EntityProduct> products = _db.Products.Skip(skipRange).Take(25)
+            List<ProductEntity> products = _db.Products.Skip(skipRange).Take(25)
                 .Include(x => x.Category)
                 .Include(x => x.Manufacturer)
                 .Include(x => x.Reviews)
@@ -44,11 +44,11 @@ public class Products
         }
     }
 
-    public EntityProduct? ProductDetails(Guid id)
+    public ProductEntity? ProductDetails(Guid id)
     {
         try
         {
-            EntityProduct product = _db.Products
+            ProductEntity product = _db.Products
                 .Include(x => x.Category)
                 .Include(x => x.Manufacturer)
                 .Include(x => x.Reviews)
@@ -78,7 +78,7 @@ public class Products
             Guid newProductGuid = Guid.NewGuid();
             
             //assemble the row
-            EntityProduct newProduct = new()
+            ProductEntity newProduct = new()
             {
                 Id = newProductGuid,
                 Name = name,
@@ -89,11 +89,11 @@ public class Products
                 Stock = stock,
                 Category = _db.Categories.SingleOrDefault(category => category.Id == categoryId), //todo null handle?
                 Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == manufacturerId), //todo null handle?
-                Reviews = new List<EntityReview>()
+                Reviews = new List<ReviewEntity>()
             };
             
             //add row to db
-            DbSet<EntityProduct> productUpdate = _db.Set<EntityProduct>();
+            DbSet<ProductEntity> productUpdate = _db.Set<ProductEntity>();
 
             productUpdate.Add(newProduct);
             _db.SaveChanges();
@@ -117,7 +117,7 @@ public class Products
     {
         try
         {
-            EntityProduct productToEdit = _db.Products.Single(product => product.Id == id);
+            ProductEntity productToEdit = _db.Products.Single(product => product.Id == id);
 
             if (name != null)
             {
@@ -193,7 +193,7 @@ public class Products
     {
         try
         {
-            IQueryable<EntityProduct> productToDelete = _db.Products.Where(product => product.Id == id);
+            IQueryable<ProductEntity> productToDelete = _db.Products.Where(product => product.Id == id);
 
             _db.Products.RemoveRange(productToDelete);
             _db.SaveChanges();
@@ -219,7 +219,7 @@ public class Products
         try
         {
             //assemble the row
-            EntityReview newReview = new()
+            ReviewEntity @new = new()
             {
                 Id = Guid.NewGuid(),
                 Stars = stars,
@@ -228,11 +228,11 @@ public class Products
             };
             
             //add row to db
-            DbSet<EntityProduct> productUpdate = _db.Set<EntityProduct>();
+            DbSet<ProductEntity> productUpdate = _db.Set<ProductEntity>();
 
             productUpdate
                 .Include(x => x.Reviews)
-                .Single(product => product.Id == productId).Reviews.Add(newReview);
+                .Single(product => product.Id == productId).Reviews.Add(@new);
             _db.SaveChanges();
             
             return true;

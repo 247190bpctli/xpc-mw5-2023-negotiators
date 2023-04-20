@@ -26,9 +26,9 @@ public class SearchProviderController : ControllerBase
     }
 
     [HttpGet("Product/{SearchTerm}")]
-    public List<EntityProduct>? GetProduct(string searchTerm)
+    public List<ProductEntity>? GetProduct(string searchTerm)
     {
-        List<EntityProduct>? FoundProduct = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchProductByName(searchTerm);
+        List<ProductEntity>? FoundProduct = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchProductByName(searchTerm);
         return FoundProduct;
     }
 

@@ -15,18 +15,18 @@ public class ProductsController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<EntityProduct>? GetProducts(byte page)
+    public List<ProductEntity>? GetProducts(byte page)
     {
-        List<EntityProduct>? products = DataAccessLayer.ServiceProvider.GetService<Products>()?.ProductsOverview(page);
+        List<ProductEntity>? products = DataAccessLayer.ServiceProvider.GetService<Products>()?.ProductsOverview(page);
         return products;
     }
 
     [HttpGet("details/{id}")]
-    public EntityProduct? GetProductDetails(Guid id)
+    public ProductEntity? GetProductDetails(Guid id)
     {
         try
         {
-            EntityProduct? details = DataAccessLayer.ServiceProvider.GetService<Products>()?.ProductDetails(id);
+            ProductEntity? details = DataAccessLayer.ServiceProvider.GetService<Products>()?.ProductDetails(id);
             return details;
         }
         catch (InvalidOperationException ex)

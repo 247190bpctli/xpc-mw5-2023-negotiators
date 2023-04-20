@@ -1,6 +1,6 @@
 ﻿namespace eshopBackend.DAL.Entities;
 
-public abstract record BaseEntity : IEntity
+public abstract class BaseEntity : IEntity
 {
     public required Guid Id { get; init; }
 }

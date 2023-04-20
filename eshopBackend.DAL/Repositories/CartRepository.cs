@@ -52,7 +52,7 @@ public class Cart
             CartEntity newCart = new()
             {
                 Id = newCartGuid,
-                Products = new List<EntityProduct>()
+                Products = new List<ProductEntity>()
             };
             
             //add row to db
@@ -168,7 +168,7 @@ public class Cart
                 .Single(cart => cart.Id == cartId);
 
             //we don't need category and manufacturer here
-            EntityProduct product = _db.Products.Single(product => product.Id == productId) with { Stock = amount };
+            ProductEntity product = _db.Products.Single(product => product.Id == productId) with { Stock = amount };
             
             cart.Products.Add(product);
             _db.SaveChanges();
@@ -215,7 +215,7 @@ public class Cart
                 return false;
             }
 
-            EntityPlacedOrder placedOrder = new()
+            PlacedOrderEntity placedOrder = new()
             {
                 Id = cart.Id,
                 Products = cart.Products,

@@ -1,8 +1,8 @@
 namespace eshopBackend.DAL.Entities;
 
-public record CartEntity : BaseEntity
+public class CartEntity : BaseEntity
 {
-    public required List<EntityProduct> Products { get; set; }
+    public required List<ProductEntity> Products { get; set; }
 
     public int? DeliveryType { get; set; }
     

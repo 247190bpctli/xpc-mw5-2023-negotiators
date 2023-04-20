@@ -105,7 +105,7 @@ public class MockDataGenerator
                 Randomizer.Seed = new Random((int)seed);
             }
 
-            EntityProduct bogusProduct = new Faker<EntityProduct>()
+            ProductEntity bogusProduct = new Faker<ProductEntity>()
                 .RuleFor(o => o.Id, _ => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
                 .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
@@ -116,7 +116,7 @@ public class MockDataGenerator
 
             bogusProduct.Category = category;
             bogusProduct.Manufacturer = manufacturer;
-            bogusProduct.Reviews = new List<EntityReview>();
+            bogusProduct.Reviews = new List<ReviewEntity>();
             
             _db.Products.Add(bogusProduct);
             _db.SaveChanges();
