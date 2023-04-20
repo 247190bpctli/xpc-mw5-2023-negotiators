@@ -12,6 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//use user secrets if any
+builder.Configuration.AddUserSecrets<Program>(true);
+
 builder.Services.RegisterDalDependencies(builder.Configuration);
 
 var app = builder.Build();

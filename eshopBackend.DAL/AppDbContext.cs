@@ -13,12 +13,11 @@ public class AppDbContext : DbContext
     public DbSet<ProductInCartEntity> ProductsInCart { get; set; } = null!;
     public DbSet<ReviewEntity> Reviews { get; set; } = null!;
 
-    //MIGRATION in-code connection string
-    public AppDbContext(){}
-    protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+    //MIGRATION in-code connection string [comment out if not migrating]
+    /*protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
     {
         optionsBuilder.UseMySQL("");
-    }
+    }*/
     //ENDS MIGRATION in-code connection string
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
