@@ -21,7 +21,7 @@ public class ProductsController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<ProductEntity>? GetProducts(byte page)
+    public List<ProductEntity>? GetProducts(uint page)
     {
         List<ProductEntity>? products = _productRepository.ProductsOverview(page);
         return products;
@@ -63,7 +63,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost("Review/{productId}/{stars}/{user}/{description})")]
-    public bool AddReview(Guid productId, byte stars, string user, string? description)
+    public bool AddReview(Guid productId, double stars, string user, string? description)
     {
         return _productRepository.ReviewAdd(productId, stars, user, description);
     }

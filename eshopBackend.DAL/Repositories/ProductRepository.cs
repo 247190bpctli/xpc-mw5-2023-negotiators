@@ -16,12 +16,13 @@ public class ProductRepository
         _logger = logger;
     }
 
-    public List<ProductEntity>? ProductsOverview(byte page = 1)
+    public List<ProductEntity>? ProductsOverview(uint page = 1)
     {
         try
         {
-            int skipRange = (page - 1) * 25;
-            List<ProductEntity> products = _db.Products.Skip(skipRange).Take(25)
+            page = (page <= 255) ? page : 255; //limit pages to 255
+            uint skipRange = (page - 1) * 25;
+            List<ProductEntity> products = _db.Products.Skip((int)skipRange).Take(25)
                 .Include(x => x.Category)
                 .Include(x => x.Manufacturer)
                 .Include(x => x.Reviews)
@@ -213,8 +214,9 @@ public class ProductRepository
         }
     }
 
-    public bool ReviewAdd(Guid productId, byte stars, string user, string? description = null)
+    public bool ReviewAdd(Guid productId, double stars, string user, string? description = null)
     {
+        stars = (stars <= 5) ? stars : 5; //limit stars to 5
         try
         {
             //assemble the row

@@ -16,12 +16,13 @@ public class ManufacturerRepository
         _logger = logger;
     }
 
-    public List<ManufacturerEntity>? ManufacturersOverview(byte page = 1)
+    public List<ManufacturerEntity>? ManufacturersOverview(uint page = 1)
     {
         try
         {
-            int skipRange = (page - 1) * 25;
-            List<ManufacturerEntity> manufacturers = _db.Manufacturers.Skip(skipRange).Take(25).ToList();
+            page = (page <= 255) ? page : 255; //limit pages to 255
+            uint skipRange = (page - 1) * 25;
+            List<ManufacturerEntity> manufacturers = _db.Manufacturers.Skip((int)skipRange).Take(25).ToList();
 
             return manufacturers;
         }

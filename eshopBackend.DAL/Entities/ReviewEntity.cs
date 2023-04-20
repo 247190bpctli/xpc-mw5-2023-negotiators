@@ -2,7 +2,7 @@
 
 public class ReviewEntity : BaseEntity
 {
-    public required byte Stars { get; set; }
+    public required double Stars { get; set; }
     
     public required string User { get; set; }
 

@@ -22,7 +22,7 @@ public class ManufacturersController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<ManufacturerEntity>? GetManufacturers(byte page)
+    public List<ManufacturerEntity>? GetManufacturers(uint page)
     {
         List<ManufacturerEntity>? manufacturers = _manufacturerRepository.ManufacturersOverview(page);
         return manufacturers;

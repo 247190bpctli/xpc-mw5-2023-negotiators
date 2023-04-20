@@ -16,12 +16,13 @@ public class CategoryRepository
         _logger = logger;
     }
 
-    public List<CategoryEntity>? CategoriesOverview(byte page = 1)
+    public List<CategoryEntity>? CategoriesOverview(uint page = 1)
     {
         try
         {
-            int skipRange = (page - 1) * 25;
-            List<CategoryEntity> categories = _db.Categories.Skip(skipRange).Take(25).ToList();
+            page = (page <= 255) ? page : 255; //limit pages to 255
+            uint skipRange = (page - 1) * 25;
+            List<CategoryEntity> categories = _db.Categories.Skip((int)skipRange).Take(25).ToList();
 
             return categories;
         }

@@ -21,7 +21,7 @@ public class CategoriesController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<CategoryEntity>? GetCategories(byte page)
+    public List<CategoryEntity>? GetCategories(uint page)
     {
         List<CategoryEntity>? categories = _categoryRepository.CategoriesOverview(page);
         return categories;
