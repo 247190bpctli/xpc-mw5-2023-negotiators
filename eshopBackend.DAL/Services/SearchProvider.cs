@@ -17,11 +17,11 @@ public class SearchProvider
         _logger = logger;
     }
     
-    public List<EntityCategory>? SearchCategoryByName(string searchTerm)
+    public List<CategoryEntity>? SearchCategoryByName(string searchTerm)
     {
         try
         {
-            List<EntityCategory> foundCategories = _db.Categories.Where(category => category.Name.Contains(searchTerm)).ToList();
+            List<CategoryEntity> foundCategories = _db.Categories.Where(category => category.Name.Contains(searchTerm)).ToList();
             
             return foundCategories;
         }
@@ -39,11 +39,11 @@ public class SearchProvider
         }
     }
     
-    public List<EntityManufacturer>? SearchManufacturerByName(string searchTerm)
+    public List<ManufacturerEntity>? SearchManufacturerByName(string searchTerm)
     {
         try
         {
-            List<EntityManufacturer> foundManufacturers = _db.Manufacturers.Where(manufacturer => manufacturer.Name.Contains(searchTerm)).ToList();
+            List<ManufacturerEntity> foundManufacturers = _db.Manufacturers.Where(manufacturer => manufacturer.Name.Contains(searchTerm)).ToList();
             
             return foundManufacturers;
         }

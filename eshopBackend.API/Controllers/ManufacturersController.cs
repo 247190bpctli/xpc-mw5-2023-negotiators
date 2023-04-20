@@ -16,18 +16,18 @@ public class ManufacturersController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<EntityManufacturer>? GetManufacturers(byte page)
+    public List<ManufacturerEntity>? GetManufacturers(byte page)
     {
-        List<EntityManufacturer>? manufacturers = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
+        List<ManufacturerEntity>? manufacturers = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
         return manufacturers;
     }
 
     [HttpGet("details/{id}")]
-    public EntityManufacturer? GetManufacturerDetails(Guid id)
+    public ManufacturerEntity? GetManufacturerDetails(Guid id)
     {
         try
         {
-            EntityManufacturer? details = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturerDetails(id);
+            ManufacturerEntity? details = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturerDetails(id);
             return details;
         }
         catch (InvalidOperationException ex)

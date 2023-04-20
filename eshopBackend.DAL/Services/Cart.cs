@@ -17,11 +17,11 @@ public class Cart
         _logger = logger;
     }
     
-    public EntityCart? CartDetails(Guid cartId)
+    public CartEntity? CartDetails(Guid cartId)
     {
         try
         {
-            EntityCart cart = _db.Carts
+            CartEntity cart = _db.Carts
                 .Include(x => x.Products)
                 .Single(cart => cart.Id == cartId);
 
@@ -49,14 +49,14 @@ public class Cart
             Guid newCartGuid = Guid.NewGuid();
             
             //assemble the row
-            EntityCart newCart = new()
+            CartEntity newCart = new()
             {
                 Id = newCartGuid,
                 Products = new List<EntityProduct>()
             };
             
             //add row to db
-            DbSet<EntityCart> cartUpdate = _db.Set<EntityCart>();
+            DbSet<CartEntity> cartUpdate = _db.Set<CartEntity>();
 
             cartUpdate.Add(newCart);
             _db.SaveChanges();
@@ -80,7 +80,7 @@ public class Cart
     {
         try
         {
-            EntityCart cartToEdit = _db.Carts
+            CartEntity cartToEdit = _db.Carts
                 .Include(x => x.Products)
                 .Single(cart => cart.Id == cartId);
 
@@ -138,7 +138,7 @@ public class Cart
     {
         try
         {
-            IQueryable<EntityCart> cartToDelete = _db.Carts.Where(cart => cart.Id == cartId);
+            IQueryable<CartEntity> cartToDelete = _db.Carts.Where(cart => cart.Id == cartId);
 
             _db.Carts.RemoveRange(cartToDelete);
             _db.SaveChanges();
@@ -163,7 +163,7 @@ public class Cart
     {
         try
         {
-            EntityCart cart = _db.Carts
+            CartEntity cart = _db.Carts
                 .Include(x => x.Products)
                 .Single(cart => cart.Id == cartId);
 
@@ -205,7 +205,7 @@ public class Cart
     {
         try
         {
-            EntityCart cart = _db.Carts
+            CartEntity cart = _db.Carts
                 .Include(x => x.Products)
                 .Single(cart => cart.Id == cartId);
 

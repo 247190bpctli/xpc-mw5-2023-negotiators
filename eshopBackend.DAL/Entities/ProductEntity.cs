@@ -1,6 +1,6 @@
 ﻿namespace eshopBackend.DAL.Entities;
 
-public record EntityProduct : EntityBase
+public record EntityProduct : BaseEntity
 {
     public required string Name { get; set; }
     
@@ -14,9 +14,9 @@ public record EntityProduct : EntityBase
     
     public int Stock { get; set; }
     
-    public EntityCategory? Category { get; set; }
+    public CategoryEntity? Category { get; set; }
     
-    public EntityManufacturer? Manufacturer { get; set; }
+    public ManufacturerEntity? Manufacturer { get; set; }
     
     public required List<EntityReview> Reviews { get; set; }
 }

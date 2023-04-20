@@ -15,18 +15,18 @@ public class CategoriesController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<EntityCategory>? GetCategories(byte page)
+    public List<CategoryEntity>? GetCategories(byte page)
     {
-        List<EntityCategory>? categories = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoriesOverview(page);
+        List<CategoryEntity>? categories = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoriesOverview(page);
         return categories;
     }
 
     [HttpGet("details/{id}")]
-    public EntityCategory? GetCategoryDetails(Guid id)
+    public CategoryEntity? GetCategoryDetails(Guid id)
     {
         try
         {
-            EntityCategory? category = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoryDetails(id);
+            CategoryEntity? category = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoryDetails(id);
             return category;
         }
         catch (InvalidOperationException ex)

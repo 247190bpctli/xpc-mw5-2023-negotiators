@@ -1,6 +1,6 @@
 namespace eshopBackend.DAL.Entities;
 
-public record EntityCart : EntityBase
+public record EntityPlacedOrder : BaseEntity
 {
     public required List<EntityProduct> Products { get; set; }
 
@@ -11,4 +11,6 @@ public record EntityCart : EntityBase
     public int? PaymentType { get; set; }
     
     public string? PaymentDetails { get; set; }
+    
+    public required DateTime Timestamp { get; set; }
 }

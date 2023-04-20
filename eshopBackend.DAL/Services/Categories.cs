@@ -17,12 +17,12 @@ public class Categories
         _logger = logger;
     }
 
-    public List<EntityCategory>? CategoriesOverview(byte page = 1)
+    public List<CategoryEntity>? CategoriesOverview(byte page = 1)
     {
         try
         {
             int skipRange = (page - 1) * 25;
-            List<EntityCategory> categories = _db.Categories.Skip(skipRange).Take(25).ToList();
+            List<CategoryEntity> categories = _db.Categories.Skip(skipRange).Take(25).ToList();
 
             return categories;
         }
@@ -40,11 +40,11 @@ public class Categories
         }
     }
 
-    public EntityCategory? CategoryDetails(Guid id)
+    public CategoryEntity? CategoryDetails(Guid id)
     {
         try
         {
-            EntityCategory category = _db.Categories.Single(category => category.Id == id);
+            CategoryEntity category = _db.Categories.Single(category => category.Id == id);
 
             return category;
         }
@@ -70,7 +70,7 @@ public class Categories
             Guid newCategoryGuid = Guid.NewGuid();
             
             //assemble the row
-            EntityCategory newCategory = new()
+            CategoryEntity newCategory = new()
             {
                 Id = newCategoryGuid,
                 Name = name,
@@ -79,7 +79,7 @@ public class Categories
             };
             
             //add row to db
-            DbSet<EntityCategory> categoryUpdate = _db.Set<EntityCategory>();
+            DbSet<CategoryEntity> categoryUpdate = _db.Set<CategoryEntity>();
 
             categoryUpdate.Add(newCategory);
             _db.SaveChanges();
@@ -103,7 +103,7 @@ public class Categories
     {
         try
         {
-            EntityCategory categoryToEdit = _db.Categories.Single(category => category.Id == id);
+            CategoryEntity categoryToEdit = _db.Categories.Single(category => category.Id == id);
 
             if (name != null)
             {
@@ -154,7 +154,7 @@ public class Categories
     {
         try
         {
-            IQueryable<EntityCategory> categoryToDelete = _db.Categories.Where(category => category.Id == id);
+            IQueryable<CategoryEntity> categoryToDelete = _db.Categories.Where(category => category.Id == id);
 
             _db.Categories.RemoveRange(categoryToDelete);
             _db.SaveChanges();

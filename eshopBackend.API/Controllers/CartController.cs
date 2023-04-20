@@ -15,11 +15,11 @@ public class CartController : ControllerBase
 
 
     [HttpGet("details/{id}")]
-    public EntityCart? GetCartDetails(Guid id)
+    public CartEntity? GetCartDetails(Guid id)
     {
         try
         {
-            EntityCart? details = DataAccessLayer.ServiceProvider.GetService<Cart>()?.CartDetails(id);
+            CartEntity? details = DataAccessLayer.ServiceProvider.GetService<Cart>()?.CartDetails(id);
             return details;
         }
         catch (InvalidOperationException ex)

@@ -29,7 +29,7 @@ public class MockDataGenerator
                 Randomizer.Seed = new Random((int)seed);
             }
 
-            EntityCategory bogusCategory = new Faker<EntityCategory>()
+            CategoryEntity bogusCategory = new Faker<CategoryEntity>()
                 .RuleFor(o => o.Id, _ => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Type())
                 .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
@@ -65,7 +65,7 @@ public class MockDataGenerator
                 Randomizer.Seed = new Random((int)seed);
             }
             
-            EntityManufacturer bogusManufacturer = new Faker<EntityManufacturer>()
+            ManufacturerEntity bogusManufacturer = new Faker<ManufacturerEntity>()
                 .RuleFor(o => o.Id, _ => mockGuid)
                 .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
                 .RuleFor(o => o.Description, f => f.Lorem.Lines(1))
@@ -97,8 +97,8 @@ public class MockDataGenerator
         {
             Guid mockGuid = Guid.NewGuid();
 
-            EntityCategory category = _db.Categories.Single(category => category.Id == categoryId);
-            EntityManufacturer manufacturer = _db.Manufacturers.Single(manufacturer => manufacturer.Id == manufacturerId);
+            CategoryEntity category = _db.Categories.Single(category => category.Id == categoryId);
+            ManufacturerEntity manufacturer = _db.Manufacturers.Single(manufacturer => manufacturer.Id == manufacturerId);
             
             if (seed != null)
             {

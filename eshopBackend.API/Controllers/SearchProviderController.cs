@@ -12,16 +12,16 @@ public class SearchProviderController : ControllerBase
 {
 
     [HttpGet("Category/{SearchTerm}")]
-    public List<EntityCategory>? GetCategory(string searchTerm)
+    public List<CategoryEntity>? GetCategory(string searchTerm)
     {
-        List<EntityCategory>? FoundCategory = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchCategoryByName(searchTerm);
+        List<CategoryEntity>? FoundCategory = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchCategoryByName(searchTerm);
         return FoundCategory;
     }
 
     [HttpGet("Manufacturer/{SearchTerm}")]
-    public List<EntityManufacturer>? GetManufacturer(string searchTerm)
+    public List<ManufacturerEntity>? GetManufacturer(string searchTerm)
     {
-        List<EntityManufacturer>? FoundManufacturer = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchManufacturerByName(searchTerm);
+        List<ManufacturerEntity>? FoundManufacturer = DataAccessLayer.ServiceProvider.GetService<SearchProvider>()?.SearchManufacturerByName(searchTerm);
         return FoundManufacturer;
     }
 

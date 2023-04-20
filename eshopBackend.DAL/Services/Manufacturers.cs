@@ -17,12 +17,12 @@ public class Manufacturers
         _logger = logger;
     }
 
-    public List<EntityManufacturer>? ManufacturersOverview(byte page = 1)
+    public List<ManufacturerEntity>? ManufacturersOverview(byte page = 1)
     {
         try
         {
             int skipRange = (page - 1) * 25;
-            List<EntityManufacturer> manufacturers = _db.Manufacturers.Skip(skipRange).Take(25).ToList();
+            List<ManufacturerEntity> manufacturers = _db.Manufacturers.Skip(skipRange).Take(25).ToList();
 
             return manufacturers;
         }
@@ -40,11 +40,11 @@ public class Manufacturers
         }
     }
 
-    public EntityManufacturer? ManufacturerDetails(Guid id)
+    public ManufacturerEntity? ManufacturerDetails(Guid id)
     {
         try
         {
-            EntityManufacturer manufacturer = _db.Manufacturers.Single(manufacturer => manufacturer.Id == id);
+            ManufacturerEntity manufacturer = _db.Manufacturers.Single(manufacturer => manufacturer.Id == id);
 
             return manufacturer;
         }
@@ -70,7 +70,7 @@ public class Manufacturers
             Guid newManufacturerGuid = Guid.NewGuid();
             
             //assemble the row
-            EntityManufacturer newManufacturer = new()
+            ManufacturerEntity newManufacturer = new()
             {
                 Id = newManufacturerGuid,
                 Name = name,
@@ -80,7 +80,7 @@ public class Manufacturers
             };
             
             //add row to db
-            DbSet<EntityManufacturer> manufacturerUpdate = _db.Set<EntityManufacturer>();
+            DbSet<ManufacturerEntity> manufacturerUpdate = _db.Set<ManufacturerEntity>();
 
             manufacturerUpdate.Add(newManufacturer);
             _db.SaveChanges();
@@ -104,7 +104,7 @@ public class Manufacturers
     {
         try
         {
-            EntityManufacturer manufacturerToEdit = _db.Manufacturers.Single(manufacturer => manufacturer.Id == id);
+            ManufacturerEntity manufacturerToEdit = _db.Manufacturers.Single(manufacturer => manufacturer.Id == id);
 
             if (name != null)
             {
@@ -160,7 +160,7 @@ public class Manufacturers
     {
         try
         {
-            IQueryable<EntityManufacturer> manufacturerToDelete = _db.Manufacturers.Where(manufacturer => manufacturer.Id == id);
+            IQueryable<ManufacturerEntity> manufacturerToDelete = _db.Manufacturers.Where(manufacturer => manufacturer.Id == id);
 
             _db.Manufacturers.RemoveRange(manufacturerToDelete);
             _db.SaveChanges();
