@@ -14,7 +14,8 @@ public class AppDbContext : DbContext
     public DbSet<ReviewEntity> Reviews { get; set; } = null!;
 
     //MIGRATION in-code connection string [comment out if not migrating]
-    /*protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
+    /*public AppDbContext() {}
+    protected override void OnConfiguring( DbContextOptionsBuilder optionsBuilder )
     {
         optionsBuilder.UseMySQL("");
     }*/
