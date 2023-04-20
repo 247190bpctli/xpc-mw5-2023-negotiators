@@ -11,8 +11,8 @@ using eshopBackend.DAL;
 namespace eshopBackend.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230420180456_init")]
-    partial class init
+    [Migration("20230420203005_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -186,8 +186,8 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<Guid?>("ProductEntityId")
                         .HasColumnType("char(36)");
 
-                    b.Property<byte>("Stars")
-                        .HasColumnType("tinyint unsigned");
+                    b.Property<double>("Stars")
+                        .HasColumnType("double");
 
                     b.Property<string>("User")
                         .IsRequired()

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace eshopBackend.DAL.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -127,7 +127,7 @@ namespace eshopBackend.DAL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false),
-                    Stars = table.Column<byte>(type: "tinyint unsigned", nullable: false),
+                    Stars = table.Column<double>(type: "double", nullable: false),
                     User = table.Column<string>(type: "longtext", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: true),
                     ProductEntityId = table.Column<Guid>(type: "char(36)", nullable: true)

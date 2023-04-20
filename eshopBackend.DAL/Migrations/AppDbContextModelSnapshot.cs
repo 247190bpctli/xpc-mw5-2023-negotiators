@@ -183,8 +183,8 @@ namespace eshopBackend.DAL.Migrations
                     b.Property<Guid?>("ProductEntityId")
                         .HasColumnType("char(36)");
 
-                    b.Property<byte>("Stars")
-                        .HasColumnType("tinyint unsigned");
+                    b.Property<double>("Stars")
+                        .HasColumnType("double");
 
                     b.Property<string>("User")
                         .IsRequired()
