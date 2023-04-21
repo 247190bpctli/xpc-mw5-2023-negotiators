@@ -16,246 +16,86 @@ public class CartRepository
         _logger = logger;
     }
     
-    public CartEntity? CartDetails(Guid cartId)
+    public CartEntity CartDetails(Guid cartId)
     {
-        try
-        {
-            CartEntity cart = _db.Carts
-                .Include(x => x.Products)
-                .Single(cart => cart.Id == cartId);
-
-            return cart;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Cart cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Cart cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        return _db.Carts
+            .Include(x => x.Products)
+            .SingleOrDefault(cart => cart.Id == cartId)!;
     }
 
-    public Guid? CartAdd()
+    public Guid CartAdd()
     {
-        try
+        //assemble the row
+        CartEntity newCart = new()
         {
-            //generate guid
-            Guid newCartGuid = Guid.NewGuid();
-            
-            //assemble the row
-            CartEntity newCart = new()
-            {
-                Id = newCartGuid,
-                Products = new List<ProductEntity>()
-            };
-            
-            //add row to db
-            DbSet<CartEntity> cartUpdate = _db.Set<CartEntity>();
+            Products = new List<ProductEntity>()
+        };
 
-            cartUpdate.Add(newCart);
-            _db.SaveChanges();
-            return newCartGuid;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Cart cannot be created: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Cart cannot be created: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        //add row to db
+        DbSet<CartEntity> cartUpdate = _db.Set<CartEntity>();
+
+        cartUpdate.Add(newCart);
+        _db.SaveChanges();
+            
+        return newCart.Id;
     }
     
-    public bool CartEdit(Guid cartId, int? deliveryType = null, string? deliveryAddress = null, int? paymentType = null, string? paymentDetails = null)
+    public void CartEdit(Guid cartId, int deliveryType, string deliveryAddress, int paymentType, string paymentDetails)
     {
-        try
-        {
-            CartEntity cartToEdit = _db.Carts
-                .Include(x => x.Products)
-                .Single(cart => cart.Id == cartId);
-
-            if (deliveryType != null)
-            {
-                cartToEdit.DeliveryType = deliveryType;
-            }
         
-            if (deliveryAddress != null)
-            {
-                cartToEdit.DeliveryAddress = deliveryAddress;
-            }
-            
-            if (paymentType != null)
-            {
-                cartToEdit.PaymentType = paymentType;
-            }
+        CartEntity cartToEdit = _db.Carts
+            .Include(x => x.Products)
+            .SingleOrDefault(cart => cart.Id == cartId)!;
         
-            if (paymentDetails != null)
-            {
-                cartToEdit.PaymentDetails = paymentDetails;
-            }
-
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (ArgumentNullException e)
-        {
-            _logger.LogError("Cart cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (InvalidOperationException e)
-        {
-            _logger.LogError("Cart cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Cart cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Cart cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        cartToEdit.DeliveryType = deliveryType;
+        cartToEdit.DeliveryAddress = deliveryAddress;
+        cartToEdit.PaymentType = paymentType;
+        cartToEdit.PaymentDetails = paymentDetails;
+        
+        _db.SaveChanges();
     }
 
-    public bool CartDelete(Guid cartId)
+    public void CartDelete(Guid cartId)
     {
-        try
-        {
-            IQueryable<CartEntity> cartToDelete = _db.Carts.Where(cart => cart.Id == cartId);
+        CartEntity cartToDelete = _db.Carts.SingleOrDefault(cart => cart.Id == cartId)!;
 
-            _db.Carts.RemoveRange(cartToDelete);
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Cart cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Cart cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        _db.Carts.Remove(cartToDelete);
+        _db.SaveChanges();
     }
 
-    public bool AddToCart(Guid cartId, Guid productId, int amount)
+    public void AddToCart(Guid cartId, Guid productId, int amount)
     {
-        try
-        {
-            CartEntity cart = _db.Carts
-                .Include(x => x.Products)
-                .Single(cart => cart.Id == cartId);
+        CartEntity cart = _db.Carts
+            .Include(x => x.Products)
+            .SingleOrDefault(cart => cart.Id == cartId)!;
 
-            //we don't need category and manufacturer here
-            ProductEntity product = _db.Products.Single(product => product.Id == productId);
-            ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
-            productWithAmount.Amount = amount;
+        //we don't need category and manufacturer here
+        ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == productId)!;
+        ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
+        productWithAmount.Amount = amount;
 
-            cart.Products.Add(product);
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (ArgumentNullException e)
-        {
-            _logger.LogError("Cannot add product to cart: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (InvalidOperationException e)
-        {
-            _logger.LogError("Cannot add product to cart: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Cannot add product to cart: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Cannot add product to cart: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        cart.Products.Add(product);
+        _db.SaveChanges();
     }
 
-    public bool FinalizeOrder(Guid cartId)
+    public void FinalizeOrder(Guid cartId)
     {
-        try
-        {
-            CartEntity cart = _db.Carts
-                .Include(x => x.Products)
-                .Single(cart => cart.Id == cartId);
+        CartEntity cart = _db.Carts
+            .Include(x => x.Products)
+            .SingleOrDefault(cart => cart.Id == cartId)!;
 
-            if (cart.DeliveryType == null || cart.PaymentType == null)
-            {
-                _logger.LogError("Order cannot be finalized: Required parameters are not set!");
-                return false;
-            }
+        PlacedOrderEntity placedOrder = new()
+        {
+            Products = cart.Products,
+            DeliveryType = cart.DeliveryType,
+            DeliveryAddress = cart.DeliveryAddress,
+            PaymentType = cart.PaymentType,
+            PaymentDetails = cart.PaymentDetails,
+            Timestamp = DateTime.Now 
+        };
 
-            PlacedOrderEntity placedOrder = new()
-            {
-                Id = cart.Id,
-                Products = cart.Products,
-                DeliveryType = cart.DeliveryType,
-                DeliveryAddress = cart.DeliveryAddress,
-                PaymentType = cart.PaymentType,
-                PaymentDetails = cart.PaymentDetails,
-                Timestamp = DateTime.Now
-            };
-
-            _db.PlacedOrders.Add(placedOrder);
-            _db.Carts.RemoveRange(cart);
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (ArgumentNullException e)
-        {
-            _logger.LogError("Order cannot be finalized: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (InvalidOperationException e)
-        {
-            _logger.LogError("Order cannot be finalized: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Order cannot be finalized: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Order cannot be finalized: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        _db.PlacedOrders.Add(placedOrder);
+        _db.Carts.Remove(cart);
+        _db.SaveChanges();
     }
 }

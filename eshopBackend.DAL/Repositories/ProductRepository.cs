@@ -1,4 +1,3 @@
-using System.Data;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -17,251 +16,99 @@ public class ProductRepository
         _logger = logger;
     }
 
-    public List<ProductEntity>? ProductsOverview(uint page = 1)
+    public List<ProductEntity> ProductsOverview(uint page = 1)
     {
-        try
-        {
-            page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
-            uint skipRange = (page - 1) * 25;
-            List<ProductEntity> products = _db.Products.Skip((int)skipRange).Take(25)
-                .Include(x => x.Category)
-                .Include(x => x.Manufacturer)
-                .Include(x => x.Reviews)
-                .ToList();
+        page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
+        uint skipRange = (page - 1) * 25;
+        List<ProductEntity> products = _db.Products.Skip((int)skipRange).Take(25)
+            .Include(x => x.Category)
+            .Include(x => x.Manufacturer)
+            .Include(x => x.Reviews)
+            .ToList();
 
-            return products;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Products cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        return products;
     }
 
-    public ProductEntity? ProductDetails(Guid id)
+    public ProductEntity ProductDetails(Guid id)
     {
-        try
-        {
-            ProductEntity product = _db.Products
-                .Include(x => x.Category)
-                .Include(x => x.Manufacturer)
-                .Include(x => x.Reviews)
-                .Single(product => product.Id == id);
-
-            return product;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Product cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        return _db.Products
+            .Include(x => x.Category)
+            .Include(x => x.Manufacturer)
+            .Include(x => x.Reviews)
+            .SingleOrDefault(product => product.Id == id)!;
     }
 
-    public Guid? ProductAdd(ProductAddDto p)
+    public Guid ProductAdd(ProductAddDto productToAdd)
     {
-        try
+        //assemble the row
+        ProductEntity newProduct = new()
         {
-            //generate guid
-            Guid newProductGuid = Guid.NewGuid();
-            
-            //assemble the row
-            ProductEntity newProduct = new()
-            {
-                Id = newProductGuid,
-                Name = p.Name,
-                ImageUrl = p.ImageUrl,
-                Description = p.Description,
-                Price = p.Price,
-                Weight = p.Weight,
-                Stock = p.Stock,
-                Category = _db.Categories.SingleOrDefault(category => category.Id == p.CategoryId), //todo null handle?
-                Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == p.ManufacturerId), //todo null handle?
-                Reviews = new List<ReviewEntity>()
-            };
-            
-            //add row to db
-            DbSet<ProductEntity> productUpdate = _db.Set<ProductEntity>();
+            Name = productToAdd.Name,
+            ImageUrl = productToAdd.ImageUrl,
+            Description = productToAdd.Description,
+            Price = productToAdd.Price,
+            Weight = productToAdd.Weight,
+            Stock = productToAdd.Stock,
+            Category = _db.Categories.SingleOrDefault(category => category.Id == productToAdd.CategoryId),
+            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == productToAdd.ManufacturerId),
+            Reviews = new List<ReviewEntity>()
+        };
 
-            productUpdate.Add(newProduct);
-            _db.SaveChanges();
-            return newProductGuid;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Product cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Product cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-    }
-    
-    public bool ProductEdit(Guid id, string? name = null, string? imageUrl = null, string? description = null, double? price = null, double? weight = null, int? stock = null, Guid? categoryId = null, Guid? manufacturerId = null)
-    {
-        try
-        {
-            ProductEntity productToEdit = _db.Products.Single(product => product.Id == id);
+        _db.Products.Add(newProduct);
+        _db.SaveChanges();
 
-            if (name != null)
-            {
-                productToEdit.Name = name;
-            }
-            
-            if (imageUrl != null)
-            {
-                productToEdit.ImageUrl = imageUrl;
-            }
-            
-            if (description != null)
-            {
-                productToEdit.Description = description;
-            }
-        
-            if (price != null)
-            {
-                productToEdit.Price = (double)price;
-            }
-        
-            if (weight != null)
-            {
-                productToEdit.Weight = (double)weight;
-            }
-            
-            if (stock != null)
-            {
-                productToEdit.Stock = (int)stock;
-            }
-            
-            if (categoryId != null)
-            {
-                productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == categoryId); //todo null handle?
-            }
-            
-            if (manufacturerId != null)
-            {
-                productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == manufacturerId); //todo null handle?
-            }
-
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (ArgumentNullException e)
-        {
-            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (InvalidOperationException e)
-        {
-            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Product cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        return newProduct.Id; 
     }
 
-    public bool ProductDelete(Guid id)
+    public void ProductEdit(Guid id, string name, string imageUrl, string description, double price, double weight, int stock, Guid categoryId, Guid manufacturerId)
     {
-        try
-        {
-            IQueryable<ProductEntity> productToDelete = _db.Products.Where(product => product.Id == id);
 
-            _db.Products.RemoveRange(productToDelete);
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Product cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Product cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == id)!;
+
+        productToEdit.Name = name;
+        productToEdit.ImageUrl = imageUrl;
+        productToEdit.Description = description;
+        productToEdit.Price = price;
+        productToEdit.Weight = weight;
+        productToEdit.Stock = stock;
+        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == categoryId);
+        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == manufacturerId);
+
+        _db.SaveChanges();
     }
 
-    public bool ReviewAdd(Guid productId, double stars, string user, string? description = null)
+    public void ProductDelete(Guid id)
+    {
+        ProductEntity productToDelete = _db.Products.SingleOrDefault(product => product.Id == id)!;
+
+        _db.Products.Remove(productToDelete); 
+        _db.SaveChanges();
+    }
+
+    public void ReviewAdd(Guid productId, double stars, string user, string description)
     {
         stars = (stars <= 5) ? stars : 5; //limit stars to 5
-        try
-        {
-            //assemble the row
-            ReviewEntity @new = new()
-            {
-                Id = Guid.NewGuid(),
-                Stars = stars,
-                User = user,
-                Description = description
-            };
-            
-            //add row to db
-            DbSet<ProductEntity> productUpdate = _db.Set<ProductEntity>();
 
-            productUpdate
-                .Include(x => x.Reviews)
-                .Single(product => product.Id == productId).Reviews.Add(@new);
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (ArgumentNullException e)
-        {
-            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (InvalidOperationException e)
-        {
-            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Review cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        //assemble the row
+        ReviewEntity @new = new()
+        { 
+            Stars = stars,
+            User = user,
+            Description = description
+        };
+
+        _db.Products
+            .Include(x => x.Reviews)
+            .SingleOrDefault(product => product.Id == productId)!.Reviews.Add(@new);
+        _db.SaveChanges();
+    }
+
+    public List<ProductEntity> SearchProductByName(string searchTerm)
+    {
+        return _db.Products
+            .Include(x => x.Category)
+            .Include(x => x.Manufacturer)
+            .Include(x => x.Reviews)
+            .Where(product => product.Name.Contains(searchTerm)).ToList();
     }
 }

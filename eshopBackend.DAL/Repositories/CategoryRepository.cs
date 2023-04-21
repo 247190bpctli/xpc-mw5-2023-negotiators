@@ -1,4 +1,3 @@
-using System.Data;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,162 +15,60 @@ public class CategoryRepository
         _logger = logger;
     }
 
-    public List<CategoryEntity>? CategoriesOverview(uint page = 1)
+    public List<CategoryEntity> CategoriesOverview(uint page = 1)
     {
-        try
-        {
-            page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
-            uint skipRange = (page - 1) * 25;
-            List<CategoryEntity> categories = _db.Categories.Skip((int)skipRange).Take(25).ToList();
+        page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
+        uint skipRange = (page - 1) * 25;
+        List<CategoryEntity> categories = _db.Categories.Skip((int)skipRange).Take(25).ToList();
 
-            return categories;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Categories cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        return categories;
     }
 
-    public CategoryEntity? CategoryDetails(Guid id)
+    public CategoryEntity CategoryDetails(Guid id)
     {
-        try
-        {
-            CategoryEntity category = _db.Categories.Single(category => category.Id == id);
-
-            return category;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Category cannot be displayed: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        return _db.Categories.SingleOrDefault(category => category.Id == id)!;
     }
 
-    public Guid? CategoryAdd(string name, string? imageUrl = null, string? description = null)
+    public Guid CategoryAdd(string name, string imageUrl, string description)
     {
-        try
+        //assemble the row
+        CategoryEntity newCategory = new()
         {
-            //generate guid
-            Guid newCategoryGuid = Guid.NewGuid();
-            
-            //assemble the row
-            CategoryEntity newCategory = new()
-            {
-                Id = newCategoryGuid,
-                Name = name,
-                ImageUrl = imageUrl,
-                Description = description
-            };
-            
-            //add row to db
-            DbSet<CategoryEntity> categoryUpdate = _db.Set<CategoryEntity>();
+            Name = name,
+            ImageUrl = imageUrl,
+            Description = description
+        };
 
-            categoryUpdate.Add(newCategory);
-            _db.SaveChanges();
-            return newCategoryGuid;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Category cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Category cannot be added: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return null;
-        }
+        //add row to db
+        DbSet<CategoryEntity> categoryUpdate = _db.Set<CategoryEntity>();
+
+        categoryUpdate.Add(newCategory);
+        _db.SaveChanges();
+
+        return newCategory.Id;
     }
 
-    public bool CategoryEdit(Guid id, string? name = null, string? imageUrl = null, string? description = null)
+    public void CategoryEdit(Guid id, string name, string imageUrl, string description)
     {
-        try
-        {
-            CategoryEntity categoryToEdit = _db.Categories.Single(category => category.Id == id);
+        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == id)!;
 
-            if (name != null)
-            {
-                categoryToEdit.Name = name;
-            }
-        
-            if (imageUrl != null)
-            {
-                categoryToEdit.ImageUrl = imageUrl;
-            }
-        
-            if (description != null)
-            {
-                categoryToEdit.Description = description;
-            }
+        categoryToEdit.Name = name;
+        categoryToEdit.ImageUrl = imageUrl;
+        categoryToEdit.Description = description;
 
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (ArgumentNullException e)
-        {
-            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (InvalidOperationException e)
-        {
-            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Category cannot be edited: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        _db.SaveChanges();
     }
 
-    public bool CategoryDelete(Guid id)
+    public void CategoryDelete(Guid id)
     {
-        try
-        {
-            IQueryable<CategoryEntity> categoryToDelete = _db.Categories.Where(category => category.Id == id);
+        CategoryEntity categoryToDelete = _db.Categories.SingleOrDefault(category => category.Id == id)!;
 
-            _db.Categories.RemoveRange(categoryToDelete);
-            _db.SaveChanges();
-            
-            return true;
-        }
-        catch (DbUpdateException e)
-        {
-            _logger.LogError("Category cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
-        catch (DBConcurrencyException e)
-        {
-            _logger.LogError("Category cannot be deleted: {ExceptionMsg}", e.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", e.StackTrace);
-            return false;
-        }
+        _db.Categories.Remove(categoryToDelete);
+        _db.SaveChanges();
+    }
+
+    public List<CategoryEntity> SearchCategoryByName(string searchTerm)
+    {
+        return _db.Categories.Where(category => category.Name.Contains(searchTerm)).ToList();
     }
 }
