@@ -1,5 +1,6 @@
 ﻿using eshopBackend.DAL;
 using eshopBackend.DAL.DTOs;
+using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,19 +23,19 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpGet("list/{page}")]
-        public ActionResult<List<ProductOverviewDto>> GetProducts(uint page)
+        public ActionResult<List<ProductEntity>> GetProducts(uint page)
         {
-            List<ProductOverviewDto> products = _productRepository.ProductsOverview(page);
+            List<ProductEntity> products = _productRepository.ProductsOverview(page);
 
             return Ok(products);
         }
 
         [HttpGet("details/{id}")]
-        public ActionResult<ProductDetailsDto> GetProductDetails(Guid id)
+        public ActionResult<ProductEntity> GetProductDetails(Guid id)
         {
             try
             {
-                ProductDetailsDto details = _productRepository.ProductDetails(id);
+                ProductEntity details = _productRepository.ProductDetails(id);
 
                 return Ok(details);
             }
@@ -50,7 +51,7 @@ namespace eshopBackend.API.Controllers
         [HttpPost("add")]
         public ActionResult<Guid> AddProduct([FromBody] ProductAddDto productDto)
         {
-            Guid productId = _productRepository.ProductAdd(productDto);
+            Guid? productId = _productRepository.ProductAdd(productDto);
 
             return Ok(productId);
         }
