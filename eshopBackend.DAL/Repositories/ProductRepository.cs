@@ -1,4 +1,5 @@
 using System.Data;
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -70,7 +71,7 @@ public class ProductRepository
         }
     }
 
-    public Guid? ProductAdd(string name, string? imageUrl, string? description, double price, double weight, int stock, Guid? categoryId, Guid? manufacturerId)
+    public Guid? ProductAdd(ProductAddDto p)
     {
         try
         {
@@ -81,14 +82,14 @@ public class ProductRepository
             ProductEntity newProduct = new()
             {
                 Id = newProductGuid,
-                Name = name,
-                ImageUrl = imageUrl,
-                Description = description,
-                Price = price,
-                Weight = weight,
-                Stock = stock,
-                Category = _db.Categories.SingleOrDefault(category => category.Id == categoryId), //todo null handle?
-                Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == manufacturerId), //todo null handle?
+                Name = p.Name,
+                ImageUrl = p.ImageUrl,
+                Description = p.Description,
+                Price = p.Price,
+                Weight = p.Weight,
+                Stock = p.Stock,
+                Category = _db.Categories.SingleOrDefault(category => category.Id == p.CategoryId), //todo null handle?
+                Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == p.ManufacturerId), //todo null handle?
                 Reviews = new List<ReviewEntity>()
             };
             
