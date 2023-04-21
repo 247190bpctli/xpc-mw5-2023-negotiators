@@ -1,21 +1,14 @@
-using System.Data;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Repositories;
 
 public class CartRepository
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<CartRepository> _logger;
 
-    public CartRepository(AppDbContext db, ILogger<CartRepository> logger)
-    {
-        _db = db;
-        _logger = logger;
-    }
-    
+    public CartRepository(AppDbContext db) => _db = db;
+
     public CartEntity CartDetails(Guid cartId)
     {
         return _db.Carts

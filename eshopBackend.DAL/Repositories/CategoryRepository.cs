@@ -1,19 +1,13 @@
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Repositories;
 
 public class CategoryRepository
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<CategoryRepository> _logger;
 
-    public CategoryRepository(AppDbContext db, ILogger<CategoryRepository> logger)
-    {
-        _db = db;
-        _logger = logger;
-    }
+    public CategoryRepository(AppDbContext db) => _db = db;
 
     public List<CategoryEntity> CategoriesOverview(uint page = 1)
     {

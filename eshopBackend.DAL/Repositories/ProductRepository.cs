@@ -1,20 +1,14 @@
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Repositories;
 
 public class ProductRepository
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<ProductRepository> _logger;
 
-    public ProductRepository(AppDbContext db, ILogger<ProductRepository> logger)
-    {
-        _db = db;
-        _logger = logger;
-    }
+    public ProductRepository(AppDbContext db) => _db = db;
 
     public List<ProductEntity> ProductsOverview(uint page = 1)
     {

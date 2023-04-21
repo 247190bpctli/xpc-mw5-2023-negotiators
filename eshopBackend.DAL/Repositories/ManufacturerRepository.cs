@@ -1,18 +1,12 @@
 using eshopBackend.DAL.Entities;
-using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Repositories;
 
 public class ManufacturerRepository
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<ManufacturerRepository> _logger;
 
-    public ManufacturerRepository(AppDbContext db, ILogger<ManufacturerRepository> logger)
-    {
-        _db = db;
-        _logger = logger;
-    }
+    public ManufacturerRepository(AppDbContext db) => _db = db;
 
     public List<ManufacturerEntity> ManufacturersOverview(uint page = 1)
     {
