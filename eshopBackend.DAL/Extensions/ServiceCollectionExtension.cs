@@ -19,8 +19,6 @@ public static class ServiceCollectionExtension
         services.AddTransient<CartRepository>();
         services.AddTransient<CategoryRepository>();
         services.AddTransient<ManufacturerRepository>();
-        services.AddTransient<MockDataGenerator>();
         services.AddTransient<ProductRepository>();
-        services.AddTransient<SearchProvider>();
     }
 }
