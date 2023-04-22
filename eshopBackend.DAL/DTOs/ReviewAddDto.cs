@@ -10,7 +10,7 @@ namespace eshopBackend.DAL.DTOs
     {
         public Guid ProductId { get; init; }
 
-        public double Stars { get; init; }
+        public double Stars { get; set; }
 
         public string User { get; init; }
 

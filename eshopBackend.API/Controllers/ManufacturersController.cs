@@ -63,4 +63,11 @@ public class ManufacturersController : ControllerBase
         return _manufacturerRepository.ManufacturerDelete(id);
     }
 
+    [HttpGet("search/{searchTerm}")]
+    public ActionResult<List<ManufacturerEntity>?> SearchManufacturer(string searchTerm)
+    {
+        List<ManufacturerEntity>? FoundManufacturer = _manufacturerRepository.SearchManufacturerByName(searchTerm);
+        return Ok(FoundManufacturer);
+    }
+
 }

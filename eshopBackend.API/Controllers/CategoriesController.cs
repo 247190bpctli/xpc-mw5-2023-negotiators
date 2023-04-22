@@ -61,4 +61,11 @@ public class CategoriesController : ControllerBase
     {
         return _categoryRepository.CategoryDelete(id);
     }
+
+    [HttpGet("search/{searchTerm}")]
+    public ActionResult<List<CategoryEntity>?> GetCategory(string searchTerm)
+    {
+        List<CategoryEntity>? FoundCategory = _categoryRepository.SearchCategoryByName(searchTerm);
+        return Ok(FoundCategory);
+    }
 }

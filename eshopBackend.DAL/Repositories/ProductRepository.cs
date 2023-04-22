@@ -79,21 +79,21 @@ public class ProductRepository
         _db.SaveChanges();
     }
 
-    public void ReviewAdd(Guid productId, double stars, string user, string description)
+    public void ReviewAdd(ReviewAddDto r)
     {
-        stars = (stars <= 5) ? stars : 5; //limit stars to 5
+        r.Stars = (r.Stars <= 5) ? r.Stars : 5; //limit stars to 5
 
         //assemble the row
         ReviewEntity @new = new()
         { 
-            Stars = stars,
-            User = user,
-            Description = description
+            Stars = r.Stars,
+            User = r.User,
+            Description = r.Description
         };
 
         _db.Products
             .Include(x => x.Reviews)
-            .SingleOrDefault(product => product.Id == productId)!.Reviews.Add(@new);
+            .SingleOrDefault(product => product.Id == r.ProductId)!.Reviews.Add(@new);
         _db.SaveChanges();
     }
 

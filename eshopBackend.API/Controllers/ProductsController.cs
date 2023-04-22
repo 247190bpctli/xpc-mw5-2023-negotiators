@@ -102,10 +102,14 @@ namespace eshopBackend.API.Controllers
         public ActionResult AddReview([FromBody] ReviewAddDto reviewDto)
         {
             _productRepository.ReviewAdd(reviewDto);
-            return Ok();
+            return Ok();   
+        }
 
-            return BadRequest();
-           
+        [HttpGet("search/{searchTerm}")]
+        public ActionResult<List<ProductEntity>> GetProduct(string searchTerm)
+        {
+            List<ProductEntity>? FoundProduct = _productRepository.SearchProductByName(searchTerm);
+            return Ok(FoundProduct);
         }
     }
 }
