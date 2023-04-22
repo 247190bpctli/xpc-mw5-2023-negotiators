@@ -54,19 +54,19 @@ public class ProductRepository
         return newProduct.Id; 
     }
 
-    public void ProductEdit(Guid id, string name, string imageUrl, string description, double price, double weight, int stock, Guid categoryId, Guid manufacturerId)
+    public void ProductEdit(ProductEditDto p)
     {
 
-        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == id)!;
+        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == p.ProductId)!;
 
-        productToEdit.Name = name;
-        productToEdit.ImageUrl = imageUrl;
-        productToEdit.Description = description;
-        productToEdit.Price = price;
-        productToEdit.Weight = weight;
-        productToEdit.Stock = stock;
-        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == categoryId);
-        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == manufacturerId);
+        productToEdit.Name = p.Name;
+        productToEdit.ImageUrl = p.ImageUrl;
+        productToEdit.Description = p.Description;
+        productToEdit.Price = p.Price;
+        productToEdit.Weight = p.Weight;
+        productToEdit.Stock = p.Stock;
+        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == p.CategoryId);
+        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == p.ManufacturerId);
 
         _db.SaveChanges();
     }

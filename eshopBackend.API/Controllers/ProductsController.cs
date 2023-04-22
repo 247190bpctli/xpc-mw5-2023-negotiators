@@ -57,20 +57,13 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPut("edit/{id}")]
-        public ActionResult EditProduct(Guid id, [FromBody] ProductEditDto productDto)
+        public ActionResult EditProduct([FromBody] ProductEditDto productDto)
         {
             try
             {
-                bool result = _productRepository.ProductEdit(id, productDto);
-
-                if (result)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return NotFound();
-                }
+                _productRepository.ProductEdit(productDto);
+                
+                return Ok();
             }
             catch (InvalidOperationException ex)
             {
@@ -82,7 +75,7 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteProduct(Guid id)
+        public ActionResult DeleteProduct(Guid id)
         {
             try
             {
