@@ -1,3 +1,4 @@
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 
 namespace eshopBackend.DAL.Repositories;
@@ -22,15 +23,15 @@ public class ManufacturerRepository
         return _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
     }
 
-    public Guid ManufacturerAdd(string name, string description, string logoUrl, string origin)
+    public Guid ManufacturerAdd(ManufacturerAddDto m)
     {
         //assemble the row
         ManufacturerEntity newManufacturer = new()
         { 
-            Name = name,
-            Description = description,
-            LogoUrl = logoUrl,
-            Origin = origin
+            Name = m.Name,
+            Description = m.Description,
+            LogoUrl = m.LogoUrl,
+            Origin = m.Origin
         };
         
         _db.Manufacturers.Add(newManufacturer);
@@ -39,14 +40,14 @@ public class ManufacturerRepository
         return newManufacturer.Id;
     }
 
-    public void ManufacturerEdit(Guid id, string name, string description, string logoUrl, string origin)
+    public void ManufacturerEdit(ManufacturerEditDto m)
     {
-        ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
-        
-        manufacturerToEdit.Name = name;
-        manufacturerToEdit.Description = description;
-        manufacturerToEdit.LogoUrl = logoUrl;
-        manufacturerToEdit.Origin = origin;
+        ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == m.Id)!;
+
+        manufacturerToEdit.Name = m.Name;
+        manufacturerToEdit.Description = m.Description;
+        manufacturerToEdit.LogoUrl = m.LogoUrl;
+        manufacturerToEdit.Origin = m.Origin;
 
         _db.SaveChanges();
     }

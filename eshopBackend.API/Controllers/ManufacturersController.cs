@@ -2,7 +2,7 @@
 using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -22,45 +22,47 @@ public class ManufacturersController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<ManufacturerEntity>? GetManufacturers(uint page)
+    public ActionResult<List<ManufacturerEntity>> GetManufacturers(uint page)
     {
-        List<ManufacturerEntity>? manufacturers = _manufacturerRepository.ManufacturersOverview(page);
-        return manufacturers;
+        List<ManufacturerEntity> manufacturers = _manufacturerRepository.ManufacturersOverview(page);
+        return Ok(manufacturers);
     }
 
     [HttpGet("details/{id}")]
-    public ManufacturerEntity? GetManufacturerDetails(Guid id)
+    public ActionResult<ManufacturerEntity> GetManufacturerDetails(Guid id)
     {
         try
         {
             ManufacturerEntity? details = _manufacturerRepository.ManufacturerDetails(id);
-            return details;
+            return Ok(details);
         }
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Manufacturer cannot be found: {ExceptionMsg}", ex.Message);
             _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
 
-            return null;
+            return NotFound();
         }
     }
 
-    [HttpPost("add/{name}/{description}/{logoUrl}/{origin}")]
-    public Guid? AddManufacturer(string name, string? description, string? logoUrl, string? origin)
+    [HttpPost("add/")]
+    public ActionResult<Guid?> AddManufacturer(ManufacturerAddDto manufacturerAddDto)
     {
-        return _manufacturerRepository.ManufacturerAdd(name, description, logoUrl, origin);
+        return Ok(_manufacturerRepository.ManufacturerAdd(manufacturerAddDto));
     }
 
-    [HttpPut("edit/{id}/{name}/{description}/{logoUrl}/{origin}")]
-    public bool EditManufacturer(Guid id, string? name, string? description, string? logoUrl, string? origin)
+    [HttpPut("edit/")]
+    public ActionResult EditManufacturer([FromBody]ManufacturerEditDto manufacturerEditdto)
     {
-        return _manufacturerRepository.ManufacturerEdit(id, name, description, logoUrl, origin);
+        _manufacturerRepository.ManufacturerEdit(manufacturerEditdto);
+        return Ok();
     }
 
     [HttpDelete("delete/{id}")]
-    public bool DeleteManufacturer(Guid id)
+    public ActionResult DeleteManufacturer(Guid id)
     {
-        return _manufacturerRepository.ManufacturerDelete(id);
+        _manufacturerRepository.ManufacturerDelete(id);
+        return Ok();
     }
 
     [HttpGet("search/{searchTerm}")]

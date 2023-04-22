@@ -8,12 +8,14 @@ namespace eshopBackend.DAL.DTOs
 {
     public class ManufacturerEditDto
     {
-        string? Name { get; init; }
+        public Guid Id { get; set; }
         
-        string? Description { get; init; }
+        public string Name { get; init; }
         
-        string? LogoUrl { get; init; }
-
-        string? Origin { get ; init; }
+        public string? Description { get; init; }
+        
+        public string? LogoUrl { get; init; }
+        
+        public string? Origin { get ; init; }
     }
 }
