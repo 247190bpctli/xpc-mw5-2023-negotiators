@@ -9,8 +9,8 @@ using System.Collections.Generic;
 
 namespace eshopBackend.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProductsController : ControllerBase
     {
         private readonly ILogger<ProductsController> _logger;
@@ -19,15 +19,22 @@ namespace eshopBackend.API.Controllers
         public ProductsController(ILogger<ProductsController> logger, ProductRepository productRepository)
         {
             _logger = logger;
-            _productRepository = productRepository;
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
         [HttpGet("list/{page}")]
         public ActionResult<List<ProductEntity>> GetProducts(uint page)
         {
-            List<ProductEntity> products = _productRepository.ProductsOverview(page);
-
-            return Ok(products);
+            try
+            {
+                List<ProductEntity> products = _productRepository.ProductsOverview(page);
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting products overview.");
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("details/{id}")]
@@ -36,41 +43,52 @@ namespace eshopBackend.API.Controllers
             try
             {
                 ProductEntity details = _productRepository.ProductDetails(id);
-
                 return Ok(details);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError("Product cannot be found: {ExceptionMsg}", ex.Message);
-                _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
-
+                _logger.LogError(ex, "Product with ID '{ID}' not found.", id);
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting product details.");
+                return StatusCode(500);
             }
         }
 
         [HttpPost("add")]
         public ActionResult<Guid> AddProduct([FromBody] ProductAddDto productDto)
         {
-            Guid? productId = _productRepository.ProductAdd(productDto);
-
-            return Ok(productId);
+            try
+            {
+                Guid? productId = _productRepository.ProductAdd(productDto);
+                return Ok(productId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new product.");
+                return StatusCode(500);
+            }
         }
 
         [HttpPut("edit/{id}")]
-        public ActionResult EditProduct([FromBody] ProductEditDto productDto)
+        public ActionResult EditProduct(Guid id, [FromBody] ProductEditDto productDto)
         {
             try
             {
                 _productRepository.ProductEdit(productDto);
-                
                 return Ok();
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError("Product cannot be found: {ExceptionMsg}", ex.Message);
-                _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
-
+                _logger.LogError(ex, "Product with ID '{ID}' not found.", id);
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing a product.");
+                return StatusCode(500);
             }
         }
 
@@ -80,29 +98,47 @@ namespace eshopBackend.API.Controllers
             try
             {
                 _productRepository.ProductDelete(id);
-                 return Ok();            
+                return Ok();
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError("Product cannot be found: {ExceptionMsg}", ex.Message);
-                _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
-
+                _logger.LogError(ex, "Product with ID '{ID}' not found.", id);
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting a product.");
+                return StatusCode(500);
             }
         }
 
         [HttpPost("review")]
         public ActionResult AddReview([FromBody] ReviewAddDto reviewDto)
         {
-            _productRepository.ReviewAdd(reviewDto);
-            return Ok();   
+            try
+            {
+                _productRepository.ReviewAdd(reviewDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a review.");
+                return StatusCode(500);
+            }
         }
 
         [HttpGet("search/{searchTerm}")]
-        public ActionResult<List<ProductEntity>> GetProduct(string searchTerm)
+        public ActionResult<List<ProductEntity>> SearchProductByName(string searchTerm)
         {
-            List<ProductEntity>? FoundProduct = _productRepository.SearchProductByName(searchTerm);
-            return Ok(FoundProduct);
+            try
+            {
+                return Ok(_productRepository.SearchProductByName(searchTerm));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while Searching.");
+                return StatusCode(500);
+            }
         }
     }
 }

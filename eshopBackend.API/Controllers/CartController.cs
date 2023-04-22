@@ -2,7 +2,7 @@
 using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -21,49 +21,53 @@ public class CartController : ControllerBase
 
 
     [HttpGet("details/{id}")]
-    public CartEntity? GetCartDetails(Guid id)
+    public ActionResult<CartEntity> GetCartDetails(Guid id)
     {
         try
         {
             CartEntity? details = _cartRepository.CartDetails(id);
-            return details;
+            return Ok(details);
         }
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Cart details cannot be found: {ExceptionMsg}", ex.Message);
             _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
 
-            return null;
+            return NotFound();
         }
     }
 
-    [HttpGet("Create/")]
-    public Guid? CreateCart()
+    [HttpPost("Create/")]
+    public ActionResult<Guid> CreateCart()
     {
-        return _cartRepository.CartAdd();
+        return Ok(_cartRepository.CartAdd());
     }
 
-    [HttpPut("edit/{cartId}/{deliveryType}/{deliveryAddress}/{paymentType}/{paymentDetails}")]
-    public bool Put(Guid cartId, int? deliveryType, string? deliveryAddress, int? paymentType, string? paymentDetails)
+    [HttpPut("edit/")]
+    public ActionResult EditCart(CartEditDTO cartEditDTO)
     {
-        return _cartRepository.CartEdit(cartId, deliveryType, deliveryAddress, paymentType, paymentDetails);
+        _cartRepository.CartEdit(cartEditDTO);
+        return Ok();
     }
 
     [HttpDelete("delete/{id}")]
-    public bool DeleteCart(Guid id)
+    public ActionResult DeleteCart(Guid id)
     {
-        return _cartRepository.CartDelete(id);
+        _cartRepository.CartDelete(id);
+        return Ok();
     }
 
-    [HttpPatch("AddToCart/{cartId}/{productId}/{amount}")]
-    public bool AddToCart(Guid cartId, Guid productId, int amount)
+    [HttpPost("AddToCart/")]
+    public ActionResult AddToCart(AddToCartDTO addToCartDTO)
     {
-        return _cartRepository.AddToCart(cartId, productId, amount);
+        _cartRepository.AddToCart(addToCartDTO);
+        return Ok();
     }
 
     [HttpGet("finalizeOrder/{cartId}")]
-    public bool FinalizeOrder(Guid cartId)
+    public ActionResult FinalizeOrder(Guid cartId)
     {
-        return _cartRepository.FinalizeOrder(cartId);
+        _cartRepository.FinalizeOrder(cartId);
+        return Ok();
     }
 }

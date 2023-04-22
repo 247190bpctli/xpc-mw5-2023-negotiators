@@ -9,7 +9,7 @@ namespace eshopBackend.DAL.DTOs
 {
     public record EditCategoryDto
     {
-        public Guid id { get; init; }
+        public Guid Id { get; init; }
 
         public string? Name { get; init; }
         

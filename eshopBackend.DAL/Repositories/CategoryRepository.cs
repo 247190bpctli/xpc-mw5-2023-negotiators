@@ -1,3 +1,4 @@
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,14 +24,14 @@ public class CategoryRepository
         return _db.Categories.SingleOrDefault(category => category.Id == id)!;
     }
 
-    public Guid CategoryAdd(string name, string imageUrl, string description)
+    public Guid CategoryAdd(AddCategoryDto a)
     {
         //assemble the row
         CategoryEntity newCategory = new()
         {
-            Name = name,
-            ImageUrl = imageUrl,
-            Description = description
+            Name = a.Name,
+            ImageUrl = a.ImageUrl,
+            Description = a.Description
         };
 
         //add row to db
@@ -42,13 +43,13 @@ public class CategoryRepository
         return newCategory.Id;
     }
 
-    public void CategoryEdit(Guid id, string name, string imageUrl, string description)
+    public void CategoryEdit(EditCategoryDto e)
     {
-        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == id)!;
+        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == e.Id)!;
 
-        categoryToEdit.Name = name;
-        categoryToEdit.ImageUrl = imageUrl;
-        categoryToEdit.Description = description;
+        categoryToEdit.Name = e.Name;
+        categoryToEdit.ImageUrl = e.ImageUrl;
+        categoryToEdit.Description = e.Description;
 
         _db.SaveChanges();
     }

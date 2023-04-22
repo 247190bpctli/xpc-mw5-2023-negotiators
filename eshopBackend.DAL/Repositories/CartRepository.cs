@@ -1,3 +1,4 @@
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,17 +34,17 @@ public class CartRepository
         return newCart.Id;
     }
     
-    public void CartEdit(Guid cartId, int deliveryType, string deliveryAddress, int paymentType, string paymentDetails)
+    public void CartEdit(CartEditDTO c)
     {
         
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == cartId)!;
+            .SingleOrDefault(cart => cart.Id == c.CartId)!;
         
-        cartToEdit.DeliveryType = deliveryType;
-        cartToEdit.DeliveryAddress = deliveryAddress;
-        cartToEdit.PaymentType = paymentType;
-        cartToEdit.PaymentDetails = paymentDetails;
+        cartToEdit.DeliveryType = c.DeliveryType;
+        cartToEdit.DeliveryAddress = c.DeliveryAddress;
+        cartToEdit.PaymentType = c.PaymentType;
+        cartToEdit.PaymentDetails = c.PaymentDetails;
         
         _db.SaveChanges();
     }
@@ -56,16 +57,16 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void AddToCart(Guid cartId, Guid productId, int amount)
+    public void AddToCart(AddToCartDTO a)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == cartId)!;
+            .SingleOrDefault(cart => cart.Id == a.CartId)!;
 
         //we don't need category and manufacturer here
-        ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == productId)!;
+        ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == a.ProductId)!;
         ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
-        productWithAmount.Amount = amount;
+        productWithAmount.Amount = a.Amount;
 
         cart.Products.Add(product);
         _db.SaveChanges();

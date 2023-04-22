@@ -2,7 +2,7 @@
 using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -44,22 +44,26 @@ public class CategoriesController : ControllerBase
         }
     }
 
-    [HttpPost("add/{name}/{imageUrl}/{description}")]
-    public Guid? AddCategory(string name, string? imageUrl, string? description)
+    [HttpPost("add/")]
+    public ActionResult<Guid> AddCategory(AddCategoryDto addCategoryDto)
     {
-        return _categoryRepository.CategoryAdd(name, imageUrl, description);
+        Guid CategoryId = _categoryRepository.CategoryAdd(addCategoryDto);
+        return Ok(CategoryId); 
+        
     }
 
-    [HttpPut("edit/{id}/{name}/{imageUrl}/{description}")]
-    public bool EditCategory(Guid id, string? name, string? imageUrl, string? description)
+    [HttpPut("edit/")]
+    public ActionResult EditCategory(EditCategoryDto editCategoryDto)
     {
-        return _categoryRepository.CategoryEdit(id, name, imageUrl, description);
+        _categoryRepository.CategoryEdit(editCategoryDto);
+        return Ok(); 
     }
 
     [HttpDelete("delete/{id}")]
-    public bool DeleteCategory(Guid id)
+    public ActionResult DeleteCategory(Guid id)
     {
-        return _categoryRepository.CategoryDelete(id);
+        _categoryRepository.CategoryDelete(id);
+        return Ok();
     }
 
     [HttpGet("search/{searchTerm}")]
