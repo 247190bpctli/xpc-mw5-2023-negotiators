@@ -82,20 +82,12 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        public ActionResult DeleteProduct(Guid id)
+        public IActionResult DeleteProduct(Guid id)
         {
             try
             {
-                bool result = _productRepository.ProductDelete(id);
-
-                if (result)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return NotFound();
-                }
+                _productRepository.ProductDelete(id);
+                 return Ok();            
             }
             catch (InvalidOperationException ex)
             {
@@ -109,16 +101,11 @@ namespace eshopBackend.API.Controllers
         [HttpPost("review")]
         public ActionResult AddReview([FromBody] ReviewAddDto reviewDto)
         {
-            bool result = _productRepository.ReviewAdd(reviewDto);
+            _productRepository.ReviewAdd(reviewDto);
+            return Ok();
 
-            if (result)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return BadRequest();
+           
         }
     }
 }

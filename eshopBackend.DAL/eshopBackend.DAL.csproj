@@ -25,10 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="DTOs\Manufacturer\" />
-      <Folder Include="DTOs\Category\" />
-      <Folder Include="DTOs\Cart\" />
-      <Folder Include="DTOs\Product\" />
       <Folder Include="Migrations" />
     </ItemGroup>
 </Project>
