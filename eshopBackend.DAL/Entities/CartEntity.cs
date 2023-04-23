@@ -11,4 +11,8 @@ public class CartEntity : BaseEntity
     public int? PaymentType { get; set; }
     
     public string? PaymentDetails { get; set; }
+    
+    public required DateTime LastEdit { get; set; }
+    
+    public required bool Finalized { get; set; }
 }

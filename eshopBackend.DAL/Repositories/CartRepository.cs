@@ -22,7 +22,9 @@ public class CartRepository
         //assemble the row
         CartEntity newCart = new()
         {
-            Products = new List<ProductEntity>()
+            Products = new List<ProductEntity>(),
+            LastEdit = DateTime.Now,
+            Finalized = false
         };
 
         //add row to db
@@ -45,6 +47,7 @@ public class CartRepository
         cartToEdit.DeliveryAddress = c.DeliveryAddress;
         cartToEdit.PaymentType = c.PaymentType;
         cartToEdit.PaymentDetails = c.PaymentDetails;
+        cartToEdit.LastEdit = DateTime.Now;
         
         _db.SaveChanges();
     }
@@ -63,6 +66,8 @@ public class CartRepository
             .Include(x => x.Products)
             .SingleOrDefault(cart => cart.Id == a.CartId)!;
 
+        cart.LastEdit = DateTime.Now;
+
         //we don't need category and manufacturer here
         ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == a.ProductId)!;
         ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
@@ -78,18 +83,17 @@ public class CartRepository
             .Include(x => x.Products)
             .SingleOrDefault(cart => cart.Id == cartId)!;
 
-        PlacedOrderEntity placedOrder = new()
+        if (cart is
+            {
+                DeliveryType: not null,
+                DeliveryAddress: not null,
+                PaymentType: not null,
+                PaymentDetails: not null
+            })
         {
-            Products = cart.Products,
-            DeliveryType = cart.DeliveryType,
-            DeliveryAddress = cart.DeliveryAddress,
-            PaymentType = cart.PaymentType,
-            PaymentDetails = cart.PaymentDetails,
-            Timestamp = DateTime.Now 
-        };
+            cart.Finalized = true;
+        }
 
-        _db.PlacedOrders.Add(placedOrder);
-        _db.Carts.Remove(cart);
         _db.SaveChanges();
     }
 }

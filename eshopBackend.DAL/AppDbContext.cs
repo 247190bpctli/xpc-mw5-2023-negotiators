@@ -8,7 +8,6 @@ public class AppDbContext : DbContext
 {
     private readonly bool _seedDemoData;
     public DbSet<CartEntity> Carts { get; set; } = null!;
-    public DbSet<PlacedOrderEntity> PlacedOrders { get; set; } = null!;
     public DbSet<CategoryEntity> Categories { get; set; } = null!;
     public DbSet<ManufacturerEntity> Manufacturers { get; set; } = null!;
     public DbSet<ProductEntity> Products { get; set; } = null!;
