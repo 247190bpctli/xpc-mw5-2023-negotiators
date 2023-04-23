@@ -1,10 +1,12 @@
 using eshopBackend.DAL.Entities;
+using eshopBackend.DAL.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace eshopBackend.DAL;
 
 public class AppDbContext : DbContext
 {
+    private readonly bool _seedDemoData;
     public DbSet<CartEntity> Carts { get; set; } = null!;
     public DbSet<PlacedOrderEntity> PlacedOrders { get; set; } = null!;
     public DbSet<CategoryEntity> Categories { get; set; } = null!;
@@ -21,13 +23,18 @@ public class AppDbContext : DbContext
     }*/
     //ENDS MIGRATION in-code connection string
 
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public AppDbContext(DbContextOptions<AppDbContext> options, bool seedDemoData = false) : base(options)
     {
+        _seedDemoData = seedDemoData;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //seeds here
+        base.OnModelCreating(modelBuilder);
         
+        if (_seedDemoData)
+        {
+            modelBuilder.Seed();
+        }
     }
 }
