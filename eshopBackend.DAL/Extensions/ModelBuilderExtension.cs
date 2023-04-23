@@ -6,49 +6,28 @@ namespace eshopBackend.DAL.Extensions;
 
 public static class ModelBuilderExtension
 {
-    public static void Seed(this ModelBuilder modelBuilder)
+    public static void Seed(this ModelBuilder modelBuilder, int dataAmount)
     {
-        modelBuilder.Entity<CategoryEntity>()
-            .HasData(
-                SeedCategory(),
-                SeedCategory(),
-                SeedCategory()
-            );
-        
-        modelBuilder.Entity<ManufacturerEntity>()
-            .HasData(
-                SeedManufacturer(),
-                SeedManufacturer(),
-                SeedManufacturer()
-            );
-        
-        modelBuilder.Entity<ManufacturerEntity>()
-            .HasData(
-                SeedProduct(category1, manufacturer1),
-                SeedProduct(category2, manufacturer2),
-                SeedProduct(category3, manufacturer3)
-            );
-    }
-    
-    /*
-     * for (int i = 0; i < dataAmount; i++)
-        {
-            Guid? categoryId = MakeMockCategory(seed);
-            Guid? manufacturerId = MakeMockManufacturer(seed);
+        List<CategoryEntity> categories = new();
+        List<ManufacturerEntity> manufacturers = new();
+        List<ProductEntity> products = new();
 
-            if (categoryId != null && manufacturerId != null) //todo bug creating more categories and manufacturers that needed
-            {
-                Guid? _ = MakeMockProduct((Guid)categoryId, (Guid)manufacturerId, seed); //return Guid is not used
-                _logger.LogDebug("Mock data created");
-            }
-            else
-            {
-                _logger.LogError("Mock data creation error - check logs above!");
-                return false;
-            }
+        for (int i = 0; i < dataAmount; i++)
+        {
+            CategoryEntity category = SeedCategory();
+            ManufacturerEntity manufacturer = SeedManufacturer();
+            ProductEntity product = SeedProduct(category, manufacturer);
+            
+            categories.Add(category);
+            manufacturers.Add(manufacturer);
+            products.Add(product);
         }
-     */
-    
+
+        modelBuilder.Entity<CategoryEntity>().HasData(categories);
+        modelBuilder.Entity<ManufacturerEntity>().HasData(manufacturers);
+        modelBuilder.Entity<ProductEntity>().HasData(products);
+    }
+
     private static CategoryEntity SeedCategory()
     {
         return new Faker<CategoryEntity>()

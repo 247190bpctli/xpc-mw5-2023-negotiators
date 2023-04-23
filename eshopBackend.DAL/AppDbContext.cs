@@ -34,7 +34,7 @@ public class AppDbContext : DbContext
         
         if (_seedDemoData)
         {
-            modelBuilder.Seed();
+            modelBuilder.Seed(5);
         }
     }
 }
