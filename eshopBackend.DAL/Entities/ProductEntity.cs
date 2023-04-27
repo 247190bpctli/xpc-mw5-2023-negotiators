@@ -1,4 +1,6 @@
-﻿namespace eshopBackend.DAL.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace eshopBackend.DAL.Entities;
 
 public class ProductEntity : BaseEntity
 {
@@ -16,7 +18,11 @@ public class ProductEntity : BaseEntity
     
     public CategoryEntity? Category { get; set; }
     
+    public Guid? CategoryId { get; set; } //for seeding only
+    
     public ManufacturerEntity? Manufacturer { get; set; }
+    
+    public Guid? ManufacturerId { get; set; } //for seeding only
     
     public required List<ReviewEntity> Reviews { get; set; }
 }

@@ -31,6 +31,7 @@ public static class ModelBuilderExtension
     private static CategoryEntity SeedCategory()
     {
         return new Faker<CategoryEntity>()
+            .RuleFor(o => o.Id, f => f.Random.Guid())
             .RuleFor(o => o.Name, f => f.Vehicle.Type())
             .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
             .RuleFor(o => o.Description, f => f.Lorem.Lines(1));
@@ -39,6 +40,7 @@ public static class ModelBuilderExtension
     private static ManufacturerEntity SeedManufacturer()
     {
         return new Faker<ManufacturerEntity>()
+            .RuleFor(o => o.Id, f => f.Random.Guid())
             .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
             .RuleFor(o => o.Description, f => f.Lorem.Lines(1))
             .RuleFor(o => o.LogoUrl, f => f.Image.DataUri(200, 100))
@@ -48,6 +50,7 @@ public static class ModelBuilderExtension
     private static ProductEntity SeedProduct(CategoryEntity category, ManufacturerEntity manufacturer)
     {
         ProductEntity seededProduct = new Faker<ProductEntity>()
+            .RuleFor(o => o.Id, f => f.Random.Guid())
             .RuleFor(o => o.Name, f => f.Vehicle.Manufacturer())
             .RuleFor(o => o.ImageUrl, f => f.Image.DataUri(200, 100))
             .RuleFor(o => o.Description, f => f.Lorem.Lines(1))
@@ -55,8 +58,9 @@ public static class ModelBuilderExtension
             .RuleFor(o => o.Weight, f => f.Random.Number(60))
             .RuleFor(o => o.Stock, f => f.Random.Number(5));
 
-        seededProduct.Category = category;
-        seededProduct.Manufacturer = manufacturer;
+        //relationships have to be specified using an Id
+        seededProduct.CategoryId = category.Id;
+        seededProduct.ManufacturerId = manufacturer.Id;
         seededProduct.Reviews = new List<ReviewEntity>();
         
         return seededProduct;
