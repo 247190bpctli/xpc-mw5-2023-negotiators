@@ -6,7 +6,7 @@ namespace eshopBackend.DAL.Extensions;
 
 public static class ModelBuilderExtension
 {
-    public static void Seed(this ModelBuilder modelBuilder, int dataAmount)
+    public static void Seed(this ModelBuilder modelBuilder, uint dataAmount)
     {
         List<CategoryEntity> categories = new();
         List<ManufacturerEntity> manufacturers = new();

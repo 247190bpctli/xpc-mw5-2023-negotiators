@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 //use user secrets if any
 builder.Configuration.AddUserSecrets<Program>(true);
 
-builder.Services.RegisterDalDependencies(builder.Configuration);
+builder.Services.RegisterDalDependencies();
 
 var app = builder.Build();
 

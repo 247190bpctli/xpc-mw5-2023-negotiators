@@ -1,19 +1,14 @@
 using eshopBackend.DAL.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace eshopBackend.DAL.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static void RegisterDalDependencies(this IServiceCollection services, IConfiguration config)
+    public static void RegisterDalDependencies(this IServiceCollection services)
     {
         //DAL services
-        services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseMySQL(config.GetConnectionString("DefaultConnection") ?? string.Empty);
-        });
+        services.AddDbContext<AppDbContext>();
         
         //public functions
         services.AddTransient<CartRepository>();
