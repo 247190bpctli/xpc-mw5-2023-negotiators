@@ -4,7 +4,7 @@ using eshopBackend.DAL.Entities;
 
 namespace eshopBackend.DAL.Extensions;
 
-public static class ModelBuilderExtension
+public static class ModelBuilderExtensions
 {
     public static void Seed(this ModelBuilder modelBuilder, uint dataAmount)
     {

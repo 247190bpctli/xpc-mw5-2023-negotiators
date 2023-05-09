@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace eshopBackend.DAL.Extensions;
 
-public static class ServiceCollectionExtension
+public static class ServiceCollectionExtensions
 {
     public static void RegisterDalDependencies(this IServiceCollection services)
     {
