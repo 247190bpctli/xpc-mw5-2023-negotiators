@@ -44,9 +44,9 @@ public class CartController : ControllerBase
     }
 
     [HttpPut("edit/")]
-    public ActionResult EditCart(CartEditDTO cartEditDTO)
+    public ActionResult EditCart(EditCartDto editCartDto)
     {
-        _cartRepository.CartEdit(cartEditDTO);
+        _cartRepository.CartEdit(editCartDto);
         return Ok();
     }
 
@@ -58,7 +58,7 @@ public class CartController : ControllerBase
     }
 
     [HttpPost("AddToCart/")]
-    public ActionResult AddToCart(AddToCartDTO addToCartDTO)
+    public ActionResult AddToCart(AddToCartDto addToCartDTO)
     {
         _cartRepository.AddToCart(addToCartDTO);
         return Ok();

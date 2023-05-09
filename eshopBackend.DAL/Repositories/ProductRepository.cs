@@ -32,19 +32,19 @@ public class ProductRepository
             .SingleOrDefault(product => product.Id == id)!;
     }
 
-    public Guid ProductAdd(ProductAddDto productToAdd)
+    public Guid ProductAdd(AddProductDto addProductTo)
     {
         //assemble the row
         ProductEntity newProduct = new()
         {
-            Name = productToAdd.Name,
-            ImageUrl = productToAdd.ImageUrl,
-            Description = productToAdd.Description,
-            Price = productToAdd.Price,
-            Weight = productToAdd.Weight,
-            Stock = productToAdd.Stock,
-            Category = _db.Categories.SingleOrDefault(category => category.Id == productToAdd.CategoryId),
-            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == productToAdd.ManufacturerId),
+            Name = addProductTo.Name,
+            ImageUrl = addProductTo.ImageUrl,
+            Description = addProductTo.Description,
+            Price = addProductTo.Price,
+            Weight = addProductTo.Weight,
+            Stock = addProductTo.Stock,
+            Category = _db.Categories.SingleOrDefault(category => category.Id == addProductTo.CategoryId),
+            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == addProductTo.ManufacturerId),
             Reviews = new List<ReviewEntity>()
         };
 
@@ -54,7 +54,7 @@ public class ProductRepository
         return newProduct.Id; 
     }
 
-    public void ProductEdit(ProductEditDto p)
+    public void ProductEdit(EditProductDto p)
     {
 
         ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == p.ProductId)!;
@@ -79,7 +79,7 @@ public class ProductRepository
         _db.SaveChanges();
     }
 
-    public void ReviewAdd(ReviewAddDto r)
+    public void ReviewAdd(AddReviewDto r)
     {
         r.Stars = (r.Stars <= 5) ? r.Stars : 5; //limit stars to 5
 

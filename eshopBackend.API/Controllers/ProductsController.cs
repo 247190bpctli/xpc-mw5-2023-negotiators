@@ -58,11 +58,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPost("add")]
-        public ActionResult<Guid> AddProduct([FromBody] ProductAddDto productDto)
+        public ActionResult<Guid> AddProduct([FromBody] AddProductDto addProductDto)
         {
             try
             {
-                Guid? productId = _productRepository.ProductAdd(productDto);
+                Guid? productId = _productRepository.ProductAdd(addProductDto);
                 return Ok(productId);
             }
             catch (Exception ex)
@@ -73,11 +73,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPut("edit/{id}")]
-        public ActionResult EditProduct(Guid id, [FromBody] ProductEditDto productDto)
+        public ActionResult EditProduct(Guid id, [FromBody] EditProductDto editProductDto)
         {
             try
             {
-                _productRepository.ProductEdit(productDto);
+                _productRepository.ProductEdit(editProductDto);
                 return Ok();
             }
             catch (InvalidOperationException ex)
@@ -113,11 +113,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPost("review")]
-        public ActionResult AddReview([FromBody] ReviewAddDto reviewDto)
+        public ActionResult AddReview([FromBody] AddReviewDto addReviewDto)
         {
             try
             {
-                _productRepository.ReviewAdd(reviewDto);
+                _productRepository.ReviewAdd(addReviewDto);
                 return Ok();
             }
             catch (Exception ex)

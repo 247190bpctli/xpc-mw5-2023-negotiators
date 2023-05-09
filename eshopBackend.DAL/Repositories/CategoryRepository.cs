@@ -24,14 +24,14 @@ public class CategoryRepository
         return _db.Categories.SingleOrDefault(category => category.Id == id)!;
     }
 
-    public Guid CategoryAdd(AddCategoryDto a)
+    public Guid CategoryAdd(AddCategoryDto addCategoryDto)
     {
         //assemble the row
         CategoryEntity newCategory = new()
         {
-            Name = a.Name,
-            ImageUrl = a.ImageUrl,
-            Description = a.Description
+            Name = addCategoryDto.Name,
+            ImageUrl = addCategoryDto.ImageUrl,
+            Description = addCategoryDto.Description
         };
 
         //add row to db
@@ -43,13 +43,13 @@ public class CategoryRepository
         return newCategory.Id;
     }
 
-    public void CategoryEdit(EditCategoryDto e)
+    public void CategoryEdit(EditCategoryDto editCategoryDto)
     {
-        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == e.Id)!;
+        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == editCategoryDto.Id)!;
 
-        categoryToEdit.Name = e.Name;
-        categoryToEdit.ImageUrl = e.ImageUrl;
-        categoryToEdit.Description = e.Description;
+        categoryToEdit.Name = editCategoryDto.Name;
+        categoryToEdit.ImageUrl = editCategoryDto.ImageUrl;
+        categoryToEdit.Description = editCategoryDto.Description;
 
         _db.SaveChanges();
     }

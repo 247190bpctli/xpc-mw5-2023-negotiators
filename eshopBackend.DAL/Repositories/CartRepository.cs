@@ -36,17 +36,17 @@ public class CartRepository
         return newCart.Id;
     }
     
-    public void CartEdit(CartEditDTO c)
+    public void CartEdit(EditCartDto editCartDto)
     {
         
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == c.CartId)!;
+            .SingleOrDefault(cart => cart.Id == editCartDto.CartId)!;
         
-        cartToEdit.DeliveryType = c.DeliveryType;
-        cartToEdit.DeliveryAddress = c.DeliveryAddress;
-        cartToEdit.PaymentType = c.PaymentType;
-        cartToEdit.PaymentDetails = c.PaymentDetails;
+        cartToEdit.DeliveryType = editCartDto.DeliveryType;
+        cartToEdit.DeliveryAddress = editCartDto.DeliveryAddress;
+        cartToEdit.PaymentType = editCartDto.PaymentType;
+        cartToEdit.PaymentDetails = editCartDto.PaymentDetails;
         cartToEdit.LastEdit = DateTime.Now;
         
         _db.SaveChanges();
@@ -60,18 +60,18 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void AddToCart(AddToCartDTO a)
+    public void AddToCart(AddToCartDto addToCartDto)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == a.CartId)!;
+            .SingleOrDefault(cart => cart.Id == addToCartDto.CartId)!;
 
         cart.LastEdit = DateTime.Now;
 
         //we don't need category and manufacturer here
-        ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == a.ProductId)!;
+        ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == addToCartDto.ProductId)!;
         ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
-        productWithAmount.Amount = a.Amount;
+        productWithAmount.Amount = addToCartDto.Amount;
 
         cart.Products.Add(product);
         _db.SaveChanges();

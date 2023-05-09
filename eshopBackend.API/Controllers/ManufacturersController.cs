@@ -46,15 +46,15 @@ public class ManufacturersController : ControllerBase
     }
 
     [HttpPost("add/")]
-    public ActionResult<Guid?> AddManufacturer(ManufacturerAddDto manufacturerAddDto)
+    public ActionResult<Guid?> AddManufacturer(AddManufacturerDto addManufacturerDto)
     {
-        return Ok(_manufacturerRepository.ManufacturerAdd(manufacturerAddDto));
+        return Ok(_manufacturerRepository.ManufacturerAdd(addManufacturerDto));
     }
 
     [HttpPut("edit/")]
-    public ActionResult EditManufacturer([FromBody]ManufacturerEditDto manufacturerEditdto)
+    public ActionResult EditManufacturer([FromBody]EditManufacturerDto editManufacturerEditdto)
     {
-        _manufacturerRepository.ManufacturerEdit(manufacturerEditdto);
+        _manufacturerRepository.ManufacturerEdit(editManufacturerEditdto);
         return Ok();
     }
 

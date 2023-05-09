@@ -23,7 +23,7 @@ public class ManufacturerRepository
         return _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
     }
 
-    public Guid ManufacturerAdd(ManufacturerAddDto m)
+    public Guid ManufacturerAdd(AddManufacturerDto m)
     {
         //assemble the row
         ManufacturerEntity newManufacturer = new()
@@ -40,7 +40,7 @@ public class ManufacturerRepository
         return newManufacturer.Id;
     }
 
-    public void ManufacturerEdit(ManufacturerEditDto m)
+    public void ManufacturerEdit(EditManufacturerDto m)
     {
         ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == m.Id)!;
 
