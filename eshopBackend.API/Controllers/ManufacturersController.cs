@@ -33,7 +33,7 @@ public class ManufacturersController : ControllerBase
     {
         try
         {
-            ManufacturerEntity? details = _manufacturerRepository.ManufacturerDetails(id);
+            ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id);
             return Ok(details);
         }
         catch (InvalidOperationException ex)
@@ -68,8 +68,8 @@ public class ManufacturersController : ControllerBase
     [HttpGet("search/{searchTerm}")]
     public ActionResult<List<ManufacturerEntity>?> SearchManufacturer(string searchTerm)
     {
-        List<ManufacturerEntity>? FoundManufacturer = _manufacturerRepository.SearchManufacturerByName(searchTerm);
-        return Ok(FoundManufacturer);
+        List<ManufacturerEntity> foundManufacturer = _manufacturerRepository.SearchManufacturerByName(searchTerm);
+        return Ok(foundManufacturer);
     }
 
 }

@@ -21,9 +21,9 @@ public class CategoriesController : ControllerBase
 
 
     [HttpGet("list/{page}")]
-    public List<CategoryEntity>? GetCategories(uint page)
+    public List<CategoryEntity> GetCategories(uint page)
     {
-        List<CategoryEntity>? categories = _categoryRepository.CategoriesOverview(page);
+        List<CategoryEntity> categories = _categoryRepository.CategoriesOverview(page);
         return categories;
     }
 
@@ -47,8 +47,8 @@ public class CategoriesController : ControllerBase
     [HttpPost("add/")]
     public ActionResult<Guid> AddCategory(AddCategoryDto addCategoryDto)
     {
-        Guid CategoryId = _categoryRepository.CategoryAdd(addCategoryDto);
-        return Ok(CategoryId); 
+        Guid categoryId = _categoryRepository.CategoryAdd(addCategoryDto);
+        return Ok(categoryId); 
         
     }
 
@@ -69,7 +69,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("search/{searchTerm}")]
     public ActionResult<List<CategoryEntity>?> GetCategory(string searchTerm)
     {
-        List<CategoryEntity>? FoundCategory = _categoryRepository.SearchCategoryByName(searchTerm);
-        return Ok(FoundCategory);
+        List<CategoryEntity> foundCategory = _categoryRepository.SearchCategoryByName(searchTerm);
+        return Ok(foundCategory);
     }
 }

@@ -58,9 +58,9 @@ public class CartController : ControllerBase
     }
 
     [HttpPost("AddToCart/")]
-    public ActionResult AddToCart(AddToCartDto addToCartDTO)
+    public ActionResult AddToCart(AddToCartDto addToCartDto)
     {
-        _cartRepository.AddToCart(addToCartDTO);
+        _cartRepository.AddToCart(addToCartDto);
         return Ok();
     }
 

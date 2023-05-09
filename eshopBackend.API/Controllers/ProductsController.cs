@@ -32,7 +32,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting products overview.");
+                _logger.LogError(ex, "An error occurred while getting products overview");
                 return StatusCode(500);
             }
         }
@@ -47,12 +47,12 @@ namespace eshopBackend.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found.", id);
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting product details.");
+                _logger.LogError(ex, "An error occurred while getting product details");
                 return StatusCode(500);
             }
         }
@@ -67,7 +67,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a new product.");
+                _logger.LogError(ex, "An error occurred while adding a new product");
                 return StatusCode(500);
             }
         }
@@ -82,12 +82,12 @@ namespace eshopBackend.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found.", id);
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while editing a product.");
+                _logger.LogError(ex, "An error occurred while editing a product");
                 return StatusCode(500);
             }
         }
@@ -102,12 +102,12 @@ namespace eshopBackend.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found.", id);
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting a product.");
+                _logger.LogError(ex, "An error occurred while deleting a product");
                 return StatusCode(500);
             }
         }
@@ -122,7 +122,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a review.");
+                _logger.LogError(ex, "An error occurred while adding a review");
                 return StatusCode(500);
             }
         }
@@ -136,7 +136,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while Searching.");
+                _logger.LogError(ex, "An error occurred while Searching");
                 return StatusCode(500);
             }
         }
