@@ -41,8 +41,11 @@ jobs:
 
       - run: tar -czvf Windows10-x64.tar.gz eshopBackend.API/bin/Release/net7.0/win10-x64/publish/
       - run: tar -czvf ubuntu.16.10-x64.tar.gz eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/
-      - uses: diamondburned/action-upload-release@main
+      - name: Upload the Windows binary
+        uses: diamondburned/action-upload-release@main
         with:
-          files: |
-            Windows10-x64.tar.gz
-            ubuntu.16.10-x64.tar.gz
+          files: Windows10-x64.tar.gz
+      - name: Upload the Linux binary
+        uses: diamondburned/action-upload-release@main
+        with:
+          files: ubuntu.16.10-x64.tar.gz
