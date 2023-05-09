@@ -21,7 +21,7 @@ jobs:
         run: dotnet test --no-build --verbosity normal
       - name: Checkout the repository
         uses: EasyDesk/action-dotnet-publish@v1
-        with:
+        #with:
           # (Optional) The path to the project that should be published.
           # If not specified, defaults to '.'.
           #path: '<path>'
