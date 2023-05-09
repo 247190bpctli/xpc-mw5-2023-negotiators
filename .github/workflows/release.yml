@@ -21,7 +21,7 @@ jobs:
         run: dotnet test --no-build --verbosity normal
       - name: Checkout the repository
         uses: EasyDesk/action-dotnet-publish@v1
-        #with:
+        with:
           # (Optional) The path to the project that should be published.
           # If not specified, defaults to '.'.
           #path: '<path>'
@@ -36,7 +36,7 @@ jobs:
             
           # (Optional) Whether to skip the build using the '--no-build' flag.
           # If not specified, defaults to true.
-          #skip-build: false
+          skip-build: false
       
 #      - name: Publish for Windows
 #        run: dotnet publish -c Release -r win10-x64
