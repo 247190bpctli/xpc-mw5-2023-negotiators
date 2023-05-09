@@ -1,6 +1,6 @@
 ﻿namespace eshopBackend.DAL.Entities;
 
-public record EntityCategory : EntityBase
+public class CategoryEntity : BaseEntity
 {
     public required string Name { get; set; }
     

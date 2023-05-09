@@ -1,64 +1,144 @@
 ﻿using eshopBackend.DAL;
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
-using eshopBackend.DAL.Services;
+using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
 
-
-namespace eshopBackend.API.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class ProductsController : ControllerBase
+namespace eshopBackend.API.Controllers
 {
-    private readonly ILogger<ProductsController> _logger;
-    public ProductsController(ILogger<ProductsController> logger) => _logger = logger;
-
-
-    [HttpGet("list/{page}")]
-    public List<EntityProduct>? GetProducts(byte page)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductsController : ControllerBase
     {
-        List<EntityProduct>? products = DataAccessLayer.ServiceProvider.GetService<Products>()?.ProductsOverview(page);
-        return products;
-    }
+        private readonly ILogger<ProductsController> _logger;
+        private readonly ProductRepository _productRepository;
 
-    [HttpGet("details/{id}")]
-    public EntityProduct? GetProductDetails(Guid id)
-    {
-        try
+        public ProductsController(ILogger<ProductsController> logger, ProductRepository productRepository)
         {
-            EntityProduct? details = DataAccessLayer.ServiceProvider.GetService<Products>()?.ProductDetails(id);
-            return details;
+            _logger = logger;
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
         }
-        catch (InvalidOperationException ex)
+
+        [HttpGet("list/{page}")]
+        public ActionResult<List<ProductEntity>> GetProducts(uint page)
         {
-            _logger.LogError("Product cannot be found: {ExceptionMsg}", ex.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
-
-            return null;
+            try
+            {
+                List<ProductEntity> products = _productRepository.ProductsOverview(page);
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting products overview");
+                return StatusCode(500);
+            }
         }
-    }
 
-    [HttpPost("add/{name}/{imageUrl}/{description}/{price}/{weight}/{stock}/{categoryId}/{manufacturerId}")]
-    public Guid? AddProduct(string name, string? imageUrl, string? description, double price, double weight, int stock, Guid? categoryId, Guid? manufacturerId)
-    {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Products>().ProductAdd(name, imageUrl, description, price, weight, stock, categoryId, manufacturerId);
-    }
+        [HttpGet("details/{id}")]
+        public ActionResult<ProductEntity> GetProductDetails(Guid id)
+        {
+            try
+            {
+                ProductEntity details = _productRepository.ProductDetails(id);
+                return Ok(details);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting product details");
+                return StatusCode(500);
+            }
+        }
 
-    [HttpPut("edit/{id}/{name}/{imageUrl}/{description}/{price}/{weight}/{stock}/{categoryId}/{manufacturerId}")]
-    public bool EditProduct(Guid id, string? name, string? imageUrl, string? description, double? price, double? weight, int? stock, Guid? categoryId, Guid? manufacturerId)
-    {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Products>().ProductEdit(id, name, imageUrl, description, price, weight, stock, categoryId, manufacturerId);
-    }
+        [HttpPost("add")]
+        public ActionResult<Guid> AddProduct([FromBody] AddProductDto addProductDto)
+        {
+            try
+            {
+                Guid? productId = _productRepository.ProductAdd(addProductDto);
+                return Ok(productId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new product");
+                return StatusCode(500);
+            }
+        }
 
-    [HttpDelete("delete/{id}")]
-    public bool DeleteProduct(Guid id)
-    {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Products>().ProductDelete(id);
-    }
+        [HttpPut("edit/{id}")]
+        public ActionResult EditProduct(Guid id, [FromBody] EditProductDto editProductDto)
+        {
+            try
+            {
+                _productRepository.ProductEdit(editProductDto);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing a product");
+                return StatusCode(500);
+            }
+        }
 
-    [HttpPost("Review/{productId}/{stars}/{user}/{description})")]
-    public bool AddReview(Guid productId, byte stars, string user, string? description)
-    {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Products>().ReviewAdd(productId, stars, user, description);
+        [HttpDelete("delete/{id}")]
+        public ActionResult DeleteProduct(Guid id)
+        {
+            try
+            {
+                _productRepository.ProductDelete(id);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting a product");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("review")]
+        public ActionResult AddReview([FromBody] AddReviewDto addReviewDto)
+        {
+            try
+            {
+                _productRepository.ReviewAdd(addReviewDto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a review");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("search/{searchTerm}")]
+        public ActionResult<List<ProductEntity>> SearchProductByName(string searchTerm)
+        {
+            try
+            {
+                return Ok(_productRepository.SearchProductByName(searchTerm));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while Searching");
+                return StatusCode(500);
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 namespace eshopBackend.DAL.Entities;
 
-public record EntityCart : EntityBase
+public class CartEntity : BaseEntity
 {
-    public required List<EntityProduct> Products { get; set; }
+    public required List<ProductEntity> Products { get; set; }
 
     public int? DeliveryType { get; set; }
     
@@ -11,4 +11,8 @@ public record EntityCart : EntityBase
     public int? PaymentType { get; set; }
     
     public string? PaymentDetails { get; set; }
+    
+    public required DateTime LastEdit { get; set; }
+    
+    public required bool Finalized { get; set; }
 }

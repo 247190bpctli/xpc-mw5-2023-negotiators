@@ -1,8 +1,8 @@
 ﻿using eshopBackend.DAL.Entities;
-using eshopBackend.DAL.Services;
 using eshopBackend.DAL;
+using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -11,22 +11,28 @@ namespace eshopBackend.API.Controllers;
 public class CategoriesController : ControllerBase
 {
     private readonly ILogger<CategoriesController> _logger;
-    public CategoriesController(ILogger<CategoriesController> logger) => _logger = logger;
+    private readonly CategoryRepository _categoryRepository;
+
+    public CategoriesController(ILogger<CategoriesController> logger, CategoryRepository categoryRepository)
+    {
+        _logger = logger;
+        _categoryRepository = categoryRepository;
+    }
 
 
     [HttpGet("list/{page}")]
-    public List<EntityCategory>? GetCategories(byte page)
+    public List<CategoryEntity> GetCategories(uint page)
     {
-        List<EntityCategory>? categories = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoriesOverview(page);
+        List<CategoryEntity> categories = _categoryRepository.CategoriesOverview(page);
         return categories;
     }
 
     [HttpGet("details/{id}")]
-    public EntityCategory? GetCategoryDetails(Guid id)
+    public CategoryEntity? GetCategoryDetails(Guid id)
     {
         try
         {
-            EntityCategory? category = DataAccessLayer.ServiceProvider?.GetService<Categories>()?.CategoryDetails(id);
+            CategoryEntity? category = _categoryRepository.CategoryDetails(id);
             return category;
         }
         catch (InvalidOperationException ex)
@@ -38,21 +44,32 @@ public class CategoriesController : ControllerBase
         }
     }
 
-    [HttpPost("add/{name}/{imageUrl}/{description}")]
-    public Guid? AddCategory(string name, string? imageUrl, string? description)
+    [HttpPost("add/")]
+    public ActionResult<Guid> AddCategory(AddCategoryDto addCategoryDto)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryAdd(name, imageUrl, description);
+        Guid categoryId = _categoryRepository.CategoryAdd(addCategoryDto);
+        return Ok(categoryId); 
+        
     }
 
-    [HttpPut("edit/{id}/{name}/{imageUrl}/{description}")]
-    public bool EditCategory(Guid id, string? name, string? imageUrl, string? description)
+    [HttpPut("edit/")]
+    public ActionResult EditCategory(EditCategoryDto editCategoryDto)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryEdit(id, name, imageUrl, description);
+        _categoryRepository.CategoryEdit(editCategoryDto);
+        return Ok(); 
     }
 
     [HttpDelete("delete/{id}")]
-    public bool DeleteCategory(Guid id)
+    public ActionResult DeleteCategory(Guid id)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Categories>().CategoryDelete(id);
+        _categoryRepository.CategoryDelete(id);
+        return Ok();
+    }
+
+    [HttpGet("search/{searchTerm}")]
+    public ActionResult<List<CategoryEntity>?> GetCategory(string searchTerm)
+    {
+        List<CategoryEntity> foundCategory = _categoryRepository.SearchCategoryByName(searchTerm);
+        return Ok(foundCategory);
     }
 }

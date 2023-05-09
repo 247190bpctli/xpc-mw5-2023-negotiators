@@ -1,6 +1,4 @@
-using eshopBackend.DAL;
-
-DataAccessLayer _ = new(); //create instance of DependencyInjection
+using eshopBackend.DAL.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//use user secrets if any
+builder.Configuration.AddUserSecrets<Program>(true);
+
+builder.Services.RegisterDalDependencies();
 
 var app = builder.Build();
 

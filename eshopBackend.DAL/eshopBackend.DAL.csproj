@@ -13,13 +13,16 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-preview.2.23128.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0-preview.3.23174.8" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.0-preview.2.23128.3" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0-preview.2.23128.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.2.23128.3" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0-preview.2.23128.3" />
         <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0-preview.2.23128.3" />
-        <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.0" />
+        <PackageReference Include="MySql.Data" Version="8.0.33" />
+        <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.2" />
     </ItemGroup>
 
     <ItemGroup>

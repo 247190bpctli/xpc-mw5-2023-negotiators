@@ -1,8 +1,8 @@
 ﻿using eshopBackend.DAL.Entities;
-using eshopBackend.DAL.Services;
 using eshopBackend.DAL;
+using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -11,53 +11,63 @@ namespace eshopBackend.API.Controllers;
 public class CartController : ControllerBase
 {
     private readonly ILogger<CartController> _logger;
-    public CartController(ILogger<CartController> logger) => _logger = logger;
+    private readonly CartRepository _cartRepository;
+
+    public CartController(ILogger<CartController> logger, CartRepository cartRepository)
+    {
+        _logger = logger;
+        _cartRepository = cartRepository;
+    } 
 
 
     [HttpGet("details/{id}")]
-    public EntityCart? GetCartDetails(Guid id)
+    public ActionResult<CartEntity> GetCartDetails(Guid id)
     {
         try
         {
-            EntityCart? details = DataAccessLayer.ServiceProvider.GetService<Cart>()?.CartDetails(id);
-            return details;
+            CartEntity? details = _cartRepository.CartDetails(id);
+            return Ok(details);
         }
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Cart details cannot be found: {ExceptionMsg}", ex.Message);
             _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
 
-            return null;
+            return NotFound();
         }
     }
 
-    [HttpGet("Create/")]
-    public Guid? CreateCart()
+    [HttpPost("Create/")]
+    public ActionResult<Guid> CreateCart()
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartAdd();
+        return Ok(_cartRepository.CartAdd());
     }
 
-    [HttpPut("edit/{cartId}/{deliveryType}/{deliveryAddress}/{paymentType}/{paymentDetails}")]
-    public bool Put(Guid cartId, int? deliveryType, string? deliveryAddress, int? paymentType, string? paymentDetails)
+    [HttpPut("edit/")]
+    public ActionResult EditCart(EditCartDto editCartDto)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartEdit(cartId, deliveryType, deliveryAddress, paymentType, paymentDetails);
+        _cartRepository.CartEdit(editCartDto);
+        return Ok();
     }
 
     [HttpDelete("delete/{id}")]
-    public bool DeleteCart(Guid id)
+    public ActionResult DeleteCart(Guid id)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().CartDelete(id);
+        _cartRepository.CartDelete(id);
+        return Ok();
     }
 
-    [HttpPatch("AddToCart/{cartId}/{productId}/{amount}")]
-    public bool AddToCart(Guid cartId, Guid productId, int amount)
+    [HttpPost("AddToCart/")]
+    public ActionResult AddToCart(AddToCartDto addToCartDto)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().AddToCart(cartId, productId, amount);
+        _cartRepository.AddToCart(addToCartDto);
+        return Ok();
     }
 
     [HttpGet("finalizeOrder/{cartId}")]
-    public bool FinalizeOrder(Guid cartId)
+    public ActionResult FinalizeOrder(Guid cartId)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Cart>().FinalizeOrder(cartId);
+        _cartRepository.FinalizeOrder(cartId);
+        return Ok();
     }
 }

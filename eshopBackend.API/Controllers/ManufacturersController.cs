@@ -1,8 +1,8 @@
 ﻿using eshopBackend.DAL.Entities;
-using eshopBackend.DAL.Services;
 using eshopBackend.DAL;
+using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-
+using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -12,49 +12,64 @@ public class ManufacturersController : ControllerBase
 {
 
     private readonly ILogger<ManufacturersController> _logger;
-    public ManufacturersController(ILogger<ManufacturersController> logger) => _logger = logger;
+    private readonly ManufacturerRepository _manufacturerRepository;
+
+    public ManufacturersController(ILogger<ManufacturersController> logger, ManufacturerRepository manufacturerRepository)
+    {
+        _logger = logger;
+        _manufacturerRepository = manufacturerRepository;
+    }
 
 
     [HttpGet("list/{page}")]
-    public List<EntityManufacturer>? GetManufacturers(byte page)
+    public ActionResult<List<ManufacturerEntity>> GetManufacturers(uint page)
     {
-        List<EntityManufacturer>? manufacturers = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturersOverview(page);
-        return manufacturers;
+        List<ManufacturerEntity> manufacturers = _manufacturerRepository.ManufacturersOverview(page);
+        return Ok(manufacturers);
     }
 
     [HttpGet("details/{id}")]
-    public EntityManufacturer? GetManufacturerDetails(Guid id)
+    public ActionResult<ManufacturerEntity> GetManufacturerDetails(Guid id)
     {
         try
         {
-            EntityManufacturer? details = DataAccessLayer.ServiceProvider?.GetService<Manufacturers>()?.ManufacturerDetails(id);
-            return details;
+            ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id);
+            return Ok(details);
         }
         catch (InvalidOperationException ex)
         {
             _logger.LogError("Manufacturer cannot be found: {ExceptionMsg}", ex.Message);
             _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
 
-            return null;
+            return NotFound();
         }
     }
 
-    [HttpPost("add/{name}/{description}/{logoUrl}/{origin}")]
-    public Guid? AddManufacturer(string name, string? description, string? logoUrl, string? origin)
+    [HttpPost("add/")]
+    public ActionResult<Guid?> AddManufacturer(AddManufacturerDto addManufacturerDto)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerAdd(name, description, logoUrl, origin);
+        return Ok(_manufacturerRepository.ManufacturerAdd(addManufacturerDto));
     }
 
-    [HttpPut("edit/{id}/{name}/{description}/{logoUrl}/{origin}")]
-    public bool EditManufacturer(Guid id, string? name, string? description, string? logoUrl, string? origin)
+    [HttpPut("edit/")]
+    public ActionResult EditManufacturer([FromBody]EditManufacturerDto editManufacturerEditdto)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerEdit(id, name, description, logoUrl, origin);
+        _manufacturerRepository.ManufacturerEdit(editManufacturerEditdto);
+        return Ok();
     }
 
     [HttpDelete("delete/{id}")]
-    public bool DeleteManufacturer(Guid id)
+    public ActionResult DeleteManufacturer(Guid id)
     {
-        return DataAccessLayer.ServiceProvider.GetRequiredService<Manufacturers>().ManufacturerDelete(id);
+        _manufacturerRepository.ManufacturerDelete(id);
+        return Ok();
+    }
+
+    [HttpGet("search/{searchTerm}")]
+    public ActionResult<List<ManufacturerEntity>?> SearchManufacturer(string searchTerm)
+    {
+        List<ManufacturerEntity> foundManufacturer = _manufacturerRepository.SearchManufacturerByName(searchTerm);
+        return Ok(foundManufacturer);
     }
 
 }
