@@ -19,17 +19,36 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
-      - name: Publish for Windows
-        run: dotnet publish -c Release -r win10-x64
-      - name: Publish for Linux
-        run: dotnet publish -c Release -r ubuntu.16.10-x64
-      - name: Upload the Windows artifacts
-        uses: actions/upload-artifact@v3
+      - name: Checkout the repository
+        uses: EasyDesk/action-dotnet-publish@v1
         with:
-          name: Windows10-x64
-          path: eshopBackend.API/bin/Release/net7.0/win10-x64/publish/
-      - name: Upload the Linux artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu.16.10-x64
-          path: eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/
+          # (Optional) The path to the project that should be published.
+          # If not specified, defaults to '.'.
+          #path: '<path>'
+            
+          # (Optional) Additional command line arguments to be passed to 'dotnet test'.
+          # If not specified, defaults to 'packages'.
+          #output-dir: '<path-to-output-dir>'
+            
+          # (Optional) The build configuration.
+          # If not specified, defaults to 'Release'.
+          #build-configuration: Release
+            
+          # (Optional) Whether to skip the build using the '--no-build' flag.
+          # If not specified, defaults to true.
+          #skip-build: false
+      
+#      - name: Publish for Windows
+#        run: dotnet publish -c Release -r win10-x64
+#      - name: Publish for Linux
+#        run: dotnet publish -c Release -r ubuntu.16.10-x64
+#      - name: Upload the Windows artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: Windows10-x64
+#          path: eshopBackend.API/bin/Release/net7.0/win10-x64/publish/
+#      - name: Upload the Linux artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: ubuntu.16.10-x64
+#          path: eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/
