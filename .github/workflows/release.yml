@@ -23,17 +23,26 @@ jobs:
         run: dotnet publish -c Release -r win10-x64
       - name: Publish for Linux
         run: dotnet publish -c Release -r ubuntu.16.10-x64
-      - name: Upload the Windows artifacts
-        uses: actions/upload-artifact@v3
+  #    - name: Upload the Windows artifacts
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: Windows10-x64
+  #        path: eshopBackend.API/bin/Release/net7.0/win10-x64/publish/
+  #    - name: Upload the Linux artifacts
+  #      uses: actions/upload-artifact@v3
+  #      with:
+  #        name: ubuntu.16.10-x64
+  #        path: eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/
+  #    - name: Release artifacts
+  #      uses: SierraSoftworks/gh-releases@v1.0.7
+  #      with:
+  #        token: ${{ secrets.GITHUB_TOKEN }}#
+            
+
+      - run: tar -czvf Windows10-x64.tar.gz eshopBackend.API/bin/Release/net7.0/win10-x64/publish/
+      - run: tar -czvf ubuntu.16.10-x64.tar.gz eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/
+      - uses: diamondburned/action-upload-release@main
         with:
-          name: Windows10-x64
-          path: eshopBackend.API/bin/Release/net7.0/win10-x64/publish/
-      - name: Upload the Linux artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu.16.10-x64
-          path: eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/
-      - name: Release artifacts
-        uses: SierraSoftworks/gh-releases@v1.0.7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            Windows10-x64.tar.gz
+            ubuntu.16.10-x64.tar.gz
