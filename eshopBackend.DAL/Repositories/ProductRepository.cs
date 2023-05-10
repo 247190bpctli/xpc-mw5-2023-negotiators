@@ -57,7 +57,7 @@ public class ProductRepository
     public void ProductEdit(Guid ProductId,EditProductDto p)
     {
             
-        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == ProductId);
+        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == ProductId)!;
 
         productToEdit.Name = p.Name;
         productToEdit.ImageUrl = p.ImageUrl;

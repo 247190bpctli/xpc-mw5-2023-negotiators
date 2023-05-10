@@ -1,4 +1,4 @@
-﻿using eshopBackend.DAL;
+using eshopBackend.DAL;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
@@ -43,18 +43,22 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                ProductEntity? details = _productRepository.ProductDetails(id);
-                switch (details)
-                {
-                    case null:
-                        return NotFound();
-                    default:
-                        return Ok(details);
-                }
+                ProductEntity details = _productRepository.ProductDetails(id)!;
+                return Ok(details);
+            }
+            catch (NullReferenceException ex)
+            { 
+                _logger.LogError(ex, "An error occurred while getting details of product: {id}", id); 
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            { 
+                _logger.LogError(ex, "An error occurred while getting details of product: {id}", id); 
+                return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting details of product: {id}",id);
+                _logger.LogError(ex, "An error occurred while getting details of product: {id}", id);
                 return StatusCode(500);
             }
 
@@ -65,7 +69,7 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                Guid? productId = _productRepository.ProductAdd(addProductDto);
+                Guid productId = _productRepository.ProductAdd(addProductDto);
                 return CreatedAtAction(nameof(GetProductDetails), new { id = productId }, productId);
             }
             catch (Exception ex)
@@ -81,19 +85,21 @@ namespace eshopBackend.API.Controllers
             try
             {
                 _productRepository.ProductEdit(id, editProductDto);
-                return Ok();
+                return CreatedAtAction(nameof(GetProductDetails), new {Id = id}, id);
             }
             catch (InvalidOperationException ex)
             {
-                return NotFound(ex.Message);
+                _logger.LogError(ex, "An error occurred while editing product {id}",id);
+                return NotFound();
             }
             catch (NullReferenceException ex)
             {
-                return NotFound(ex.Message);
+                _logger.LogError(ex, "An error occurred while editing product {id}", id);
+                return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while editing a product");
+                _logger.LogError(ex, "An error occurred while editing product {id}", id);
                 return StatusCode(500);
             }
         }
