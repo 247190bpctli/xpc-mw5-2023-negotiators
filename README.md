@@ -9,22 +9,33 @@ Eshop backend with MySQL DB connector - C# .NET project. Project version A.
 | Filip Žádník   | 246976@vutbr.cz    | Application Programming Interface |
 
 ## How to run
+### Docker (easiest)
+You can build and run docker image using the following commands.
+1. Clone the repository using GIT
+2. Create MySQL database and apply migrations using the command below
+3. Copy /eshopBackend.API/appsettings.json to downloaded binary folder and add your DB connection string
+4. Run following commands to build and run the container
+```bash
+docker build -t eshopbackend .
+docker run --rm -p <external port>:80 -v <config location>:/app/appsettings.json eshopbackend
+```
+
 ### Compiled binaries
 Should be uploaded by CI to every release tab.
+1. Download binaries from release tab, current supported platforms are 64-bit Windows and Linux
+2. Clone the repository using GIT
+3. Create MySQL database and apply migrations using the command below
+4. Copy /eshopBackend.API/appsettings.json to downloaded binary folder and add your DB connection string
 
 ### Build from source
 You can build the project from source by cloning the repo or downloading the packed sources from release tab.
-
-> **Warning**
-> You need to configure user secrets and migrate database before you run the project
-
-## User secrets configuration
-
-### DB connection string
-Execute in API folder
-```bash
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=eshopBackend;User Id=eshopBackend;Password=secret;"
-```
+1. Clone the repository using GIT
+2. Create MySQL database and apply migrations using the command below
+3. Configure user secrets (DB connection string)
+   - execute in API folder
+    ```bash
+    dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=eshopBackend;User Id=eshopBackend;Password=secret;"
+    ```
 
 ## Migrations
 Execute in DAL folder
