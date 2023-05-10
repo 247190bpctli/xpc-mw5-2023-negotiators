@@ -43,9 +43,9 @@ public class CategoryRepository
         return newCategory.Id;
     }
 
-    public void CategoryEdit(EditCategoryDto editCategoryDto)
+    public void CategoryEdit(Guid id, EditCategoryDto editCategoryDto)
     {
-        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == editCategoryDto.Id)!;
+        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == id)!;
 
         categoryToEdit.Name = editCategoryDto.Name;
         categoryToEdit.ImageUrl = editCategoryDto.ImageUrl;

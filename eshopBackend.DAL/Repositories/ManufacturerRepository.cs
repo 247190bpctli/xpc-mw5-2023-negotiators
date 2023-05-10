@@ -40,9 +40,9 @@ public class ManufacturerRepository
         return newManufacturer.Id;
     }
 
-    public void ManufacturerEdit(EditManufacturerDto m)
+    public void ManufacturerEdit(Guid id, EditManufacturerDto m)
     {
-        ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == m.Id)!;
+        ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
 
         manufacturerToEdit.Name = m.Name;
         manufacturerToEdit.Description = m.Description;
