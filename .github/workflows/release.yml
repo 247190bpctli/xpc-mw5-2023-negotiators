@@ -8,12 +8,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@master
-      - name: Generate the artifacts
-        uses: skx/github-action-build@master
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          args: 'precompiled-*'
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+      - name: Publish for Windows
+        run: dotnet publish -c Release -r win10-x64
+      - name: Publish for Linux
+        run: dotnet publish -c Release -r ubuntu.16.10-x64
+      - name: Compress Windows binary
+        run: tar -C eshopBackend.API/bin/Release/net7.0/win10-x64/publish/ -czvf Windows10-x64.tar.gz ./
+      - name: Compress Linux binary
+        run: tar -C eshopBackend.API/bin/Release/net7.0/ubuntu.16.10-x64/publish/ -czvf ubuntu.16.10-x64.tar.gz ./
+      - name: Upload the Windows binary
+        uses: diamondburned/action-upload-release@main
+        with:
+          files: Windows10-x64.tar.gz
+      - name: Upload the Linux binary
+        uses: diamondburned/action-upload-release@main
+        with:
+          files: ubuntu.16.10-x64.tar.gz
