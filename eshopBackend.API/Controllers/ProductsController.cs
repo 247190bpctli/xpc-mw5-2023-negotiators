@@ -1,4 +1,4 @@
-using eshopBackend.DAL;
+﻿using eshopBackend.DAL;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
@@ -85,13 +85,17 @@ namespace eshopBackend.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (NullReferenceException ex)
             {
                 return NotFound(ex.Message);
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing a product");
+                return StatusCode(500);
+            }
         }
         
         [HttpDelete("delete/{id}")]
@@ -105,7 +109,7 @@ namespace eshopBackend.API.Controllers
             catch (NullReferenceException ex)
             {
                 _logger.LogError(ex, "Product with ID '{ID}' not found", id);
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
