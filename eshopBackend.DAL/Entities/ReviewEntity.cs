@@ -6,5 +6,5 @@ public class ReviewEntity : BaseEntity
     
     public required string User { get; set; }
 
-    public string? Description { get; set; }
+    public required string Description { get; set; }
 }
