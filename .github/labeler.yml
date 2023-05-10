@@ -4,9 +4,16 @@ dal:
 api:
 - eshopBackend.API/**/*
 
+testing:
+- eshopBackend.IntegrationTests/**/*
+
 documentation:
 - README.md
 - wiki/**/*
 
 actions:
 - .github/**/*
+
+docker:
+- Dockerfile
+- .dockerignore
