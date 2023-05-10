@@ -29,7 +29,7 @@ public class ProductRepository
             .Include(x => x.Category)
             .Include(x => x.Manufacturer)
             .Include(x => x.Reviews)
-            .SingleOrDefault(product => product.Id == id)!;
+            .SingleOrDefault(product => product.Id == id);
     }
 
     public Guid ProductAdd(AddProductDto addProductTo)

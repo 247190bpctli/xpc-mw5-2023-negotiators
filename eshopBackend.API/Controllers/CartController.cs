@@ -1,4 +1,4 @@
-﻿using eshopBackend.DAL.Entities;
+using eshopBackend.DAL.Entities;
 using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -23,18 +23,9 @@ public class CartController : ControllerBase
     [HttpGet("details/{id}")]
     public ActionResult<CartEntity> GetCartDetails(Guid id)
     {
-        try
-        {
-            CartEntity? details = _cartRepository.CartDetails(id);
-            return Ok(details);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError("Cart details cannot be found: {ExceptionMsg}", ex.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
+        CartEntity? details = _cartRepository.CartDetails(id);
+        return Ok(details);
 
-            return NotFound();
-        }
     }
 
     [HttpPost("Create/")]

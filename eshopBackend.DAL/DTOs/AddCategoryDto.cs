@@ -1,4 +1,4 @@
-﻿namespace eshopBackend.DAL.DTOs;
+namespace eshopBackend.DAL.DTOs;
 
 public record AddCategoryDto
 {

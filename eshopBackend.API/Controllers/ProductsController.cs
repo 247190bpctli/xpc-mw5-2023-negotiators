@@ -1,4 +1,4 @@
-﻿using eshopBackend.DAL;
+using eshopBackend.DAL;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
@@ -19,7 +19,7 @@ namespace eshopBackend.API.Controllers
         public ProductsController(ILogger<ProductsController> logger, ProductRepository productRepository)
         {
             _logger = logger;
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _productRepository = productRepository;
         }
 
         [HttpGet("list/{page}")]
@@ -42,19 +42,21 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                ProductEntity details = _productRepository.ProductDetails(id);
-                return Ok(details);
-            }
-            catch (InvalidOperationException ex)
-            {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
-                return NotFound();
+                ProductEntity? details = _productRepository.ProductDetails(id);
+                switch (details)
+                {
+                    case null:
+                        return NotFound();
+                    default:
+                        return Ok(details);
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting product details");
+                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
                 return StatusCode(500);
             }
+
         }
 
         [HttpPost("add")]
@@ -63,7 +65,7 @@ namespace eshopBackend.API.Controllers
             try
             {
                 Guid? productId = _productRepository.ProductAdd(addProductDto);
-                return Ok(productId);
+                return CreatedAtAction(nameof(GetProductDetails), new { id = productId }, productId); ;
             }
             catch (Exception ex)
             {
