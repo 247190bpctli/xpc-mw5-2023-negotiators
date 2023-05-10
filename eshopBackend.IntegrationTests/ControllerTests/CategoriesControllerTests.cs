@@ -1,23 +1,16 @@
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Xunit;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace eshopBackend.IntegrationTests.ControllerTests;
 
 public class CategoriesControllerTests : IntegrationTest
 {
     public CategoriesControllerTests(TestWebApplicationFactory fixture): base(fixture) { }
-    
-    private readonly JsonSerializerOptions _jsonSerializerOptions = new()
-    {
-        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-    
+
     private Guid MockDataSetup()
     {
         AddCategoryDto test = new() { Name = "catAname", ImageUrl = "imurl", Description = "desc" };
@@ -25,7 +18,7 @@ public class CategoriesControllerTests : IntegrationTest
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
         string testGuid = _client.PostAsync("/api/Categories/add", stringContent)
-            .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
+            .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");//todo is needed?
         return Guid.Parse(testGuid);
     }
     
@@ -119,7 +112,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
-        
+
     [Fact]
     public async Task SearchByName_IfFound_ReturnsDetails()
     {

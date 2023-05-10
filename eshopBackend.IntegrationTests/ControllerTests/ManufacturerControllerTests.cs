@@ -1,6 +1,147 @@
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using eshopBackend.DAL.DTOs;
+using eshopBackend.DAL.Entities;
+using Xunit;
+
 namespace eshopBackend.IntegrationTests.ControllerTests;
 
-public class ManufacturerControllerTests
+public class ManufacturerControllerTests : IntegrationTest
 {
+    public ManufacturerControllerTests(TestWebApplicationFactory fixture): base(fixture) { }
+
+    private Guid MockDataSetup()
+    {
+        AddManufacturerDto test = new() { Name = "manAname", Description = "desc", LogoUrl = "imurl", Origin = "EU" };
+        
+        StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
+        
+        string testGuid = _client.PostAsync("/api/Manufacturers/add", stringContent)
+            .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");//todo is needed?
+        return Guid.Parse(testGuid);
+    }
     
+    private void MockDataDispose(Guid testGuid)
+    {
+        _client.DeleteAsync($"/api/Manufacturers/delete/{testGuid}");
+    }
+
+    [Fact]
+    public async Task Get_Always_ReturnsAll()
+    {
+        Guid testGuid = MockDataSetup();
+        
+        HttpResponseMessage response = await _client.GetAsync("/api/Manufacturers/list/1");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        
+        List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+
+        Assert.NotEmpty(data);
+        
+        MockDataDispose(testGuid);
+    }
+
+    [Fact]
+    public async Task GetById_IfExists_ReturnsDetails()
+    {
+        Guid testGuid = MockDataSetup();
+
+        HttpResponseMessage response = await _client.GetAsync($"/api/Manufacturers/details/{testGuid}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+
+        Assert.Equal("manAname", data.Name);
+        Assert.Equal("desc", data.Description);
+        Assert.Equal("imurl", data.LogoUrl);
+        Assert.Equal("EU", data.Origin);
+            
+        MockDataDispose(testGuid);
+    }
+
+    [Fact]
+    public async Task GetById_IfMissing_Returns404()
+    {
+        Guid testGuid = MockDataSetup();
+            
+        Guid testInvalidGuid = Guid.NewGuid();
+
+        HttpResponseMessage response = await _client.GetAsync($"/api/Manufacturers/details/{testInvalidGuid}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            
+        MockDataDispose(testGuid);
+    }
+        
+    [Fact]
+    public async Task EditById_IfExists_Updates()
+    {
+        Guid testGuid = MockDataSetup();
+
+        EditManufacturerDto testEdit = new()
+        {
+            Id = testGuid,
+            Name = "manBname",
+            Description = "desc",
+            LogoUrl = "imurl",
+            Origin = "AU"
+        };
+
+        StringContent stringContent = new(JsonSerializer.Serialize(testEdit), Encoding.UTF8, "application/json");
+
+        HttpResponseMessage response = await _client.PutAsync($"/api/Manufacturers/edit/{testGuid}", stringContent);
+
+        ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+            
+        Assert.Equal("manBname", data.Name);
+        Assert.Equal("desc", data.Description);
+        Assert.Equal("imurl", data.LogoUrl);
+        Assert.Equal("AU", data.Origin);
+            
+        MockDataDispose(testGuid);
+    }
+        
+    [Fact]
+    public async Task DeleteById_IfExists_GetsDeleted()
+    {
+        Guid testGuid = MockDataSetup();
+            
+        MockDataDispose(testGuid);
+
+        HttpResponseMessage response = await _client.GetAsync($"/api/Manufacturers/details/{testGuid}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task SearchByName_IfFound_ReturnsDetails()
+    {
+        Guid testGuid = MockDataSetup();
+            
+        HttpResponseMessage response = await _client.GetAsync($"/api/Manufacturers/details/manAname");
+
+        ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+
+        Assert.Equal("manAname", data.Name);
+        Assert.Equal("desc", data.Description);
+        Assert.Equal("imurl", data.LogoUrl);
+        Assert.Equal("EU", data.Origin);
+            
+        MockDataDispose(testGuid);
+    }
+        
+    [Fact]
+    public async Task SearchByName_IfNotFound_Returns404()
+    {
+        Guid testGuid = MockDataSetup();
+            
+        HttpResponseMessage response = await _client.GetAsync($"/api/Manufacturers/details/manBname");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+            
+        MockDataDispose(testGuid);
+    }
 }
