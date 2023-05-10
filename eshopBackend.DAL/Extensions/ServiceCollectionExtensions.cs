@@ -1,4 +1,5 @@
 using eshopBackend.DAL.Repositories;
+using eshopBackend.DAL.Workers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace eshopBackend.DAL.Extensions;
@@ -9,6 +10,7 @@ public static class ServiceCollectionExtensions
     {
         //DAL services
         services.AddDbContext<AppDbContext>();
+        services.AddSingleton<CartCleanupWorker>();
         
         //public functions
         services.AddTransient<CartRepository>();
