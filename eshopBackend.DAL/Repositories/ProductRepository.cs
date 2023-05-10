@@ -54,46 +54,46 @@ public class ProductRepository
         return newProduct.Id; 
     }
 
-    public void ProductEdit(Guid ProductId,EditProductDto p)
+    public void ProductEdit(Guid ProductId,EditProductDto editProductDto)
     {
             
         ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == ProductId)!;
 
-        productToEdit.Name = p.Name;
-        productToEdit.ImageUrl = p.ImageUrl;
-        productToEdit.Description = p.Description;
-        productToEdit.Price = p.Price;
-        productToEdit.Weight = p.Weight;
-        productToEdit.Stock = p.Stock;
-        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == p.CategoryId);
-        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == p.ManufacturerId);
+        productToEdit.Name = editProductDto.Name;
+        productToEdit.ImageUrl = editProductDto.ImageUrl;
+        productToEdit.Description = editProductDto.Description;
+        productToEdit.Price = editProductDto.Price;
+        productToEdit.Weight = editProductDto.Weight;
+        productToEdit.Stock = editProductDto.Stock;
+        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == editProductDto.CategoryId);
+        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == editProductDto.ManufacturerId);
 
         _db.SaveChanges();
     }
 
-    public void ProductDelete(Guid id)
+    public void ProductDelete(Guid ProductId)
     {
-        ProductEntity productToDelete = _db.Products.SingleOrDefault(product => product.Id == id)!;
+        ProductEntity productToDelete = _db.Products.SingleOrDefault(product => product.Id == ProductId)!;
 
         _db.Products.Remove(productToDelete); 
         _db.SaveChanges();
     }
 
-    public void ReviewAdd(Guid id, AddReviewDto r)
+    public void ReviewAdd(Guid ProductId, AddReviewDto addReviewDto)
     {
-        r.Stars = (r.Stars <= 5) ? r.Stars : 5; //limit stars to 5
+        addReviewDto.Stars = (addReviewDto.Stars <= 5) ? addReviewDto.Stars : 5; //limit stars to 5
 
         //assemble the row
         ReviewEntity @new = new()
         { 
-            Stars = r.Stars,
-            User = r.User,
-            Description = r.Description
+            Stars = addReviewDto.Stars,
+            User = addReviewDto.User,
+            Description = addReviewDto.Description
         };
 
         _db.Products
             .Include(x => x.Reviews)
-            .SingleOrDefault(product => product.Id == id)!.Reviews.Add(@new);
+            .SingleOrDefault(product => product.Id == ProductId)!.Reviews.Add(@new);
         _db.SaveChanges();
     }
 

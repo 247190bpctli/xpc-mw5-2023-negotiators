@@ -19,9 +19,9 @@ public class CategoryRepository
         return categories;
     }
 
-    public CategoryEntity CategoryDetails(Guid id)
+    public CategoryEntity CategoryDetails(Guid CategoryId)
     {
-        return _db.Categories.SingleOrDefault(category => category.Id == id)!;
+        return _db.Categories.SingleOrDefault(category => category.Id == CategoryId)!;
     }
 
     public Guid CategoryAdd(AddCategoryDto addCategoryDto)
@@ -43,9 +43,9 @@ public class CategoryRepository
         return newCategory.Id;
     }
 
-    public void CategoryEdit(Guid id, EditCategoryDto editCategoryDto)
+    public void CategoryEdit(Guid CategoryId, EditCategoryDto editCategoryDto)
     {
-        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == id)!;
+        CategoryEntity categoryToEdit = _db.Categories.SingleOrDefault(category => category.Id == CategoryId)!;
 
         categoryToEdit.Name = editCategoryDto.Name;
         categoryToEdit.ImageUrl = editCategoryDto.ImageUrl;
@@ -54,9 +54,9 @@ public class CategoryRepository
         _db.SaveChanges();
     }
 
-    public void CategoryDelete(Guid id)
+    public void CategoryDelete(Guid CategoryId)
     {
-        CategoryEntity categoryToDelete = _db.Categories.SingleOrDefault(category => category.Id == id)!;
+        CategoryEntity categoryToDelete = _db.Categories.SingleOrDefault(category => category.Id == CategoryId)!;
 
         _db.Categories.Remove(categoryToDelete);
         _db.SaveChanges();

@@ -36,12 +36,12 @@ public class CartRepository
         return newCart.Id;
     }
     
-    public void CartEdit(Guid id, EditCartDto editCartDto)
+    public void CartEdit(Guid CartId, EditCartDto editCartDto)
     {
         
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == id)!;
+            .SingleOrDefault(cart => cart.Id == CartId)!;
         
         cartToEdit.DeliveryType = editCartDto.DeliveryType;
         cartToEdit.DeliveryAddress = editCartDto.DeliveryAddress;
@@ -52,19 +52,19 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void CartDelete(Guid cartId)
+    public void CartDelete(Guid CartId)
     {
-        CartEntity cartToDelete = _db.Carts.SingleOrDefault(cart => cart.Id == cartId)!;
+        CartEntity cartToDelete = _db.Carts.SingleOrDefault(cart => cart.Id == CartId)!;
 
         _db.Carts.Remove(cartToDelete);
         _db.SaveChanges();
     }
 
-    public void AddToCart(Guid id, AddToCartDto addToCartDto)
+    public void AddToCart(Guid CartId, AddToCartDto addToCartDto)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == id)!;
+            .SingleOrDefault(cart => cart.Id == CartId)!;
 
         cart.LastEdit = DateTime.Now;
 
@@ -77,11 +77,11 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void FinalizeOrder(Guid cartId)
+    public void FinalizeOrder(Guid CartId)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == cartId)!;
+            .SingleOrDefault(cart => cart.Id == CartId)!;
 
         if (cart is
             {

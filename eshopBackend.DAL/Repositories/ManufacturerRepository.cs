@@ -18,20 +18,20 @@ public class ManufacturerRepository
         return manufacturers;
     }
 
-    public ManufacturerEntity ManufacturerDetails(Guid id)
+    public ManufacturerEntity ManufacturerDetails(Guid ManufacturerId)
     {
-        return _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
+        return _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == ManufacturerId)!;
     }
 
-    public Guid ManufacturerAdd(AddManufacturerDto m)
+    public Guid ManufacturerAdd(AddManufacturerDto addManufacturerDto)
     {
         //assemble the row
         ManufacturerEntity newManufacturer = new()
         { 
-            Name = m.Name,
-            Description = m.Description,
-            LogoUrl = m.LogoUrl,
-            Origin = m.Origin
+            Name = addManufacturerDto.Name,
+            Description = addManufacturerDto.Description,
+            LogoUrl = addManufacturerDto.LogoUrl,
+            Origin = addManufacturerDto.Origin
         };
         
         _db.Manufacturers.Add(newManufacturer);
@@ -40,21 +40,21 @@ public class ManufacturerRepository
         return newManufacturer.Id;
     }
 
-    public void ManufacturerEdit(Guid id, EditManufacturerDto m)
+    public void ManufacturerEdit(Guid ManufacturerId, EditManufacturerDto editManufacturerDto)
     {
-        ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
+        ManufacturerEntity manufacturerToEdit = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == ManufacturerId)!;
 
-        manufacturerToEdit.Name = m.Name;
-        manufacturerToEdit.Description = m.Description;
-        manufacturerToEdit.LogoUrl = m.LogoUrl;
-        manufacturerToEdit.Origin = m.Origin;
+        manufacturerToEdit.Name = editManufacturerDto.Name;
+        manufacturerToEdit.Description = editManufacturerDto.Description;
+        manufacturerToEdit.LogoUrl = editManufacturerDto.LogoUrl;
+        manufacturerToEdit.Origin = editManufacturerDto.Origin;
 
         _db.SaveChanges();
     }
 
-    public void ManufacturerDelete(Guid id)
+    public void ManufacturerDelete(Guid ManufacturerId)
     {
-        ManufacturerEntity manufacturerToDelete = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == id)!;
+        ManufacturerEntity manufacturerToDelete = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == ManufacturerId)!;
 
         _db.Manufacturers.Remove(manufacturerToDelete);
         _db.SaveChanges();
