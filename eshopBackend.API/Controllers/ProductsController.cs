@@ -114,7 +114,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (NullReferenceException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+                _logger.LogError(ex, "Tried delete product with ID '{ID}', Not found", id);
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
@@ -135,7 +135,7 @@ namespace eshopBackend.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding a review");
-                return StatusCode(500);
+                return StatusCode(500, ex);
             }
         }
 
