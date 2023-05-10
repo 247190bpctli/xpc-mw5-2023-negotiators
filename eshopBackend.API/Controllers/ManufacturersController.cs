@@ -1,9 +1,7 @@
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
-using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using eshopBackend.DAL.DTOs;
-using System;
 
 namespace eshopBackend.API.Controllers
 {
@@ -45,17 +43,17 @@ namespace eshopBackend.API.Controllers
             }
             catch (NullReferenceException ex)
             {
-                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {id}", id);
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {Id}", id);
                 return NotFound();
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {id}", id);
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {Id}", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {id}", id);
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {Id}", id);
                 return StatusCode(500);
             }
 
@@ -66,8 +64,8 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                Guid ManufacturerId = _manufacturerRepository.ManufacturerAdd(manufacturerDto);
-                return CreatedAtAction(nameof(GetManufacturerDetails), new { id = ManufacturerId }, ManufacturerId);
+                Guid manufacturerId = _manufacturerRepository.ManufacturerAdd(manufacturerDto);
+                return CreatedAtAction(nameof(GetManufacturerDetails), new { id = manufacturerId }, manufacturerId);
             }
             catch (Exception ex)
             {
@@ -86,17 +84,17 @@ namespace eshopBackend.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "An error occurred while editing manufacturer {id}", id);
+                _logger.LogError(ex, "An error occurred while editing manufacturer {Id}", id);
                 return NotFound();
             }
             catch (NullReferenceException ex)
             {
-                _logger.LogError(ex, "An error occurred while editing manufacturer {id}", id);
+                _logger.LogError(ex, "An error occurred while editing manufacturer {Id}", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while editing manufacturer {id}", id);
+                _logger.LogError(ex, "An error occurred while editing manufacturer {Id}", id);
                 return StatusCode(500);
             }
         }

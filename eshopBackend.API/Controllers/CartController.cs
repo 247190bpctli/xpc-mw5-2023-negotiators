@@ -1,8 +1,7 @@
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
-using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -30,17 +29,17 @@ public class CartController : ControllerBase
         }
         catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "An error occurred while getting details of cart: {id}", id);
+            _logger.LogError(ex, "An error occurred while getting details of cart: {Id}", id);
             return NotFound();
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "An error occurred while getting details of cart: {id}", id);
+            _logger.LogError(ex, "An error occurred while getting details of cart: {Id}", id);
             return NotFound();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting details of cart: {id}", id);
+            _logger.LogError(ex, "An error occurred while getting details of cart: {Id}", id);
             return StatusCode(500);
         }
     }
@@ -50,8 +49,8 @@ public class CartController : ControllerBase
     {
         try
         {
-            Guid CartId = _cartRepository.CartAdd();
-            return CreatedAtAction(nameof(GetCartDetails), new { id = CartId }, CartId);
+            Guid cartId = _cartRepository.CartAdd();
+            return CreatedAtAction(nameof(GetCartDetails), new { id = cartId }, cartId);
         }
         catch (Exception ex)
         {
@@ -70,17 +69,17 @@ public class CartController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "An error occurred while editing cart {id}", id);
+            _logger.LogError(ex, "An error occurred while editing cart {Id}", id);
             return NotFound();
         }
         catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "An error occurred while editing cart {id}", id);
+            _logger.LogError(ex, "An error occurred while editing cart {Id}", id);
             return NotFound();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while editing cart {id}", id);
+            _logger.LogError(ex, "An error occurred while editing cart {Id}", id);
             return StatusCode(500);
         }
     }
@@ -95,7 +94,7 @@ public class CartController : ControllerBase
         }
         catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "Tried delete cart with ID '{ID}', Not found", id);
+            _logger.LogError(ex, "Tried delete cart with ID '{Id}', Not found", id);
             return NotFound(ex.Message);
         }
         catch (Exception ex)
@@ -115,17 +114,17 @@ public class CartController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "An error occurred while Adding product to cart:{id}", id);
+            _logger.LogError(ex, "An error occurred while Adding product to cart:{Id}", id);
             return NotFound();
         }
         catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "An error occurred while Adding product to cart:{id}", id);
+            _logger.LogError(ex, "An error occurred while Adding product to cart:{Id}", id);
             return NotFound();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while Adding product to cart:{id}", id);
+            _logger.LogError(ex, "An error occurred while Adding product to cart:{Id}", id);
             return StatusCode(500);
         }
     }
@@ -140,17 +139,17 @@ public class CartController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "An error occurred while editing product {id}", id);
+            _logger.LogError(ex, "An error occurred while editing product {Id}", id);
             return NotFound();
         }
         catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "An error occurred while editing product {id}", id);
+            _logger.LogError(ex, "An error occurred while editing product {Id}", id);
             return NotFound();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while editing product {id}", id);
+            _logger.LogError(ex, "An error occurred while editing product {Id}", id);
             return StatusCode(500);
         }
     }

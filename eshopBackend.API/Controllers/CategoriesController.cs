@@ -1,8 +1,7 @@
+using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
-using eshopBackend.DAL;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using eshopBackend.DAL.DTOs;
 
 namespace eshopBackend.API.Controllers;
 
@@ -54,7 +53,7 @@ public class CategoriesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting Catogory details");
+            _logger.LogError(ex, "An error occurred while getting category details");
             return StatusCode(500);
         }
     }
@@ -84,17 +83,17 @@ public class CategoriesController : ControllerBase
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError(ex, "An error occurred while editing Category {id}", id);
+            _logger.LogError(ex, "An error occurred while editing Category {Id}", id);
             return NotFound();
         }
         catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "An error occurred while editing Category {id}", id);
+            _logger.LogError(ex, "An error occurred while editing Category {Id}", id);
             return NotFound();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while editing Category {id}", id);
+            _logger.LogError(ex, "An error occurred while editing Category {Id}", id);
             return StatusCode(500);
         }
     }

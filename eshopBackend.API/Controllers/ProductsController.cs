@@ -1,12 +1,7 @@
-using eshopBackend.DAL;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace eshopBackend.API.Controllers
 {
@@ -48,17 +43,17 @@ namespace eshopBackend.API.Controllers
             }
             catch (NullReferenceException ex)
             { 
-                _logger.LogError(ex, "An error occurred while getting details of product: {id}", id); 
+                _logger.LogError(ex, "An error occurred while getting details of product: {Id}", id); 
                 return NotFound();
             }
             catch (InvalidOperationException ex)
             { 
-                _logger.LogError(ex, "An error occurred while getting details of product: {id}", id); 
+                _logger.LogError(ex, "An error occurred while getting details of product: {Id}", id); 
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting details of product: {id}", id);
+                _logger.LogError(ex, "An error occurred while getting details of product: {Id}", id);
                 return StatusCode(500);
             }
 
@@ -89,17 +84,17 @@ namespace eshopBackend.API.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "An error occurred while editing product {id}",id);
+                _logger.LogError(ex, "An error occurred while editing product {Id}",id);
                 return NotFound();
             }
             catch (NullReferenceException ex)
             {
-                _logger.LogError(ex, "An error occurred while editing product {id}", id);
+                _logger.LogError(ex, "An error occurred while editing product {Id}", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while editing product {id}", id);
+                _logger.LogError(ex, "An error occurred while editing product {Id}", id);
                 return StatusCode(500);
             }
         }
