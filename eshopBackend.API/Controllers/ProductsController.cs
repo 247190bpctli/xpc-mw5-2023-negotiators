@@ -124,19 +124,25 @@ namespace eshopBackend.API.Controllers
             }
         }
 
-        [HttpPost("review")]
-        public ActionResult AddReview([FromBody] AddReviewDto addReviewDto)
+        [HttpPost("review/{id}")]
+        public ActionResult AddReview(Guid id, [FromBody] AddReviewDto addReviewDto)
         {
             try
             {
-                _productRepository.ReviewAdd(addReviewDto);
-                return Ok();
+                _productRepository.ReviewAdd(id, addReviewDto);
+                return CreatedAtAction(nameof(GetProductDetails), new { Id = id }, id);
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a review");
+                return NotFound();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding a review");
-                return StatusCode(500, ex);
+                return StatusCode(500);
             }
+            
         }
 
         [HttpGet("search/{searchTerm}")]

@@ -79,7 +79,7 @@ public class ProductRepository
         _db.SaveChanges();
     }
 
-    public void ReviewAdd(AddReviewDto r)
+    public void ReviewAdd(Guid id, AddReviewDto r)
     {
         r.Stars = (r.Stars <= 5) ? r.Stars : 5; //limit stars to 5
 
@@ -93,7 +93,7 @@ public class ProductRepository
 
         _db.Products
             .Include(x => x.Reviews)
-            .SingleOrDefault(product => product.Id == r.ProductId)!.Reviews.Add(@new);
+            .SingleOrDefault(product => product.Id == id)!.Reviews.Add(@new);
         _db.SaveChanges();
     }
 
