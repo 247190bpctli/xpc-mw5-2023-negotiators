@@ -7,9 +7,9 @@ namespace eshopBackend.IntegrationTests.ControllerTests;
 [Trait("Category", "Integration")]
 public abstract class IntegrationTest : IClassFixture<TestWebApplicationFactory>
 {
-    protected readonly TestWebApplicationFactory _factory;
-    protected readonly HttpClient _client;
-    protected readonly JsonSerializerOptions _jsonSerializerOptions = new()
+    protected readonly TestWebApplicationFactory Factory;
+    protected readonly HttpClient Client;
+    protected readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) },
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -17,7 +17,7 @@ public abstract class IntegrationTest : IClassFixture<TestWebApplicationFactory>
  
     public IntegrationTest(TestWebApplicationFactory fixture)
     {
-        _factory = fixture;
-        _client = _factory.CreateClient();
+        Factory = fixture;
+        Client = Factory.CreateClient();
     }
 }

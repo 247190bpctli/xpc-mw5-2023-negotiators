@@ -17,14 +17,14 @@ public class CategoriesControllerTests : IntegrationTest
         
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
-        string testGuid = _client.PostAsync("/api/Categories/add", stringContent)
+        string testGuid = Client.PostAsync("/api/Categories/add", stringContent)
             .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");//todo is needed?
         return Guid.Parse(testGuid);
     }
     
     private void MockDataDispose(Guid testGuid)
     {
-        _client.DeleteAsync($"/api/Categories/delete/{testGuid}");
+        Client.DeleteAsync($"/api/Categories/delete/{testGuid}");
     }
 
     [Fact]
@@ -32,11 +32,11 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
         
-        HttpResponseMessage response = await _client.GetAsync("/api/Categories/list/1");
+        HttpResponseMessage response = await Client.GetAsync("/api/Categories/list/1");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         
-        List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+        List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.NotEmpty(data);
         
@@ -48,11 +48,11 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
 
-        HttpResponseMessage response = await _client.GetAsync($"/api/Categories/details/{testGuid}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testGuid}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal("catAname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
@@ -68,7 +68,7 @@ public class CategoriesControllerTests : IntegrationTest
             
         Guid testInvalidGuid = Guid.NewGuid();
 
-        HttpResponseMessage response = await _client.GetAsync($"/api/Categories/details/{testInvalidGuid}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testInvalidGuid}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
@@ -90,9 +90,9 @@ public class CategoriesControllerTests : IntegrationTest
 
         StringContent stringContent = new(JsonSerializer.Serialize(testEdit), Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await _client.PutAsync($"/api/Categories/edit/{testGuid}", stringContent);
+        HttpResponseMessage response = await Client.PutAsync($"/api/Categories/edit/{testGuid}", stringContent);
 
-        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
             
         Assert.Equal("catBname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
@@ -108,7 +108,7 @@ public class CategoriesControllerTests : IntegrationTest
             
         MockDataDispose(testGuid);
 
-        HttpResponseMessage response = await _client.GetAsync($"/api/Categories/details/{testGuid}");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testGuid}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -118,9 +118,9 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await _client.GetAsync($"/api/Categories/details/catAname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/catAname");
 
-        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), _jsonSerializerOptions)!;
+        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal("catAname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
@@ -134,7 +134,7 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await _client.GetAsync($"/api/Categories/details/catBname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/catBname");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
