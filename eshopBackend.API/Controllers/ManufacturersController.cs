@@ -62,11 +62,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPost("add")]
-        public ActionResult<Guid?> AddManufacturer(AddManufacturerDto addManufacturerDto)
+        public ActionResult<Guid?> AddManufacturer(ManufacturerDto manufacturerDto)
         {
             try
             {
-                Guid ManufacturerId = _manufacturerRepository.ManufacturerAdd(addManufacturerDto);
+                Guid ManufacturerId = _manufacturerRepository.ManufacturerAdd(manufacturerDto);
                 return CreatedAtAction(nameof(GetManufacturerDetails), new { id = ManufacturerId }, ManufacturerId);
             }
             catch (Exception ex)
@@ -77,11 +77,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPut("edit/{id}")]
-        public ActionResult EditManufacturer(Guid id, [FromBody] EditManufacturerDto editManufacturerEditdto)
+        public ActionResult EditManufacturer(Guid id, [FromBody] ManufacturerDto manufacturerDto)
         {
             try
             {
-                _manufacturerRepository.ManufacturerEdit(id, editManufacturerEditdto);
+                _manufacturerRepository.ManufacturerEdit(id, manufacturerDto);
                 return CreatedAtAction(nameof(GetManufacturerDetails), new { Id = id }, id);
             }
             catch (InvalidOperationException ex)

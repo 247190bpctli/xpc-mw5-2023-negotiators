@@ -32,19 +32,19 @@ public class ProductRepository
             .SingleOrDefault(product => product.Id == id);
     }
 
-    public Guid ProductAdd(AddProductDto addProductTo)
+    public Guid ProductAdd(ProductDto productTo)
     {
         //assemble the row
         ProductEntity newProduct = new()
         {
-            Name = addProductTo.Name,
-            ImageUrl = addProductTo.ImageUrl,
-            Description = addProductTo.Description,
-            Price = addProductTo.Price,
-            Weight = addProductTo.Weight,
-            Stock = addProductTo.Stock,
-            Category = _db.Categories.SingleOrDefault(category => category.Id == addProductTo.CategoryId),
-            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == addProductTo.ManufacturerId),
+            Name = productTo.Name,
+            ImageUrl = productTo.ImageUrl,
+            Description = productTo.Description,
+            Price = productTo.Price,
+            Weight = productTo.Weight,
+            Stock = productTo.Stock,
+            Category = _db.Categories.SingleOrDefault(category => category.Id == productTo.CategoryId),
+            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == productTo.ManufacturerId),
             Reviews = new List<ReviewEntity>()
         };
 
@@ -54,19 +54,19 @@ public class ProductRepository
         return newProduct.Id; 
     }
 
-    public void ProductEdit(Guid ProductId,EditProductDto p)
+    public void ProductEdit(Guid productId, ProductDto productDto)
     {
             
-        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == ProductId)!;
+        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == productId)!;
 
-        productToEdit.Name = p.Name;
-        productToEdit.ImageUrl = p.ImageUrl;
-        productToEdit.Description = p.Description;
-        productToEdit.Price = p.Price;
-        productToEdit.Weight = p.Weight;
-        productToEdit.Stock = p.Stock;
-        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == p.CategoryId);
-        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == p.ManufacturerId);
+        productToEdit.Name = productDto.Name;
+        productToEdit.ImageUrl = productDto.ImageUrl;
+        productToEdit.Description = productDto.Description;
+        productToEdit.Price = productDto.Price;
+        productToEdit.Weight = productDto.Weight;
+        productToEdit.Stock = productDto.Stock;
+        productToEdit.Category = _db.Categories.SingleOrDefault(category => category.Id == productDto.CategoryId);
+        productToEdit.Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == productDto.ManufacturerId);
 
         _db.SaveChanges();
     }

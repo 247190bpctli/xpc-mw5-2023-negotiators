@@ -65,11 +65,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPost("add")]
-        public ActionResult<Guid> AddProduct([FromBody] AddProductDto addProductDto)
+        public ActionResult<Guid> AddProduct([FromBody] ProductDto productDto)
         {
             try
             {
-                Guid productId = _productRepository.ProductAdd(addProductDto);
+                Guid productId = _productRepository.ProductAdd(productDto);
                 return CreatedAtAction(nameof(GetProductDetails), new { id = productId }, productId);
             }
             catch (Exception ex)
@@ -80,11 +80,11 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPut("edit/{id}")]
-        public ActionResult EditProduct(Guid id, [FromBody] EditProductDto editProductDto)
+        public ActionResult EditProduct(Guid id, [FromBody] ProductDto productDto)
         {
             try
             {
-                _productRepository.ProductEdit(id, editProductDto);
+                _productRepository.ProductEdit(id, productDto);
                 return CreatedAtAction(nameof(GetProductDetails), new {Id = id}, id);
             }
             catch (InvalidOperationException ex)

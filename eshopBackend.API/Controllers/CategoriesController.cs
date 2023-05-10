@@ -60,11 +60,11 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost("add/")]
-    public ActionResult<Guid> AddCategory(AddCategoryDto addCategoryDto)
+    public ActionResult<Guid> AddCategory(CategoryDto categoryDto)
     {
         try
         {
-            Guid categoryId = _categoryRepository.CategoryAdd(addCategoryDto);
+            Guid categoryId = _categoryRepository.CategoryAdd(categoryDto);
             return CreatedAtAction(nameof(GetCategoryDetails), new { id = categoryId }, categoryId);
         }
         catch (Exception ex)
@@ -75,11 +75,11 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("edit/{id}")]
-    public ActionResult EditCategory(Guid id, [FromBody] EditCategoryDto editCategoryDto)
+    public ActionResult EditCategory(Guid id, [FromBody] CategoryDto categoryDto)
     {
         try
         {
-            _categoryRepository.CategoryEdit(id, editCategoryDto);
+            _categoryRepository.CategoryEdit(id, categoryDto);
             return CreatedAtAction(nameof(GetCategoryDetails), new { Id = id }, id);
         }
         catch (InvalidOperationException ex)

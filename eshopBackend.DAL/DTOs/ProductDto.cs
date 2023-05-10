@@ -1,6 +1,6 @@
 namespace eshopBackend.DAL.DTOs;
 
-public record AddProductDto
+public record ProductDto
 {
     public string Name { get; init; }
     public string ImageUrl { get; init; }
