@@ -1,8 +1,7 @@
-﻿namespace eshopBackend.DAL.DTOs;
+namespace eshopBackend.DAL.DTOs;
 
 public record EditProductDto
 {
-    public Guid ProductId { get; init; }
     public string Name { get; init; }
     public string? ImageUrl { get; init; }
     public string? Description { get; init; }

@@ -23,7 +23,7 @@ public class ProductRepository
         return products;
     }
 
-    public ProductEntity ProductDetails(Guid id)
+    public ProductEntity? ProductDetails(Guid id)
     {
         return _db.Products
             .Include(x => x.Category)
@@ -54,10 +54,10 @@ public class ProductRepository
         return newProduct.Id; 
     }
 
-    public void ProductEdit(EditProductDto p)
+    public void ProductEdit(Guid ProductId,EditProductDto p)
     {
-
-        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == p.ProductId)!;
+            
+        ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == ProductId);
 
         productToEdit.Name = p.Name;
         productToEdit.ImageUrl = p.ImageUrl;

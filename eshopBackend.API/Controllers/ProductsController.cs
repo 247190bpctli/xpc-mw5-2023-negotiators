@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace eshopBackend.API.Controllers
 {
@@ -53,7 +54,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+                _logger.LogError(ex, "An error occurred while getting details of product: {id}",id);
                 return StatusCode(500);
             }
 
@@ -65,7 +66,7 @@ namespace eshopBackend.API.Controllers
             try
             {
                 Guid? productId = _productRepository.ProductAdd(addProductDto);
-                return CreatedAtAction(nameof(GetProductDetails), new { id = productId }, productId); ;
+                return CreatedAtAction(nameof(GetProductDetails), new { id = productId }, productId);
             }
             catch (Exception ex)
             {
@@ -79,21 +80,20 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                _productRepository.ProductEdit(editProductDto);
+                _productRepository.ProductEdit(id, editProductDto);
                 return Ok();
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
                 return NotFound();
             }
-            catch (Exception ex)
+            catch (NullReferenceException ex)
             {
-                _logger.LogError(ex, "An error occurred while editing a product");
-                return StatusCode(500);
+                return NotFound(ex.Message);
             }
-        }
 
+        }
+        
         [HttpDelete("delete/{id}")]
         public ActionResult DeleteProduct(Guid id)
         {
@@ -102,7 +102,7 @@ namespace eshopBackend.API.Controllers
                 _productRepository.ProductDelete(id);
                 return Ok();
             }
-            catch (InvalidOperationException ex)
+            catch (NullReferenceException ex)
             {
                 _logger.LogError(ex, "Product with ID '{ID}' not found", id);
                 return NotFound();
