@@ -36,12 +36,12 @@ public class CartRepository
         return newCart.Id;
     }
     
-    public void CartEdit(EditCartDto editCartDto)
+    public void CartEdit(Guid id, EditCartDto editCartDto)
     {
         
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == editCartDto.CartId)!;
+            .SingleOrDefault(cart => cart.Id == id)!;
         
         cartToEdit.DeliveryType = editCartDto.DeliveryType;
         cartToEdit.DeliveryAddress = editCartDto.DeliveryAddress;
@@ -60,11 +60,11 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void AddToCart(AddToCartDto addToCartDto)
+    public void AddToCart(Guid id, AddToCartDto addToCartDto)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == addToCartDto.CartId)!;
+            .SingleOrDefault(cart => cart.Id == id)!;
 
         cart.LastEdit = DateTime.Now;
 

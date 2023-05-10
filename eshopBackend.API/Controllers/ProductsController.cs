@@ -154,7 +154,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while Searching");
+                _logger.LogError(ex, "An error occurred while searching for products: {ExceptionMsg}", ex.Message);
                 return StatusCode(500);
             }
         }

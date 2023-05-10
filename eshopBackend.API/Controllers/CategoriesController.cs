@@ -42,6 +42,11 @@ public class CategoriesController : ControllerBase
             CategoryEntity details = _categoryRepository.CategoryDetails(id);
             return Ok(details);
         }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "Category with ID '{ID}' not found", id);
+            return NotFound();
+        }
         catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "Category with ID '{ID}' not found", id);
@@ -60,27 +65,36 @@ public class CategoriesController : ControllerBase
         try
         {
             Guid categoryId = _categoryRepository.CategoryAdd(addCategoryDto);
-            return Ok(categoryId); 
+            return CreatedAtAction(nameof(GetCategoryDetails), new { id = categoryId }, categoryId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while getting product details");
+            _logger.LogError(ex, "An error occurred while getting category details");
             return StatusCode(500);
         }
     }
 
-    [HttpPut("edit/")]
-    public ActionResult EditCategory(EditCategoryDto editCategoryDto)
+    [HttpPut("edit/{id}")]
+    public ActionResult EditCategory(Guid id, [FromBody] EditCategoryDto editCategoryDto)
     {
         try
         {
-            _categoryRepository.CategoryEdit(editCategoryDto);
-            return Ok();
+            _categoryRepository.CategoryEdit(id, editCategoryDto);
+            return CreatedAtAction(nameof(GetCategoryDetails), new { Id = id }, id);
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError("Category cannot be edited: {ExceptionMsg}", ex.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
+            _logger.LogError(ex, "An error occurred while editing Category {id}", id);
+            return NotFound();
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing Category {id}", id);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing Category {id}", id);
             return StatusCode(500);
         }
     }
@@ -93,15 +107,14 @@ public class CategoriesController : ControllerBase
             _categoryRepository.CategoryDelete(id);
             return Ok();
         }
-        catch (InvalidOperationException ex)
+        catch (NullReferenceException ex)
         {
-            _logger.LogError("Category cannot be deleted: {ExceptionMsg}", ex.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
-            return NotFound();
+            _logger.LogError(ex, "Tried delete category with ID '{ID}', Not found", id);
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "An error occurred while deleting Category with ID {id}",id);
+            _logger.LogError(ex, "An error occurred while deleting a category");
             return StatusCode(500);
         }
     }
@@ -111,13 +124,11 @@ public class CategoriesController : ControllerBase
     {
         try
         {
-            List<CategoryEntity> foundCategory = _categoryRepository.SearchCategoryByName(searchTerm);
-            return Ok(foundCategory);
+            return Ok(_categoryRepository.SearchCategoryByName(searchTerm));
         }
         catch (InvalidOperationException ex)
         {
-            _logger.LogError("Category search failed: {ExceptionMsg}", ex.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
+            _logger.LogError(ex, "An error occurred while searching for category: {ExceptionMsg}", ex.Message);
             return StatusCode(500);
         }
     }

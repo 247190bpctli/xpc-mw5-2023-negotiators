@@ -43,24 +43,31 @@ namespace eshopBackend.API.Controllers
                 ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id);
                 return Ok(details);
             }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {id}", id);
+                return NotFound();
+            }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex, "Manufacturer cannot be found: {ExceptionMsg}", ex.Message);
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {id}", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while retrieving manufacturer details: {ExceptionMsg}", ex.Message);
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {id}", id);
                 return StatusCode(500);
             }
+
         }
 
-        [HttpPost("add/")]
+        [HttpPost("add")]
         public ActionResult<Guid?> AddManufacturer(AddManufacturerDto addManufacturerDto)
         {
             try
             {
-                return Ok(_manufacturerRepository.ManufacturerAdd(addManufacturerDto));
+                Guid ManufacturerId = _manufacturerRepository.ManufacturerAdd(addManufacturerDto);
+                return CreatedAtAction(nameof(GetManufacturerDetails), new { id = ManufacturerId }, ManufacturerId);
             }
             catch (Exception ex)
             {
@@ -69,17 +76,27 @@ namespace eshopBackend.API.Controllers
             }
         }
 
-        [HttpPut("edit/")]
-        public ActionResult EditManufacturer([FromBody] EditManufacturerDto editManufacturerEditdto)
+        [HttpPut("edit/{id}")]
+        public ActionResult EditManufacturer(Guid id, [FromBody] EditManufacturerDto editManufacturerEditdto)
         {
             try
             {
-                _manufacturerRepository.ManufacturerEdit(editManufacturerEditdto);
-                return Ok();
+                _manufacturerRepository.ManufacturerEdit(id, editManufacturerEditdto);
+                return CreatedAtAction(nameof(GetManufacturerDetails), new { Id = id }, id);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing manufacturer {id}", id);
+                return NotFound();
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing manufacturer {id}", id);
+                return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while editing a manufacturer: {ExceptionMsg}", ex.Message);
+                _logger.LogError(ex, "An error occurred while editing manufacturer {id}", id);
                 return StatusCode(500);
             }
         }
@@ -92,9 +109,14 @@ namespace eshopBackend.API.Controllers
                 _manufacturerRepository.ManufacturerDelete(id);
                 return Ok();
             }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "Tried delete manufacturer with ID '{ID}', Not found", id);
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting a manufacturer: {ExceptionMsg}", ex.Message);
+                _logger.LogError(ex, "An error occurred while deleting a manufacturer");
                 return StatusCode(500);
             }
         }
@@ -104,8 +126,7 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                List<ManufacturerEntity> foundManufacturer = _manufacturerRepository.SearchManufacturerByName(searchTerm);
-                return Ok(foundManufacturer);
+                return Ok(_manufacturerRepository.SearchManufacturerByName(searchTerm));
             }
             catch (Exception ex)
             {

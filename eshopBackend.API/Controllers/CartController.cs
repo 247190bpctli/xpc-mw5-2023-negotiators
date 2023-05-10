@@ -23,42 +23,135 @@ public class CartController : ControllerBase
     [HttpGet("details/{id}")]
     public ActionResult<CartEntity> GetCartDetails(Guid id)
     {
-        CartEntity? details = _cartRepository.CartDetails(id);
-        return Ok(details);
-
+        try
+        {
+            CartEntity details = _cartRepository.CartDetails(id);
+            return Ok(details);
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting details of cart: {id}", id);
+            return NotFound();
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting details of cart: {id}", id);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while getting details of cart: {id}", id);
+            return StatusCode(500);
+        }
     }
 
-    [HttpPost("Create/")]
+    [HttpPost("Create")]
     public ActionResult<Guid> CreateCart()
     {
-        return Ok(_cartRepository.CartAdd());
+        try
+        {
+            Guid CartId = _cartRepository.CartAdd();
+            return CreatedAtAction(nameof(GetCartDetails), new { id = CartId }, CartId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while creating new cart");
+            return StatusCode(500);
+        }
     }
 
-    [HttpPut("edit/")]
-    public ActionResult EditCart(EditCartDto editCartDto)
+    [HttpPut("edit/{id}")]
+    public ActionResult EditCart(Guid id, [FromBody] EditCartDto editCartDto)
     {
-        _cartRepository.CartEdit(editCartDto);
-        return Ok();
+        try
+        {
+            _cartRepository.CartEdit(id, editCartDto);
+            return CreatedAtAction(nameof(GetCartDetails), new { Id = id }, id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing cart {id}", id);
+            return NotFound();
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing cart {id}", id);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing cart {id}", id);
+            return StatusCode(500);
+        }
     }
 
     [HttpDelete("delete/{id}")]
     public ActionResult DeleteCart(Guid id)
     {
-        _cartRepository.CartDelete(id);
-        return Ok();
+        try
+        {
+            _cartRepository.CartDelete(id);
+            return Ok();
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "Tried delete cart with ID '{ID}', Not found", id);
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while deleting a cart");
+            return StatusCode(500);
+        }
     }
 
-    [HttpPost("AddToCart/")]
-    public ActionResult AddToCart(AddToCartDto addToCartDto)
+    [HttpPost("AddToCart/{id}")]
+    public ActionResult AddToCart(Guid id, [FromBody] AddToCartDto addToCartDto)
     {
-        _cartRepository.AddToCart(addToCartDto);
-        return Ok();
+        try
+        {
+            _cartRepository.AddToCart(id, addToCartDto);
+            return CreatedAtAction(nameof(GetCartDetails), new { Id = id }, id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "An error occurred while Adding product to cart:{id}", id);
+            return NotFound();
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "An error occurred while Adding product to cart:{id}", id);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while Adding product to cart:{id}", id);
+            return StatusCode(500);
+        }
     }
 
-    [HttpGet("finalizeOrder/{cartId}")]
-    public ActionResult FinalizeOrder(Guid cartId)
+    [HttpGet("finalizeOrder/{id}")]
+    public ActionResult FinalizeOrder(Guid id)
     {
-        _cartRepository.FinalizeOrder(cartId);
-        return Ok();
+        try
+        {
+            _cartRepository.FinalizeOrder(id);
+            return CreatedAtAction(nameof(GetCartDetails), new { Id = id }, id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing product {id}", id);
+            return NotFound();
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing product {id}", id);
+            return NotFound();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while editing product {id}", id);
+            return StatusCode(500);
+        }
     }
 }
