@@ -18,15 +18,15 @@ public class CartCleanupWorker : BackgroundService
         _db = new AppDbContext(new DbContextOptions<AppDbContext>(), config);
         _logger = logger;
 
-        try
+        
+        if (config.GetSection("Cart").GetValue<int>("RemovalInterval") != default && config.GetSection("Cart").GetValue<int>("MaxAge") != default)
         {
             _interval = TimeSpan.FromHours(config.GetSection("Cart").GetValue<int>("RemovalInterval"));
             _maxage = config.GetSection("Cart").GetValue<int>("MaxAge");
         }
-        catch (NullReferenceException ex)
+        else
         {
-            _logger.LogWarning("Cart removal interval and/or max age unset");
-            _logger.LogWarning("{ExceptionMessage}", ex.Message);
+            _logger.LogWarning("Cart removal interval and/or max age unset"); 
             _interval = TimeSpan.FromHours(1);
             _maxage = 1;
         }
