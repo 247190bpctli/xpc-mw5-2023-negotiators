@@ -9,8 +9,8 @@ namespace eshopBackend.API.Controllers;
 [ApiController]
 public class CategoriesController : ControllerBase
 {
-    private readonly ILogger<CategoriesController> _logger;
     private readonly CategoryRepository _categoryRepository;
+    private readonly ILogger<CategoriesController> _logger;
 
     public CategoriesController(ILogger<CategoriesController> logger, CategoryRepository categoryRepository)
     {
@@ -131,5 +131,4 @@ public class CategoriesController : ControllerBase
             return StatusCode(500);
         }
     }
-
 }

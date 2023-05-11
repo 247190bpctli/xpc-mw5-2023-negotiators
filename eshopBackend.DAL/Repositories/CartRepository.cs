@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +24,10 @@ public class CartRepository
         {
             Products = new List<ProductEntity>(),
             LastEdit = DateTime.Now,
+            DeliveryType = default,
+            DeliveryAddress = string.Empty,
+            PaymentType = default,
+            PaymentDetails = string.Empty,
             Finalized = false
         };
 
@@ -33,23 +36,22 @@ public class CartRepository
 
         cartUpdate.Add(newCart);
         _db.SaveChanges();
-            
+
         return newCart.Id;
     }
-    
+
     public void CartEdit(Guid cartId, EditCartDto editCartDto)
     {
-        
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
             .SingleOrDefault(cart => cart.Id == cartId)!;
-        
+
         cartToEdit.DeliveryType = editCartDto.DeliveryType;
         cartToEdit.DeliveryAddress = editCartDto.DeliveryAddress;
         cartToEdit.PaymentType = editCartDto.PaymentType;
         cartToEdit.PaymentDetails = editCartDto.PaymentDetails;
         cartToEdit.LastEdit = DateTime.Now;
-        
+
         _db.SaveChanges();
     }
 
@@ -71,7 +73,7 @@ public class CartRepository
 
         //we don't need category and manufacturer here
         ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == addToCartDto.ProductId)!;
-        
+
         ProductInCartEntity productWithAmount = new()
         {
             Name = product.Name,
@@ -101,9 +103,9 @@ public class CartRepository
         if (cart is
             {
                 DeliveryType: not default(int),
-                DeliveryAddress: not null,
+                DeliveryAddress: not "",
                 PaymentType: not default(int),
-                PaymentDetails: not null
+                PaymentDetails: not ""
             })
         {
             cart.Finalized = true;

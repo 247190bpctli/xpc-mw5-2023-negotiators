@@ -9,8 +9,10 @@ namespace eshopBackend.IntegrationTests.ControllerTests;
 
 public class ProductsControllerTests : IntegrationTest
 {
-    public ProductsControllerTests(TestWebApplicationFactory fixture): base(fixture) { }
-    
+    public ProductsControllerTests(TestWebApplicationFactory fixture) : base(fixture)
+    {
+    }
+
     private async Task<Guid> MockDataSetup()
     {
         ProductDto test = new()
@@ -21,15 +23,15 @@ public class ProductsControllerTests : IntegrationTest
             Price = 123,
             Weight = 456,
             Stock = 789
-        };//not handling relations
-        
+        }; //not handling relations
+
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
-        
+
         HttpResponseMessage request = await Client.PostAsync("/api/Products/add", stringContent);
         string testGuid = request.Content.ReadAsStringAsync().Result.Replace("\"", "");
         return Guid.Parse(testGuid);
     }
-    
+
     private async Task MockDataDispose(Guid testGuid)
     {
         await Client.DeleteAsync($"/api/Products/delete/{testGuid}");
@@ -39,13 +41,13 @@ public class ProductsControllerTests : IntegrationTest
     public async Task Get_Always_ReturnsAll()
     {
         Guid testGuid = await MockDataSetup();
-        
+
         HttpResponseMessage response = await Client.GetAsync("/api/Products/list/1");
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotEmpty(data);
-        
+
         await MockDataDispose(testGuid);
     }
 
@@ -72,16 +74,16 @@ public class ProductsControllerTests : IntegrationTest
     public async Task GetById_IfMissing_Returns404()
     {
         Guid testGuid = await MockDataSetup();
-            
+
         Guid testInvalidGuid = Guid.NewGuid();
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testInvalidGuid}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-            
+
         await MockDataDispose(testGuid);
     }
-        
+
     [Fact]
     public async Task EditById_IfExists_Updates()
     {
@@ -116,12 +118,12 @@ public class ProductsControllerTests : IntegrationTest
 
         await MockDataDispose(testGuid);
     }
-        
+
     [Fact]
     public async Task DeleteById_IfExists_GetsDeleted()
     {
         Guid testGuid = await MockDataSetup();
-            
+
         await MockDataDispose(testGuid);
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testGuid}");
@@ -134,7 +136,7 @@ public class ProductsControllerTests : IntegrationTest
     {
         Guid testGuid = await MockDataSetup();
 
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodAname");
+        HttpResponseMessage response = await Client.GetAsync("/api/Products/search/prodAname");
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal("prodAname", data.First().Name);
@@ -146,13 +148,13 @@ public class ProductsControllerTests : IntegrationTest
 
         await MockDataDispose(testGuid);
     }
-        
+
     [Fact]
     public async Task SearchByName_IfNotFound_ReturnsEmptyList()
     {
         Guid testGuid = await MockDataSetup();
 
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodBname");
+        HttpResponseMessage response = await Client.GetAsync("/api/Products/search/prodBname");
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -160,7 +162,7 @@ public class ProductsControllerTests : IntegrationTest
 
         await MockDataDispose(testGuid);
     }
-    
+
     [Fact]
     public async Task AddReview_Always_ReturnsProductWithReview()
     {
@@ -174,7 +176,7 @@ public class ProductsControllerTests : IntegrationTest
         };
 
         StringContent stringContent = new(JsonSerializer.Serialize(testReview), Encoding.UTF8, "application/json");
-        
+
         HttpResponseMessage putResponse = await Client.PostAsync($"/api/Products/review/{testGuid}", stringContent);
         Uri location = putResponse.Headers.Location!;
 

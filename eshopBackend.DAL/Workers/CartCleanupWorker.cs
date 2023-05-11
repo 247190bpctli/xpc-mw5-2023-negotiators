@@ -1,56 +1,68 @@
 using eshopBackend.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Workers;
 
-public class CartCleanupWorker : BackgroundService
+public class CartCleanupWorker : IHostedService, IDisposable
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<CartCleanupWorker> _logger;
     private readonly TimeSpan _interval;
+    private readonly ILogger<CartCleanupWorker> _logger;
     private readonly int _maxage;
+    private Timer _timer = null!;
 
-    public CartCleanupWorker(AppDbContext db, ILogger<CartCleanupWorker> logger, IConfiguration config)
+    public CartCleanupWorker(ILogger<CartCleanupWorker> logger, IConfiguration config)
     {
-        _db = db;
+        _db = new AppDbContext(new DbContextOptions<AppDbContext>(), config);
         _logger = logger;
-        
-        try
+
+        if (config.GetSection("Cart").GetValue<int>("RemovalInterval") != default && config.GetSection("Cart").GetValue<int>("MaxAge") != default)
         {
-            _interval = TimeSpan.FromHours(config.GetSection("Cart").GetValue<int>("RemovalInterval"));
+            _interval = TimeSpan.FromMinutes(config.GetSection("Cart").GetValue<int>("RemovalInterval"));
             _maxage = config.GetSection("Cart").GetValue<int>("MaxAge");
         }
-        catch (NullReferenceException ex)
+        else
         {
             _logger.LogWarning("Cart removal interval and/or max age unset");
-            _logger.LogWarning("{ExceptionMessage}", ex.Message);
-            _interval = TimeSpan.FromHours(1);
+            _interval = TimeSpan.FromMinutes(5);
             _maxage = 1;
         }
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public void Dispose()
     {
-        using PeriodicTimer timer = new(_interval);
-        while (!stoppingToken.IsCancellationRequested
-               && await timer.WaitForNextTickAsync(stoppingToken))
+        _timer.Dispose();
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, _interval);
+        _logger.LogDebug("Cart removal worker started with an interval of {Interval} and max age of {MaxAge} hours", _interval, _maxage);
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        _timer.Change(Timeout.Infinite, 0);
+        return Task.CompletedTask;
+    }
+
+    private void DoWork(object? state)
+    {
+        List<CartEntity> oldCarts = _db.Carts
+            .Where(c => c.LastEdit < DateTime.Now.AddHours(-_maxage))
+            .Where(c => c.Finalized == false)
+            .ToList();
+
+        if (oldCarts.Count != 0)
         {
-            List<CartEntity> oldCarts = _db.Carts
-                .Where(c => c.LastEdit < DateTime.UtcNow.AddHours(_maxage))
-                .ToList();
-
-            if (oldCarts.Count != 0)
-            {
-                foreach (CartEntity cart in oldCarts)
-                {
-                    _db.Carts.Remove(cart);
-                }
-
-                await _db.SaveChangesAsync(stoppingToken);
-                _logger.LogInformation("Removed {Amount} carts older than {Timeframe} hours", oldCarts.Count, _maxage);
-            }
+            foreach (CartEntity cart in oldCarts) _db.Carts.Remove(cart);
         }
+
+        _db.SaveChangesAsync();
+        _logger.LogInformation("Removed {Amount} carts older than {Timeframe} hours", oldCarts.Count, _maxage);
     }
 }

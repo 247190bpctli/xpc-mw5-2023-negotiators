@@ -9,19 +9,21 @@ namespace eshopBackend.IntegrationTests.ControllerTests;
 
 public class ManufacturerControllerTests : IntegrationTest
 {
-    public ManufacturerControllerTests(TestWebApplicationFactory fixture): base(fixture) { }
+    public ManufacturerControllerTests(TestWebApplicationFactory fixture) : base(fixture)
+    {
+    }
 
     private async Task<Guid> MockDataSetup()
     {
         ManufacturerDto test = new() { Name = "manAname", Description = "desc", LogoUrl = "imurl", Origin = "EU" };
-        
+
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
-        
+
         HttpResponseMessage request = await Client.PostAsync("/api/Manufacturers/add", stringContent);
         string testGuid = request.Content.ReadAsStringAsync().Result.Replace("\"", "");
         return Guid.Parse(testGuid);
     }
-    
+
     private async Task MockDataDispose(Guid testGuid)
     {
         await Client.DeleteAsync($"/api/Manufacturers/delete/{testGuid}");
@@ -31,13 +33,13 @@ public class ManufacturerControllerTests : IntegrationTest
     public async Task Get_Always_ReturnsAll()
     {
         Guid testGuid = await MockDataSetup();
-        
+
         HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/list/1");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotEmpty(data);
-        
+
         await MockDataDispose(testGuid);
     }
 
@@ -54,7 +56,7 @@ public class ManufacturerControllerTests : IntegrationTest
         Assert.Equal("desc", data.Description);
         Assert.Equal("imurl", data.LogoUrl);
         Assert.Equal("EU", data.Origin);
-            
+
         await MockDataDispose(testGuid);
     }
 
@@ -62,16 +64,16 @@ public class ManufacturerControllerTests : IntegrationTest
     public async Task GetById_IfMissing_Returns404()
     {
         Guid testGuid = await MockDataSetup();
-            
+
         Guid testInvalidGuid = Guid.NewGuid();
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testInvalidGuid}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-            
+
         await MockDataDispose(testGuid);
     }
-        
+
     [Fact]
     public async Task EditById_IfExists_Updates()
     {
@@ -92,17 +94,17 @@ public class ManufacturerControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync(location);
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
-            
+
         Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("manBname", data.Name);
         Assert.Equal("desc", data.Description);
         Assert.Equal("imurl", data.LogoUrl);
         Assert.Equal("AU", data.Origin);
-            
+
         await MockDataDispose(testGuid);
     }
-        
+
     [Fact]
     public async Task DeleteById_IfExists_GetsDeleted()
     {
@@ -118,8 +120,8 @@ public class ManufacturerControllerTests : IntegrationTest
     public async Task SearchByName_IfFound_ReturnsList()
     {
         Guid testGuid = await MockDataSetup();
-            
-        HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manAname");
+
+        HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/search/manAname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -127,18 +129,18 @@ public class ManufacturerControllerTests : IntegrationTest
         Assert.Equal("desc", data.First().Description);
         Assert.Equal("imurl", data.First().LogoUrl);
         Assert.Equal("EU", data.First().Origin);
-            
+
         await MockDataDispose(testGuid);
     }
-        
+
     [Fact]
     public async Task SearchByName_IfNotFound_ReturnsEmptyList()
     {
         Guid testGuid = await MockDataSetup();
-            
-        HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manBname");
+
+        HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/search/manBname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
-        
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(new List<ManufacturerEntity>(), data);
 

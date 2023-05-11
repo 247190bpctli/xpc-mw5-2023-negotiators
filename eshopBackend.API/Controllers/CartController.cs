@@ -9,14 +9,14 @@ namespace eshopBackend.API.Controllers;
 [ApiController]
 public class CartController : ControllerBase
 {
-    private readonly ILogger<CartController> _logger;
     private readonly CartRepository _cartRepository;
+    private readonly ILogger<CartController> _logger;
 
     public CartController(ILogger<CartController> logger, CartRepository cartRepository)
     {
         _logger = logger;
         _cartRepository = cartRepository;
-    } 
+    }
 
 
     [HttpGet("details/{id}")]

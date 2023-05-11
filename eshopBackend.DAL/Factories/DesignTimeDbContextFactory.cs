@@ -13,7 +13,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
             new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName)
                 .AddJsonFile("eshopBackend.API/appsettings.json")
-                .AddJsonFile("eshopBackend.API/appsettings.development.json", optional: true)
+                .AddJsonFile("eshopBackend.API/appsettings.development.json", true)
                 .AddUserSecrets("f262d98a-8a24-4152-9d98-90fea8960d4c");
 
         IConfigurationRoot config = builder.Build();
@@ -28,7 +28,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
         DbContextOptionsBuilder<AppDbContext> options = new();
 
         options.UseMySQL(connectionString);
-        
+
         return new AppDbContext(options.Options, config);
     }
 }

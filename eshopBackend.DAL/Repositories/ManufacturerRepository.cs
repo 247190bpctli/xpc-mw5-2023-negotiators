@@ -27,16 +27,16 @@ public class ManufacturerRepository
     {
         //assemble the row
         ManufacturerEntity newManufacturer = new()
-        { 
+        {
             Name = m.Name,
             Description = m.Description,
             LogoUrl = m.LogoUrl,
             Origin = m.Origin
         };
-        
+
         _db.Manufacturers.Add(newManufacturer);
         _db.SaveChanges();
-        
+
         return newManufacturer.Id;
     }
 
