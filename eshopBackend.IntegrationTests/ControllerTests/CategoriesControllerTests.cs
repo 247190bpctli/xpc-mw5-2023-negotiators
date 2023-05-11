@@ -22,9 +22,9 @@ public class CategoriesControllerTests : IntegrationTest
         return Guid.Parse(testGuid);
     }
     
-    private void MockDataDispose(Guid testGuid)
+    private async Task MockDataDispose(Guid testGuid)
     {
-        Client.DeleteAsync($"/api/Categories/delete/{testGuid}");
+        await Client.DeleteAsync($"/api/Categories/delete/{testGuid}");
     }
 
     [Fact]
@@ -40,7 +40,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         Assert.NotEmpty(data);
         
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class CategoriesControllerTests : IntegrationTest
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc", data.Description);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
@@ -97,7 +97,7 @@ public class CategoriesControllerTests : IntegrationTest
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc3", data.Description);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
@@ -105,7 +105,7 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testGuid}");
 
@@ -125,7 +125,7 @@ public class CategoriesControllerTests : IntegrationTest
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc", data.Description);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
@@ -137,6 +137,6 @@ public class CategoriesControllerTests : IntegrationTest
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 }
