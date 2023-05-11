@@ -1,4 +1,5 @@
 using eshopBackend.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -12,9 +13,9 @@ public class CartCleanupWorker : BackgroundService
     private readonly ILogger<CartCleanupWorker> _logger;
     private readonly int _maxage;
 
-    public CartCleanupWorker(AppDbContext db, ILogger<CartCleanupWorker> logger, IConfiguration config)
+    public CartCleanupWorker(IConfiguration config, ILogger<CartCleanupWorker> logger)
     {
-        _db = db;
+        _db = new AppDbContext(new DbContextOptions<AppDbContext>(), config);
         _logger = logger;
 
         try

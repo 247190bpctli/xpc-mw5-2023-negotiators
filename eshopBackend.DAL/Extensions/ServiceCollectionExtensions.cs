@@ -10,7 +10,7 @@ public static class ServiceCollectionExtensions
     {
         //DAL services
         services.AddDbContext<AppDbContext>();
-        services.AddScoped<CartCleanupWorker>();
+        services.AddHostedService<CartCleanupWorker>();
 
         //public functions
         services.AddTransient<CartRepository>();
