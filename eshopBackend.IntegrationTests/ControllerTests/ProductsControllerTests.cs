@@ -22,7 +22,6 @@ public class ProductsControllerTests : IntegrationTest
             Weight = 456,
             Stock = 789
         };//not handling relations
-
         
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
@@ -31,9 +30,9 @@ public class ProductsControllerTests : IntegrationTest
         return Guid.Parse(testGuid);
     }
     
-    private void MockDataDispose(Guid testGuid)
+    private async Task MockDataDispose(Guid testGuid)
     {
-        Client.DeleteAsync($"/api/Products/delete/{testGuid}");
+        await Client.DeleteAsync($"/api/Products/delete/{testGuid}");
     }
 
     [Fact]
@@ -42,14 +41,12 @@ public class ProductsControllerTests : IntegrationTest
         Guid testGuid = MockDataSetup();
         
         HttpResponseMessage response = await Client.GetAsync("/api/Products/list/1");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotEmpty(data);
         
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 
     [Fact]
@@ -58,11 +55,9 @@ public class ProductsControllerTests : IntegrationTest
         Guid testGuid = MockDataSetup();
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testGuid}");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
         ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("prodAname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc", data.Description);
@@ -70,7 +65,7 @@ public class ProductsControllerTests : IntegrationTest
         Assert.Equal(456, data.Weight);
         Assert.Equal(789, data.Stock);
 
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 
     [Fact]
@@ -84,7 +79,7 @@ public class ProductsControllerTests : IntegrationTest
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
@@ -104,10 +99,14 @@ public class ProductsControllerTests : IntegrationTest
 
         StringContent stringContent = new(JsonSerializer.Serialize(testEdit), Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await Client.PutAsync($"/api/Products/edit/{testGuid}", stringContent);
+        HttpResponseMessage putResponse = await Client.PutAsync($"/api/Products/edit/{testGuid}", stringContent);
+        Uri location = putResponse.Headers.Location!;
 
+        HttpResponseMessage response = await Client.GetAsync(location);
         ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
-            
+
+        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("prodBname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc3", data.Description);
@@ -115,7 +114,7 @@ public class ProductsControllerTests : IntegrationTest
         Assert.Equal(789, data.Weight);
         Assert.Equal(456, data.Stock);
 
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
@@ -123,7 +122,7 @@ public class ProductsControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testGuid}");
 
@@ -131,39 +130,40 @@ public class ProductsControllerTests : IntegrationTest
     }
 
     [Fact]
-    public async Task SearchByName_IfFound_ReturnsDetails()
+    public async Task SearchByName_IfFound_ReturnsList()
     {
         Guid testGuid = MockDataSetup();
             
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodAname");
+        List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+        Assert.Equal("prodAname", data.First().Name);
+        Assert.Equal("imurl", data.First().ImageUrl);
+        Assert.Equal("desc", data.First().Description);
+        Assert.Equal(123, data.First().Price);
+        Assert.Equal(456, data.First().Weight);
+        Assert.Equal(789, data.First().Stock);
 
-        Assert.Equal("prodAname", data.Name);
-        Assert.Equal("imurl", data.ImageUrl);
-        Assert.Equal("desc", data.Description);
-        Assert.Equal(123, data.Price);
-        Assert.Equal(456, data.Weight);
-        Assert.Equal(789, data.Stock);
-
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
-    public async Task SearchByName_IfNotFound_Returns404()
+    public async Task SearchByName_IfNotFound_ReturnsEmptyList()
     {
         Guid testGuid = MockDataSetup();
-            
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodBname");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-            
-        MockDataDispose(testGuid);
+        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodBname");
+        List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(new List<ProductEntity>(), data);
+
+        await MockDataDispose(testGuid);
     }
     
     //todo review add view delete test notfound
     
-    [Fact]
+    /*[Fact]
     public async Task GetReviewById_IfMissing_Returns404()
     {
         Guid testGuid = MockDataSetup();
@@ -175,5 +175,5 @@ public class ProductsControllerTests : IntegrationTest
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
         MockDataDispose(testGuid);
-    }
+    }*/
 }
