@@ -11,7 +11,20 @@ jobs:
   build:
     if: ${{ github.event.label.name != 'skipci' }}
     runs-on: ubuntu-latest
-
+    services:
+      mysql:
+        image: mysql:8.0.29
+        env:
+          MYSQL_ROOT_PASSWORD: secret
+          MYSQL_DATABASE: eshopBackend
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd "mysqladmin ping -psecret"
+          --health-interval 10s
+          --health-start-period 10s
+          --health-timeout 5s
+          --health-retries 10
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v3
@@ -23,5 +36,11 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: Set DB secret
+      working-directory: ./eshopBackend.API
+      run: dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=eshopBackend;User Id=root;Password=secret;"
+    - name: Migrate DB
+      working-directory: ./eshopBackend.DAL
+      run: dotnet ef database update
     - name: Test
       run: dotnet test --no-build --verbosity normal
