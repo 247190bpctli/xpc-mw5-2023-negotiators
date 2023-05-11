@@ -27,7 +27,7 @@ public class ProductsControllerTests : IntegrationTest
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
         string testGuid = Client.PostAsync("/api/Products/add", stringContent)
-            .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");//todo is needed?
+            .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
         return Guid.Parse(testGuid);
     }
     
