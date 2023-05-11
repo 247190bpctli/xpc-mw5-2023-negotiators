@@ -41,6 +41,9 @@ jobs:
       run: dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=eshopBackend;User Id=root;Password=secret;"
     - name: Migrate DB
       working-directory: ./eshopBackend.DAL
-      run: dotnet ef database update
+      run: |
+        dotnet tool install --global dotnet-ef
+        dotnet tool restore
+        dotnet ef database update
     - name: Test
       run: dotnet test --no-build --verbosity normal
