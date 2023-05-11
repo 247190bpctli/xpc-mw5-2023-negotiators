@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -85,9 +86,9 @@ public class CartRepository
 
         if (cart is
             {
-                DeliveryType: not null,
+                DeliveryType: not default(int),
                 DeliveryAddress: not null,
-                PaymentType: not null,
+                PaymentType: not default(int),
                 PaymentDetails: not null
             })
         {
