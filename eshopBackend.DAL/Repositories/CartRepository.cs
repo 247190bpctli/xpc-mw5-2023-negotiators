@@ -72,7 +72,7 @@ public class CartRepository
         //we don't need category and manufacturer here
         ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == addToCartDto.ProductId)!;
         
-        ProductInCartEntity productWithAmount = new ProductInCartEntity
+        ProductInCartEntity productWithAmount = new()
         {
             Name = product.Name,
             ImageUrl = product.ImageUrl,
