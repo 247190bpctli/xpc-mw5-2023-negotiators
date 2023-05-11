@@ -34,11 +34,11 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpGet("details/{id}")]
-    public ActionResult<CategoryEntity?> GetCategoryDetails(Guid id)
+    public ActionResult<CategoryEntity> GetCategoryDetails(Guid id)
     {
         try
         {
-            CategoryEntity details = _categoryRepository.CategoryDetails(id);
+            CategoryEntity details = _categoryRepository.CategoryDetails(id) ?? throw new InvalidOperationException("Trying to show details of category null");
             return Ok(details);
         }
         catch (NullReferenceException ex)
@@ -74,7 +74,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("edit/{id}")]
-    public ActionResult EditCategory(Guid id, [FromBody] CategoryDto categoryDto)
+    public ActionResult<CategoryEntity> EditCategory(Guid id, [FromBody] CategoryDto categoryDto)
     {
         try
         {
