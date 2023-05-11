@@ -40,6 +40,7 @@ public class CartCleanupWorker : BackgroundService
         {
             List<CartEntity> oldCarts = _db.Carts
                 .Where(c => c.LastEdit < DateTime.UtcNow.AddHours(_maxage))
+                .Where(c => c.Finalized == false)
                 .ToList();
 
             if (oldCarts.Count != 0)
