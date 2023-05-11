@@ -4,9 +4,9 @@ public class ManufacturerEntity : BaseEntity
 {
     public required string Name { get; set; }
 
-    public required string Description { get; set; }
+    public string Description { get; set; } = null!;
 
-    public required string LogoUrl { get; set; }
+    public string LogoUrl { get; set; } = null!;
 
-    public required string Origin { get; set; }
+    public string Origin { get; set; } = null!;
 }
