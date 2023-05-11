@@ -120,7 +120,7 @@ public class ManufacturerControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/manAname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manAname");
 
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
@@ -137,7 +137,7 @@ public class ManufacturerControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/manBname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manBname");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             

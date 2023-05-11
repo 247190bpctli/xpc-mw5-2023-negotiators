@@ -135,7 +135,7 @@ public class ProductsControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/prodAname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodAname");
 
         ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
@@ -154,7 +154,7 @@ public class ProductsControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/prodBname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodBname");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             

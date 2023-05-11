@@ -117,7 +117,7 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/catAname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/search/catAname");
 
         CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
@@ -133,7 +133,7 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
             
-        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/catBname");
+        HttpResponseMessage response = await Client.GetAsync($"/api/Categories/search/catBname");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
