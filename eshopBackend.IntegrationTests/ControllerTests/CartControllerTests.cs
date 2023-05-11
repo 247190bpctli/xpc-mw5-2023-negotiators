@@ -36,9 +36,9 @@ public class CartControllerTests : IntegrationTest
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(new List<ProductEntity>(), data.Products);
         Assert.Equal(default, data.DeliveryType);
-        Assert.Equal(default, data.DeliveryAddress);
+        Assert.Equal(string.Empty, data.DeliveryAddress);
         Assert.Equal(default, data.PaymentType);
-        Assert.Equal(default, data.PaymentDetails);
+        Assert.Equal(string.Empty, data.PaymentDetails);
 
         await MockDataDispose(testGuid);
     }
