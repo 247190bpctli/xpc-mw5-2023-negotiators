@@ -10,7 +10,6 @@ namespace eshopBackend.IntegrationTests.ControllerTests;
 public class CategoriesControllerTests : IntegrationTest
 {
     public CategoriesControllerTests(TestWebApplicationFactory fixture): base(fixture) { }
-
     private Guid MockDataSetup()
     {
         CategoryDto test = new() { Name = "catAname", ImageUrl = "imurl", Description = "desc" };
@@ -141,6 +140,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(new List<CategoryEntity>(), data);
             
         await MockDataDispose(testGuid);

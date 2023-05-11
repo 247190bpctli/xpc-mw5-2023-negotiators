@@ -139,6 +139,7 @@ public class ManufacturerControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manBname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
         
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(new List<ManufacturerEntity>(), data);
 
         await MockDataDispose(testGuid);
