@@ -162,39 +162,44 @@ public class CartControllerTests : IntegrationTest
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    /*[Fact]//todo finalize
-    public async Task FinalizeById_IfExists_GetsFinalized()
+    [Fact]
+    public async Task FinalizeById_IfComplete_GetsFinalized()
     {
         Guid testGuid = await MockDataSetup();
 
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodAname");
-        List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+        EditCartDto testEdit = new()
+        {
+            DeliveryType = 2,
+            DeliveryAddress = "test",
+            PaymentType = 3,
+            PaymentDetails = "testt"
+        };
 
-        Assert.Equal("prodAname", data.First().Name);
-        Assert.Equal("imurl", data.First().ImageUrl);
-        Assert.Equal("desc", data.First().Description);
-        Assert.Equal(123, data.First().Price);
-        Assert.Equal(456, data.First().Weight);
-        Assert.Equal(789, data.First().Stock);
+        StringContent stringContent = new(JsonSerializer.Serialize(testEdit), Encoding.UTF8, "application/json");
+        HttpResponseMessage putResponse = await Client.PutAsync($"/api/Cart/edit/{testGuid}", stringContent);
+        
+        HttpResponseMessage finalizeResponse = await Client.GetAsync($"/api/Cart/finalizeOrder/{testGuid}");
+        
+        HttpResponseMessage response = await Client.GetAsync($"/api/Cart/details/{testGuid}");
+        CartEntity data = JsonSerializer.Deserialize<CartEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+        
+        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, finalizeResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.True(data.Finalized);
 
         await MockDataDispose(testGuid);
     }
     
     [Fact]
-    public async Task FinalizeById_IfMissing_Returns404()
+    public async Task FinalizeById_IfIncomplete_Returns404()
     {
         Guid testGuid = await MockDataSetup();
+        
+        HttpResponseMessage finalizeResponse = await Client.GetAsync($"/api/Cart/finalizeOrder/{testGuid}");
 
-        HttpResponseMessage response = await Client.GetAsync($"/api/Products/search/prodAname");
-        List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
-
-        Assert.Equal("prodAname", data.First().Name);
-        Assert.Equal("imurl", data.First().ImageUrl);
-        Assert.Equal("desc", data.First().Description);
-        Assert.Equal(123, data.First().Price);
-        Assert.Equal(456, data.First().Weight);
-        Assert.Equal(789, data.First().Stock);
+        Assert.Equal(HttpStatusCode.InternalServerError, finalizeResponse.StatusCode);
 
         await MockDataDispose(testGuid);
-    }*/
+    }
 }
