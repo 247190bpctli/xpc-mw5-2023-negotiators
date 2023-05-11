@@ -108,6 +108,10 @@ public class CartRepository
         {
             cart.Finalized = true;
         }
+        else
+        {
+            throw new InvalidOperationException("Cart cannot be finalized without required parameters");
+        }
 
         _db.SaveChanges();
     }

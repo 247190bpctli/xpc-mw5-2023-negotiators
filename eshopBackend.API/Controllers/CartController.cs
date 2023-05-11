@@ -140,7 +140,7 @@ public class CartController : ControllerBase
         catch (InvalidOperationException ex)
         {
             _logger.LogError(ex, "An error occurred while editing product {Id}", id);
-            return NotFound();
+            return StatusCode(500);
         }
         catch (NullReferenceException ex)
         {
