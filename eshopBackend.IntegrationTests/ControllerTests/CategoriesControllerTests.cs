@@ -33,11 +33,9 @@ public class CategoriesControllerTests : IntegrationTest
         Guid testGuid = MockDataSetup();
         
         HttpResponseMessage response = await Client.GetAsync("/api/Categories/list/1");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
         List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotEmpty(data);
         
         await MockDataDispose(testGuid);
@@ -54,6 +52,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("catAname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc", data.Description);
@@ -93,9 +92,10 @@ public class CategoriesControllerTests : IntegrationTest
         Uri location = putResponse.Headers.Location!;
 
         HttpResponseMessage response = await Client.GetAsync(location);
-
         CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("catBname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc3", data.Description);
@@ -116,7 +116,7 @@ public class CategoriesControllerTests : IntegrationTest
     }
 
     [Fact]
-    public async Task SearchByName_IfFound_ReturnsDetails()
+    public async Task SearchByName_IfFound_ReturnsList()
     {
         Guid testGuid = MockDataSetup();
 
@@ -124,6 +124,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("catAname", data.First().Name);
         Assert.Equal("imurl", data.First().ImageUrl);
         Assert.Equal("desc", data.First().Description);
@@ -132,7 +133,7 @@ public class CategoriesControllerTests : IntegrationTest
     }
         
     [Fact]
-    public async Task SearchByName_IfNotFound_Returns404()
+    public async Task SearchByName_IfNotFound_ReturnsEmptyList()
     {
         Guid testGuid = MockDataSetup();
             
