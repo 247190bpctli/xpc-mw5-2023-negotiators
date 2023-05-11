@@ -24,7 +24,7 @@ public class CartController : ControllerBase
     {
         try
         {
-            CartEntity details = _cartRepository.CartDetails(id);
+            CartEntity details = _cartRepository.CartDetails(id) ?? throw new InvalidOperationException("Trying to show details of cart null");
             return Ok(details);
         }
         catch (NullReferenceException ex)

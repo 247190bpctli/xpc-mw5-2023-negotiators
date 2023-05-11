@@ -38,7 +38,7 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                ProductEntity details = _productRepository.ProductDetails(id)!;
+                ProductEntity details = _productRepository.ProductDetails(id)! ?? throw new InvalidOperationException("Trying to show details of product null");
                 return Ok(details);
             }
             catch (NullReferenceException ex)
