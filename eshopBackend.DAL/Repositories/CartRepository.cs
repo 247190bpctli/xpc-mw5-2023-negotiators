@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -36,12 +37,12 @@ public class CartRepository
         return newCart.Id;
     }
     
-    public void CartEdit(EditCartDto editCartDto)
+    public void CartEdit(Guid cartId, EditCartDto editCartDto)
     {
         
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == editCartDto.CartId)!;
+            .SingleOrDefault(cart => cart.Id == cartId)!;
         
         cartToEdit.DeliveryType = editCartDto.DeliveryType;
         cartToEdit.DeliveryAddress = editCartDto.DeliveryAddress;
@@ -60,20 +61,34 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void AddToCart(AddToCartDto addToCartDto)
+    public void AddToCart(Guid cartId, AddToCartDto addToCartDto)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == addToCartDto.CartId)!;
+            .SingleOrDefault(cart => cart.Id == cartId)!;
 
         cart.LastEdit = DateTime.Now;
 
         //we don't need category and manufacturer here
         ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == addToCartDto.ProductId)!;
-        ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
-        productWithAmount.Amount = addToCartDto.Amount;
+        
+        ProductInCartEntity productWithAmount = new()
+        {
+            Name = product.Name,
+            ImageUrl = product.ImageUrl,
+            Description = product.Description,
+            Price = product.Price,
+            Weight = product.Weight,
+            Stock = product.Stock,
+            Category = product.Category,
+            CategoryId = product.CategoryId,
+            Manufacturer = product.Manufacturer,
+            ManufacturerId = product.ManufacturerId,
+            Reviews = product.Reviews,
+            Amount = addToCartDto.Amount
+        };
 
-        cart.Products.Add(product);
+        cart.Products.Add(productWithAmount);
         _db.SaveChanges();
     }
 
@@ -85,13 +100,17 @@ public class CartRepository
 
         if (cart is
             {
-                DeliveryType: not null,
+                DeliveryType: not default(int),
                 DeliveryAddress: not null,
-                PaymentType: not null,
+                PaymentType: not default(int),
                 PaymentDetails: not null
             })
         {
             cart.Finalized = true;
+        }
+        else
+        {
+            throw new InvalidOperationException("Cart cannot be finalized without required parameters");
         }
 
         _db.SaveChanges();
