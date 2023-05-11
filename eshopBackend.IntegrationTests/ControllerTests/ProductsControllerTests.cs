@@ -13,7 +13,7 @@ public class ProductsControllerTests : IntegrationTest
     
     private Guid MockDataSetup()
     {
-        AddProductDto test = new()
+        ProductDto test = new()
         {
             Name = "prodAname",
             ImageUrl = "imurl",
@@ -92,8 +92,8 @@ public class ProductsControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
 
-        EditProductDto testEdit = new()
-        { //todo uniformize dtos, this one does not have Id!
+        ProductDto testEdit = new()
+        {
             Name = "prodBname",
             ImageUrl = "imurl",
             Description = "desc3",

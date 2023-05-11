@@ -13,7 +13,7 @@ public class CategoriesControllerTests : IntegrationTest
 
     private Guid MockDataSetup()
     {
-        AddCategoryDto test = new() { Name = "catAname", ImageUrl = "imurl", Description = "desc" };
+        CategoryDto test = new() { Name = "catAname", ImageUrl = "imurl", Description = "desc" };
         
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
@@ -80,9 +80,8 @@ public class CategoriesControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
 
-        EditCategoryDto testEdit = new()
+        CategoryDto testEdit = new()
         {
-            Id = testGuid,
             Name = "catBname",
             ImageUrl = "imurl",
             Description = "desc3"

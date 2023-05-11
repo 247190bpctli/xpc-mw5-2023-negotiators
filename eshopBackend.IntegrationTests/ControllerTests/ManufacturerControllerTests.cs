@@ -13,7 +13,7 @@ public class ManufacturerControllerTests : IntegrationTest
 
     private Guid MockDataSetup()
     {
-        AddManufacturerDto test = new() { Name = "manAname", Description = "desc", LogoUrl = "imurl", Origin = "EU" };
+        ManufacturerDto test = new() { Name = "manAname", Description = "desc", LogoUrl = "imurl", Origin = "EU" };
         
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
@@ -81,9 +81,8 @@ public class ManufacturerControllerTests : IntegrationTest
     {
         Guid testGuid = MockDataSetup();
 
-        EditManufacturerDto testEdit = new()
+        ManufacturerDto testEdit = new()
         {
-            Id = testGuid,
             Name = "manBname",
             Description = "desc",
             LogoUrl = "imurl",
