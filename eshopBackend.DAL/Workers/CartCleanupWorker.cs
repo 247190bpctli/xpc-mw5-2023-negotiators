@@ -9,8 +9,8 @@ namespace eshopBackend.DAL.Workers;
 public class CartCleanupWorker : IHostedService, IDisposable
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<CartCleanupWorker> _logger;
     private readonly TimeSpan _interval;
+    private readonly ILogger<CartCleanupWorker> _logger;
     private readonly int _maxage;
     private Timer _timer = null!;
 
@@ -18,7 +18,7 @@ public class CartCleanupWorker : IHostedService, IDisposable
     {
         _db = new AppDbContext(new DbContextOptions<AppDbContext>(), config);
         _logger = logger;
-        
+
         if (config.GetSection("Cart").GetValue<int>("RemovalInterval") != default && config.GetSection("Cart").GetValue<int>("MaxAge") != default)
         {
             _interval = TimeSpan.FromMinutes(config.GetSection("Cart").GetValue<int>("RemovalInterval"));
@@ -26,16 +26,21 @@ public class CartCleanupWorker : IHostedService, IDisposable
         }
         else
         {
-            _logger.LogWarning("Cart removal interval and/or max age unset"); 
+            _logger.LogWarning("Cart removal interval and/or max age unset");
             _interval = TimeSpan.FromMinutes(5);
             _maxage = 1;
         }
     }
-    
+
+    public void Dispose()
+    {
+        _timer.Dispose();
+    }
+
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _timer = new Timer(DoWork, null, TimeSpan.Zero, _interval);
-        _logger.LogDebug("Cart removal worker started with an interval of {Interval} and max age of {MaxAge} hours", _interval, _maxage); 
+        _logger.LogDebug("Cart removal worker started with an interval of {Interval} and max age of {MaxAge} hours", _interval, _maxage);
         return Task.CompletedTask;
     }
 
@@ -43,11 +48,6 @@ public class CartCleanupWorker : IHostedService, IDisposable
     {
         _timer.Change(Timeout.Infinite, 0);
         return Task.CompletedTask;
-    }
-
-    public void Dispose()
-    {
-        _timer.Dispose();
     }
 
     private void DoWork(object? state)
@@ -61,7 +61,7 @@ public class CartCleanupWorker : IHostedService, IDisposable
         {
             foreach (CartEntity cart in oldCarts) _db.Carts.Remove(cart);
         }
-        
+
         _db.SaveChangesAsync();
         _logger.LogInformation("Removed {Amount} carts older than {Timeframe} hours", oldCarts.Count, _maxage);
     }
