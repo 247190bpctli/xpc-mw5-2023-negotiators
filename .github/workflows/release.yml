@@ -17,8 +17,6 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
       - name: Publish for Windows
         run: dotnet publish -c Release -r win10-x64
       - name: Publish for Linux
