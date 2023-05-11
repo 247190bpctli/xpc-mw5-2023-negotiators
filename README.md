@@ -36,6 +36,30 @@ You can build the project from source by cloning the repo or downloading the pac
     ```bash
     dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=eshopBackend;User Id=eshopBackend;Password=secret;"
     ```
+## Configuration entries
+You can configure this application in appsettings.json file located in eshopBackend.API folder.
+```yaml
+{
+   "Logging": {
+      "LogLevel": { //log levels for classes
+         "Default": "Debug",
+         "Microsoft.AspNetCore": "Warning"
+      }
+   },
+   "AllowedHosts": "*", //hosts allowed to connect
+   "ConnectionStrings": {
+      "DefaultConnection": "" //MySQL DB connection string
+   },
+   "Cart": {
+      "RemovalInterval": 5, //how often are carts removed [minutes]
+      "MaxAge": 24 //how long can carts last before deletion [hours]
+   },
+   "Seeds": {
+      "SeedMockData": true, //enable seeding (when migrating)
+      "DataAmount": 5 //how much records to seed
+   }
+}
+```
 
 ## Migrations
 Execute in DAL folder
