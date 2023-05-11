@@ -74,7 +74,6 @@ public class CartRepository
         
         ProductInCartEntity productWithAmount = new ProductInCartEntity
         {
-            Id = product.Id,
             Name = product.Name,
             ImageUrl = product.ImageUrl,
             Description = product.Description,
