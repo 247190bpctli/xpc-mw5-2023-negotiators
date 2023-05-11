@@ -88,15 +88,18 @@ public class CategoriesControllerTests : IntegrationTest
         };
 
         StringContent stringContent = new(JsonSerializer.Serialize(testEdit), Encoding.UTF8, "application/json");
+        
+        HttpResponseMessage putResponse = await Client.PutAsync($"/api/Categories/edit/{testGuid}", stringContent);
+        Uri location = putResponse.Headers.Location!;
 
-        HttpResponseMessage response = await Client.PutAsync($"/api/Categories/edit/{testGuid}", stringContent);
+        HttpResponseMessage response = await Client.GetAsync(location);
 
         CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
-            
+
         Assert.Equal("catBname", data.Name);
         Assert.Equal("imurl", data.ImageUrl);
         Assert.Equal("desc3", data.Description);
-            
+
         await MockDataDispose(testGuid);
     }
         
@@ -116,15 +119,15 @@ public class CategoriesControllerTests : IntegrationTest
     public async Task SearchByName_IfFound_ReturnsDetails()
     {
         Guid testGuid = MockDataSetup();
-            
+
         HttpResponseMessage response = await Client.GetAsync($"/api/Categories/search/catAname");
 
-        CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+        List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal("catAname", data.Name);
-        Assert.Equal("imurl", data.ImageUrl);
-        Assert.Equal("desc", data.Description);
-            
+        Assert.Equal("catAname", data.First().Name);
+        Assert.Equal("imurl", data.First().ImageUrl);
+        Assert.Equal("desc", data.First().Description);
+
         await MockDataDispose(testGuid);
     }
         
@@ -135,7 +138,9 @@ public class CategoriesControllerTests : IntegrationTest
             
         HttpResponseMessage response = await Client.GetAsync($"/api/Categories/search/catBname");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+
+        Assert.Equal(new List<CategoryEntity>(), data);
             
         await MockDataDispose(testGuid);
     }
