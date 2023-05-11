@@ -1,75 +1,136 @@
-﻿using eshopBackend.DAL.Entities;
-using eshopBackend.DAL;
+using eshopBackend.DAL.DTOs;
+using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using eshopBackend.DAL.DTOs;
 
-namespace eshopBackend.API.Controllers;
-
-[Route("api/[controller]")]
-[ApiController]
-public class ManufacturersController : ControllerBase
+namespace eshopBackend.API.Controllers
 {
-
-    private readonly ILogger<ManufacturersController> _logger;
-    private readonly ManufacturerRepository _manufacturerRepository;
-
-    public ManufacturersController(ILogger<ManufacturersController> logger, ManufacturerRepository manufacturerRepository)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ManufacturersController : ControllerBase
     {
-        _logger = logger;
-        _manufacturerRepository = manufacturerRepository;
-    }
+        private readonly ILogger<ManufacturersController> _logger;
+        private readonly ManufacturerRepository _manufacturerRepository;
 
-
-    [HttpGet("list/{page}")]
-    public ActionResult<List<ManufacturerEntity>> GetManufacturers(uint page)
-    {
-        List<ManufacturerEntity> manufacturers = _manufacturerRepository.ManufacturersOverview(page);
-        return Ok(manufacturers);
-    }
-
-    [HttpGet("details/{id}")]
-    public ActionResult<ManufacturerEntity> GetManufacturerDetails(Guid id)
-    {
-        try
+        public ManufacturersController(ILogger<ManufacturersController> logger, ManufacturerRepository manufacturerRepository)
         {
-            ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id);
-            return Ok(details);
+            _logger = logger;
+            _manufacturerRepository = manufacturerRepository;
         }
-        catch (InvalidOperationException ex)
+
+        [HttpGet("list/{page}")]
+        public ActionResult<List<ManufacturerEntity>> GetManufacturers(uint page)
         {
-            _logger.LogError("Manufacturer cannot be found: {ExceptionMsg}", ex.Message);
-            _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
+            try
+            {
+                List<ManufacturerEntity> manufacturers = _manufacturerRepository.ManufacturersOverview(page);
+                return Ok(manufacturers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while retrieving the list of manufacturers");
+                return StatusCode(500);
+            }
+        }
 
-            return NotFound();
+        [HttpGet("details/{id}")]
+        public ActionResult<ManufacturerEntity> GetManufacturerDetails(Guid id)
+        {
+            try
+            {
+                ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id);
+                return Ok(details);
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {Id}", id);
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {Id}", id);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting details of manufacturer: {Id}", id);
+                return StatusCode(500);
+            }
+
+        }
+
+        [HttpPost("add")]
+        public ActionResult<Guid?> AddManufacturer(ManufacturerDto manufacturerDto)
+        {
+            try
+            {
+                Guid manufacturerId = _manufacturerRepository.ManufacturerAdd(manufacturerDto);
+                return CreatedAtAction(nameof(GetManufacturerDetails), new { id = manufacturerId }, manufacturerId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a new manufacturer: {ExceptionMsg}", ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("edit/{id}")]
+        public ActionResult EditManufacturer(Guid id, [FromBody] ManufacturerDto manufacturerDto)
+        {
+            try
+            {
+                _manufacturerRepository.ManufacturerEdit(id, manufacturerDto);
+                return CreatedAtAction(nameof(GetManufacturerDetails), new { Id = id }, id);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing manufacturer {Id}", id);
+                return NotFound();
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing manufacturer {Id}", id);
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing manufacturer {Id}", id);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpDelete("delete/{id}")]
+        public ActionResult DeleteManufacturer(Guid id)
+        {
+            try
+            {
+                _manufacturerRepository.ManufacturerDelete(id);
+                return Ok();
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "Tried delete manufacturer with ID '{ID}', Not found", id);
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting a manufacturer");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("search/{searchTerm}")]
+        public ActionResult<List<ManufacturerEntity>> SearchManufacturer(string searchTerm)
+        {
+            try
+            {
+                return Ok(_manufacturerRepository.SearchManufacturerByName(searchTerm));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while searching for manufacturers: {ExceptionMsg}", ex.Message);
+                return StatusCode(500);
+            }
         }
     }
-
-    [HttpPost("add/")]
-    public ActionResult<Guid?> AddManufacturer(AddManufacturerDto addManufacturerDto)
-    {
-        return Ok(_manufacturerRepository.ManufacturerAdd(addManufacturerDto));
-    }
-
-    [HttpPut("edit/")]
-    public ActionResult EditManufacturer([FromBody]EditManufacturerDto editManufacturerEditdto)
-    {
-        _manufacturerRepository.ManufacturerEdit(editManufacturerEditdto);
-        return Ok();
-    }
-
-    [HttpDelete("delete/{id}")]
-    public ActionResult DeleteManufacturer(Guid id)
-    {
-        _manufacturerRepository.ManufacturerDelete(id);
-        return Ok();
-    }
-
-    [HttpGet("search/{searchTerm}")]
-    public ActionResult<List<ManufacturerEntity>?> SearchManufacturer(string searchTerm)
-    {
-        List<ManufacturerEntity> foundManufacturer = _manufacturerRepository.SearchManufacturerByName(searchTerm);
-        return Ok(foundManufacturer);
-    }
-
 }

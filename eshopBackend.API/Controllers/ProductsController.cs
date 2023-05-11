@@ -1,11 +1,7 @@
-﻿using eshopBackend.DAL;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
 using eshopBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 
 namespace eshopBackend.API.Controllers
 {
@@ -19,7 +15,7 @@ namespace eshopBackend.API.Controllers
         public ProductsController(ILogger<ProductsController> logger, ProductRepository productRepository)
         {
             _logger = logger;
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _productRepository = productRepository;
         }
 
         [HttpGet("list/{page}")]
@@ -42,28 +38,34 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                ProductEntity details = _productRepository.ProductDetails(id);
+                ProductEntity details = _productRepository.ProductDetails(id)!;
                 return Ok(details);
             }
+            catch (NullReferenceException ex)
+            { 
+                _logger.LogError(ex, "An error occurred while getting details of product: {Id}", id); 
+                return NotFound();
+            }
             catch (InvalidOperationException ex)
-            {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+            { 
+                _logger.LogError(ex, "An error occurred while getting details of product: {Id}", id); 
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting product details");
+                _logger.LogError(ex, "An error occurred while getting details of product: {Id}", id);
                 return StatusCode(500);
             }
+
         }
 
         [HttpPost("add")]
-        public ActionResult<Guid> AddProduct([FromBody] AddProductDto addProductDto)
+        public ActionResult<Guid> AddProduct([FromBody] ProductDto productDto)
         {
             try
             {
-                Guid? productId = _productRepository.ProductAdd(addProductDto);
-                return Ok(productId);
+                Guid productId = _productRepository.ProductAdd(productDto);
+                return CreatedAtAction(nameof(GetProductDetails), new { id = productId }, productId);
             }
             catch (Exception ex)
             {
@@ -73,25 +75,30 @@ namespace eshopBackend.API.Controllers
         }
 
         [HttpPut("edit/{id}")]
-        public ActionResult EditProduct(Guid id, [FromBody] EditProductDto editProductDto)
+        public ActionResult EditProduct(Guid id, [FromBody] ProductDto productDto)
         {
             try
             {
-                _productRepository.ProductEdit(editProductDto);
-                return Ok();
+                _productRepository.ProductEdit(id, productDto);
+                return CreatedAtAction(nameof(GetProductDetails), new {Id = id}, id);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
+                _logger.LogError(ex, "An error occurred while editing product {Id}",id);
+                return NotFound();
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while editing product {Id}", id);
                 return NotFound();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while editing a product");
+                _logger.LogError(ex, "An error occurred while editing product {Id}", id);
                 return StatusCode(500);
             }
         }
-
+        
         [HttpDelete("delete/{id}")]
         public ActionResult DeleteProduct(Guid id)
         {
@@ -100,10 +107,10 @@ namespace eshopBackend.API.Controllers
                 _productRepository.ProductDelete(id);
                 return Ok();
             }
-            catch (InvalidOperationException ex)
+            catch (NullReferenceException ex)
             {
-                _logger.LogError(ex, "Product with ID '{ID}' not found", id);
-                return NotFound();
+                _logger.LogError(ex, "Tried delete product with ID '{ID}', Not found", id);
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -112,19 +119,25 @@ namespace eshopBackend.API.Controllers
             }
         }
 
-        [HttpPost("review")]
-        public ActionResult AddReview([FromBody] AddReviewDto addReviewDto)
+        [HttpPost("review/{id}")]
+        public ActionResult AddReview(Guid id, [FromBody] AddReviewDto addReviewDto)
         {
             try
             {
-                _productRepository.ReviewAdd(addReviewDto);
-                return Ok();
+                _productRepository.ReviewAdd(id, addReviewDto);
+                return CreatedAtAction(nameof(GetProductDetails), new { Id = id }, id);
+            }
+            catch (NullReferenceException ex)
+            {
+                _logger.LogError(ex, "An error occurred while adding a review");
+                return NotFound();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding a review");
                 return StatusCode(500);
             }
+            
         }
 
         [HttpGet("search/{searchTerm}")]
@@ -136,7 +149,7 @@ namespace eshopBackend.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while Searching");
+                _logger.LogError(ex, "An error occurred while searching for products: {ExceptionMsg}", ex.Message);
                 return StatusCode(500);
             }
         }
