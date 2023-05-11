@@ -37,12 +37,12 @@ public class CartRepository
         return newCart.Id;
     }
     
-    public void CartEdit(Guid CartId, EditCartDto editCartDto)
+    public void CartEdit(Guid cartId, EditCartDto editCartDto)
     {
         
         CartEntity cartToEdit = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == CartId)!;
+            .SingleOrDefault(cart => cart.Id == cartId)!;
         
         cartToEdit.DeliveryType = editCartDto.DeliveryType;
         cartToEdit.DeliveryAddress = editCartDto.DeliveryAddress;
@@ -53,36 +53,51 @@ public class CartRepository
         _db.SaveChanges();
     }
 
-    public void CartDelete(Guid CartId)
+    public void CartDelete(Guid cartId)
     {
-        CartEntity cartToDelete = _db.Carts.SingleOrDefault(cart => cart.Id == CartId)!;
+        CartEntity cartToDelete = _db.Carts.SingleOrDefault(cart => cart.Id == cartId)!;
 
         _db.Carts.Remove(cartToDelete);
         _db.SaveChanges();
     }
 
-    public void AddToCart(Guid CartId, AddToCartDto addToCartDto)
+    public void AddToCart(Guid cartId, AddToCartDto addToCartDto)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == CartId)!;
+            .SingleOrDefault(cart => cart.Id == cartId)!;
 
         cart.LastEdit = DateTime.Now;
 
         //we don't need category and manufacturer here
         ProductEntity product = _db.Products.SingleOrDefault(product => product.Id == addToCartDto.ProductId)!;
-        ProductInCartEntity productWithAmount = (ProductInCartEntity)product;
-        productWithAmount.Amount = addToCartDto.Amount;
+        
+        ProductInCartEntity productWithAmount = new ProductInCartEntity
+        {
+            Id = product.Id,
+            Name = product.Name,
+            ImageUrl = product.ImageUrl,
+            Description = product.Description,
+            Price = product.Price,
+            Weight = product.Weight,
+            Stock = product.Stock,
+            Category = product.Category,
+            CategoryId = product.CategoryId,
+            Manufacturer = product.Manufacturer,
+            ManufacturerId = product.ManufacturerId,
+            Reviews = product.Reviews,
+            Amount = addToCartDto.Amount
+        };
 
-        cart.Products.Add(product);
+        cart.Products.Add(productWithAmount);
         _db.SaveChanges();
     }
 
-    public void FinalizeOrder(Guid CartId)
+    public void FinalizeOrder(Guid cartId)
     {
         CartEntity cart = _db.Carts
             .Include(x => x.Products)
-            .SingleOrDefault(cart => cart.Id == CartId)!;
+            .SingleOrDefault(cart => cart.Id == cartId)!;
 
         if (cart is
             {
