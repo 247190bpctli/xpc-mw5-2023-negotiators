@@ -22,9 +22,9 @@ public class ManufacturerControllerTests : IntegrationTest
         return Guid.Parse(testGuid);
     }
     
-    private void MockDataDispose(Guid testGuid)
+    private async Task MockDataDispose(Guid testGuid)
     {
-        Client.DeleteAsync($"/api/Manufacturers/delete/{testGuid}");
+        await Client.DeleteAsync($"/api/Manufacturers/delete/{testGuid}");
     }
 
     [Fact]
@@ -33,14 +33,12 @@ public class ManufacturerControllerTests : IntegrationTest
         Guid testGuid = MockDataSetup();
         
         HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/list/1");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.NotEmpty(data);
         
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 
     [Fact]
@@ -49,17 +47,15 @@ public class ManufacturerControllerTests : IntegrationTest
         Guid testGuid = MockDataSetup();
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testGuid}");
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("manAname", data.Name);
         Assert.Equal("desc", data.Description);
         Assert.Equal("imurl", data.LogoUrl);
         Assert.Equal("EU", data.Origin);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 
     [Fact]
@@ -73,7 +69,7 @@ public class ManufacturerControllerTests : IntegrationTest
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
@@ -91,24 +87,27 @@ public class ManufacturerControllerTests : IntegrationTest
 
         StringContent stringContent = new(JsonSerializer.Serialize(testEdit), Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await Client.PutAsync($"/api/Manufacturers/edit/{testGuid}", stringContent);
+        HttpResponseMessage putResponse = await Client.PutAsync($"/api/Manufacturers/edit/{testGuid}", stringContent);
+        Uri location = putResponse.Headers.Location!;
 
+        HttpResponseMessage response = await Client.GetAsync(location);
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
             
+        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("manBname", data.Name);
         Assert.Equal("desc", data.Description);
         Assert.Equal("imurl", data.LogoUrl);
         Assert.Equal("AU", data.Origin);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
     public async Task DeleteById_IfExists_GetsDeleted()
     {
         Guid testGuid = MockDataSetup();
-            
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testGuid}");
 
@@ -116,31 +115,32 @@ public class ManufacturerControllerTests : IntegrationTest
     }
 
     [Fact]
-    public async Task SearchByName_IfFound_ReturnsDetails()
+    public async Task SearchByName_IfFound_ReturnsList()
     {
         Guid testGuid = MockDataSetup();
             
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manAname");
+        List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
-
-        Assert.Equal("manAname", data.Name);
-        Assert.Equal("desc", data.Description);
-        Assert.Equal("imurl", data.LogoUrl);
-        Assert.Equal("EU", data.Origin);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("manAname", data.First().Name);
+        Assert.Equal("desc", data.First().Description);
+        Assert.Equal("imurl", data.First().LogoUrl);
+        Assert.Equal("EU", data.First().Origin);
             
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
         
     [Fact]
-    public async Task SearchByName_IfNotFound_Returns404()
+    public async Task SearchByName_IfNotFound_ReturnsEmptyList()
     {
         Guid testGuid = MockDataSetup();
             
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manBname");
+        List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
+        
+        Assert.Equal(new List<ManufacturerEntity>(), data);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
-            
-        MockDataDispose(testGuid);
+        await MockDataDispose(testGuid);
     }
 }
