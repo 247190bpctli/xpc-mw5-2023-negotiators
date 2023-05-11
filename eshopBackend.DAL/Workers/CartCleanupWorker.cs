@@ -8,15 +8,15 @@ namespace eshopBackend.DAL.Workers;
 public class CartCleanupWorker : BackgroundService
 {
     private readonly AppDbContext _db;
-    private readonly ILogger<CartCleanupWorker> _logger;
     private readonly TimeSpan _interval;
+    private readonly ILogger<CartCleanupWorker> _logger;
     private readonly int _maxage;
 
     public CartCleanupWorker(AppDbContext db, ILogger<CartCleanupWorker> logger, IConfiguration config)
     {
         _db = db;
         _logger = logger;
-        
+
         try
         {
             _interval = TimeSpan.FromHours(config.GetSection("Cart").GetValue<int>("RemovalInterval"));
@@ -34,6 +34,7 @@ public class CartCleanupWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using PeriodicTimer timer = new(_interval);
+
         while (!stoppingToken.IsCancellationRequested
                && await timer.WaitForNextTickAsync(stoppingToken))
         {
@@ -43,10 +44,7 @@ public class CartCleanupWorker : BackgroundService
 
             if (oldCarts.Count != 0)
             {
-                foreach (CartEntity cart in oldCarts)
-                {
-                    _db.Carts.Remove(cart);
-                }
+                foreach (CartEntity cart in oldCarts) _db.Carts.Remove(cart);
 
                 await _db.SaveChangesAsync(stoppingToken);
                 _logger.LogInformation("Removed {Amount} carts older than {Timeframe} hours", oldCarts.Count, _maxage);

@@ -1,6 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Bogus;
 using eshopBackend.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace eshopBackend.DAL.Extensions;
 
@@ -17,7 +17,7 @@ public static class ModelBuilderExtensions
             CategoryEntity category = SeedCategory();
             ManufacturerEntity manufacturer = SeedManufacturer();
             ProductEntity product = SeedProduct(category, manufacturer);
-            
+
             categories.Add(category);
             manufacturers.Add(manufacturer);
             products.Add(product);
@@ -46,7 +46,7 @@ public static class ModelBuilderExtensions
             .RuleFor(o => o.LogoUrl, f => f.Image.DataUri(200, 100))
             .RuleFor(o => o.Origin, f => f.Address.Country());
     }
-    
+
     private static ProductEntity SeedProduct(CategoryEntity category, ManufacturerEntity manufacturer)
     {
         ProductEntity seededProduct = new Faker<ProductEntity>()
@@ -62,7 +62,7 @@ public static class ModelBuilderExtensions
         seededProduct.CategoryId = category.Id;
         seededProduct.ManufacturerId = manufacturer.Id;
         seededProduct.Reviews = new List<ReviewEntity>();
-        
+
         return seededProduct;
     }
 }

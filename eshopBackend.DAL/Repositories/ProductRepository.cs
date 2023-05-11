@@ -51,12 +51,11 @@ public class ProductRepository
         _db.Products.Add(newProduct);
         _db.SaveChanges();
 
-        return newProduct.Id; 
+        return newProduct.Id;
     }
 
     public void ProductEdit(Guid productId, ProductDto productDto)
     {
-            
         ProductEntity productToEdit = _db.Products.SingleOrDefault(product => product.Id == productId)!;
 
         productToEdit.Name = productDto.Name;
@@ -75,17 +74,17 @@ public class ProductRepository
     {
         ProductEntity productToDelete = _db.Products.SingleOrDefault(product => product.Id == id)!;
 
-        _db.Products.Remove(productToDelete); 
+        _db.Products.Remove(productToDelete);
         _db.SaveChanges();
     }
 
     public void ReviewAdd(Guid id, AddReviewDto r)
     {
-        r.Stars = (r.Stars <= 5) ? r.Stars : 5; //limit stars to 5
+        r.Stars = r.Stars <= 5 ? r.Stars : 5; //limit stars to 5
 
         //assemble the row
         ReviewEntity @new = new()
-        { 
+        {
             Stars = r.Stars,
             User = r.User,
             Description = r.Description

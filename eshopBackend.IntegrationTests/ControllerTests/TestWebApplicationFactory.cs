@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace eshopBackend.IntegrationTests.ControllerTests;
 
-public class TestWebApplicationFactory: WebApplicationFactory<Program>
+public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

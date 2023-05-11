@@ -11,4 +11,3 @@ public record ProductDto
     public Guid CategoryId { get; init; }
     public Guid ManufacturerId { get; init; }
 }
-
