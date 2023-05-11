@@ -44,7 +44,7 @@ public class CartController : ControllerBase
         }
     }
 
-    [HttpPost("Create")]
+    [HttpPost("create")]
     public ActionResult<Guid> CreateCart()
     {
         try

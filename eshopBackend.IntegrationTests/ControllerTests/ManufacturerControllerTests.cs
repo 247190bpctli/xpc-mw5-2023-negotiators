@@ -11,14 +11,14 @@ public class ManufacturerControllerTests : IntegrationTest
 {
     public ManufacturerControllerTests(TestWebApplicationFactory fixture): base(fixture) { }
 
-    private Guid MockDataSetup()
+    private async Task<Guid> MockDataSetup()
     {
         ManufacturerDto test = new() { Name = "manAname", Description = "desc", LogoUrl = "imurl", Origin = "EU" };
         
         StringContent stringContent = new(JsonSerializer.Serialize(test), Encoding.UTF8, "application/json");
         
-        string testGuid = Client.PostAsync("/api/Manufacturers/add", stringContent)
-            .Result.Content.ReadAsStringAsync().Result.Replace("\"", "");
+        HttpResponseMessage request = await Client.PostAsync("/api/Manufacturers/add", stringContent);
+        string testGuid = request.Content.ReadAsStringAsync().Result.Replace("\"", "");
         return Guid.Parse(testGuid);
     }
     
@@ -30,7 +30,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task Get_Always_ReturnsAll()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
         
         HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/list/1");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
@@ -44,7 +44,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task GetById_IfExists_ReturnsDetails()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testGuid}");
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
@@ -61,7 +61,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task GetById_IfMissing_Returns404()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
             
         Guid testInvalidGuid = Guid.NewGuid();
 
@@ -75,7 +75,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task EditById_IfExists_Updates()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
 
         ManufacturerDto testEdit = new()
         {
@@ -106,7 +106,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task DeleteById_IfExists_GetsDeleted()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
         await MockDataDispose(testGuid);
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testGuid}");
@@ -117,7 +117,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task SearchByName_IfFound_ReturnsList()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
             
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manAname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
@@ -134,7 +134,7 @@ public class ManufacturerControllerTests : IntegrationTest
     [Fact]
     public async Task SearchByName_IfNotFound_ReturnsEmptyList()
     {
-        Guid testGuid = MockDataSetup();
+        Guid testGuid = await MockDataSetup();
             
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/search/manBname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
