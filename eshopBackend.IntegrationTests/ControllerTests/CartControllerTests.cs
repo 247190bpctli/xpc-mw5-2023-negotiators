@@ -90,7 +90,7 @@ public class CartControllerTests : IntegrationTest
     public async Task AddProductById_IfExists_GetsAdded()
     {
         Guid testGuid = await MockDataSetup();
-        
+
         //make product to add
         ProductDto testProduct = new()
         {
