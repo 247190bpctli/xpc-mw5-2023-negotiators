@@ -24,6 +24,10 @@ public class CartRepository
         {
             Products = new List<ProductEntity>(),
             LastEdit = DateTime.Now,
+            DeliveryType = default,
+            DeliveryAddress = string.Empty,
+            PaymentType = default,
+            PaymentDetails = string.Empty,
             Finalized = false
         };
 
@@ -99,9 +103,9 @@ public class CartRepository
         if (cart is
             {
                 DeliveryType: not default(int),
-                DeliveryAddress: not null,
+                DeliveryAddress: not "",
                 PaymentType: not default(int),
-                PaymentDetails: not null
+                PaymentDetails: not ""
             })
         {
             cart.Finalized = true;
