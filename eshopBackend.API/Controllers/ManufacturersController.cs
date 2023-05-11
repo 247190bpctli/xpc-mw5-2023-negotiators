@@ -38,7 +38,7 @@ namespace eshopBackend.API.Controllers
         {
             try
             {
-                ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id);
+                ManufacturerEntity details = _manufacturerRepository.ManufacturerDetails(id) ?? throw new InvalidOperationException("Trying to show details of manufacturer null");
                 return Ok(details);
             }
             catch (NullReferenceException ex)
