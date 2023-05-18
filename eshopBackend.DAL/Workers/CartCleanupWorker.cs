@@ -35,6 +35,7 @@ public class CartCleanupWorker : IHostedService, IDisposable
     public void Dispose()
     {
         _timer.Dispose();
+        _db.Dispose();
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
