@@ -23,13 +23,13 @@ public class ProductRepository
         return products;
     }
 
-    public ProductEntity? ProductDetails(Guid id)
+    public ProductEntity ProductDetails(Guid id)
     {
         return _db.Products
             .Include(x => x.Category)
             .Include(x => x.Manufacturer)
             .Include(x => x.Reviews)
-            .SingleOrDefault(product => product.Id == id);
+            .SingleOrDefault(product => product.Id == id)!;
     }
 
     public Guid ProductAdd(ProductDto productDto)
