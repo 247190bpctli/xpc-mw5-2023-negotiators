@@ -32,19 +32,19 @@ public class ProductRepository
             .SingleOrDefault(product => product.Id == id);
     }
 
-    public Guid ProductAdd(ProductDto productTo)
+    public Guid ProductAdd(ProductDto productDto)
     {
         //assemble the row
         ProductEntity newProduct = new()
         {
-            Name = productTo.Name,
-            ImageUrl = productTo.ImageUrl,
-            Description = productTo.Description,
-            Price = productTo.Price,
-            Weight = productTo.Weight,
-            Stock = productTo.Stock,
-            Category = _db.Categories.SingleOrDefault(category => category.Id == productTo.CategoryId),
-            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == productTo.ManufacturerId),
+            Name = productDto.Name,
+            ImageUrl = productDto.ImageUrl,
+            Description = productDto.Description,
+            Price = productDto.Price,
+            Weight = productDto.Weight,
+            Stock = productDto.Stock,
+            Category = _db.Categories.SingleOrDefault(category => category.Id == productDto.CategoryId),
+            Manufacturer = _db.Manufacturers.SingleOrDefault(manufacturer => manufacturer.Id == productDto.ManufacturerId),
             Reviews = new List<ReviewEntity>()
         };
 
