@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
         //DAL services
         services.AddDbContext<AppDbContext>();
         services.AddHostedService<CartCleanupWorker>();
+        services.AddTransient<DbMigrator>();
 
         //public functions
         services.AddTransient<CartRepository>();

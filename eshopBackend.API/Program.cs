@@ -1,3 +1,4 @@
+using eshopBackend.DAL;
 using eshopBackend.DAL.Extensions;
 
 namespace eshopBackend.API;
@@ -27,6 +28,12 @@ public class Program
         builder.Services.RegisterDalDependencies();
 
         WebApplication app = builder.Build();
+        
+        //migrate db
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            scope.ServiceProvider.GetService<DbMigrator>()!.Migrate();
+        }
 
         app.MapHealthChecks("/health");
 
