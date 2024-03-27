@@ -15,6 +15,7 @@ public class ProductRepository
         page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
         uint skipRange = (page - 1) * 25;
         List<ProductEntity> products = _db.Products.Skip((int)skipRange).Take(25)
+            .OrderBy(key => key.Name)
             .Include(x => x.Category)
             .Include(x => x.Manufacturer)
             .Include(x => x.Reviews)

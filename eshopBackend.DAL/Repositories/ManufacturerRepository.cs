@@ -13,7 +13,8 @@ public class ManufacturerRepository
     {
         page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
         uint skipRange = (page - 1) * 25;
-        List<ManufacturerEntity> manufacturers = _db.Manufacturers.Skip((int)skipRange).Take(25).ToList();
+        List<ManufacturerEntity> manufacturers = _db.Manufacturers.Skip((int)skipRange).Take(25)
+            .OrderBy(key => key.Name).ToList();
 
         return manufacturers;
     }

@@ -14,7 +14,8 @@ public class CategoryRepository
     {
         page = page is <= 255 and > 0 ? page : 255; //limit pages to 255 without zero
         uint skipRange = (page - 1) * 25;
-        List<CategoryEntity> categories = _db.Categories.Skip((int)skipRange).Take(25).ToList();
+        List<CategoryEntity> categories = _db.Categories.Skip((int)skipRange).Take(25)
+            .OrderBy(key => key.Name).ToList();
 
         return categories;
     }
