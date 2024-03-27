@@ -6,13 +6,12 @@ using Microsoft.Extensions.Logging;
 
 namespace eshopBackend.DAL.Workers;
 
-public class CartCleanupWorker : IHostedService, IDisposable
+public class CartCleanupWorker : BackgroundService
 {
     private readonly AppDbContext _db;
     private readonly TimeSpan _interval;
     private readonly ILogger<CartCleanupWorker> _logger;
     private readonly int _maxage;
-    private Timer _timer = null!;
 
     public CartCleanupWorker(ILogger<CartCleanupWorker> logger, IConfiguration config)
     {
@@ -32,26 +31,29 @@ public class CartCleanupWorker : IHostedService, IDisposable
         }
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
-        _timer.Dispose();
         _db.Dispose();
+        base.Dispose();
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public override Task StartAsync(CancellationToken cancellationToken)
     {
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, _interval);
+        //startup message
         _logger.LogDebug("Cart removal worker started with an interval of {Interval} and max age of {MaxAge} hours", _interval, _maxage);
-        return Task.CompletedTask;
+        return base.StartAsync(cancellationToken);
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _timer.Change(Timeout.Infinite, 0);
-        return Task.CompletedTask;
+        while(!cancellationToken.IsCancellationRequested) 
+        {
+            DoWork();
+            await Task.Delay(_interval, cancellationToken); 
+        }
     }
 
-    private void DoWork(object? state)
+    private void DoWork()
     {
         List<CartEntity> oldCarts = _db.Carts
             .Where(c => c.LastEdit < DateTime.Now.AddHours(-_maxage))
