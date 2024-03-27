@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace eshopBackend.IntegrationTests.ControllerTests;
@@ -37,8 +39,11 @@ public class ManufacturerControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/list/1");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotEmpty(data);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Should().NotBeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -51,11 +56,14 @@ public class ManufacturerControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testGuid}");
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("manAname", data.Name);
-        Assert.Equal("desc", data.Description);
-        Assert.Equal("imurl", data.LogoUrl);
-        Assert.Equal("EU", data.Origin);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Name.Should().Be("manAname");
+            data.Description.Should().Be("desc");
+            data.LogoUrl.Should().Be("imurl");
+            data.Origin.Should().Be("EU");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -69,7 +77,7 @@ public class ManufacturerControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testInvalidGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
 
         await MockDataDispose(testGuid);
     }
@@ -95,12 +103,15 @@ public class ManufacturerControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync(location);
         ManufacturerEntity data = JsonSerializer.Deserialize<ManufacturerEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("manBname", data.Name);
-        Assert.Equal("desc", data.Description);
-        Assert.Equal("imurl", data.LogoUrl);
-        Assert.Equal("AU", data.Origin);
+        using (new AssertionScope())
+        {
+            putResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Name.Should().Be("manBname");
+            data.Description.Should().Be("desc");
+            data.LogoUrl.Should().Be("imurl");
+            data.Origin.Should().Be("AU");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -113,7 +124,7 @@ public class ManufacturerControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Manufacturers/details/{testGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -124,11 +135,14 @@ public class ManufacturerControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/search/manAname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("manAname", data.First().Name);
-        Assert.Equal("desc", data.First().Description);
-        Assert.Equal("imurl", data.First().LogoUrl);
-        Assert.Equal("EU", data.First().Origin);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.First().Name.Should().Be("manAname");
+            data.First().Description.Should().Be("desc");
+            data.First().LogoUrl.Should().Be("imurl");
+            data.First().Origin.Should().Be("EU");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -141,8 +155,11 @@ public class ManufacturerControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Manufacturers/search/manBname");
         List<ManufacturerEntity> data = JsonSerializer.Deserialize<List<ManufacturerEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(new List<ManufacturerEntity>(), data);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Should().BeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }

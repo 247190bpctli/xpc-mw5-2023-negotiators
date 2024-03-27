@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace eshopBackend.IntegrationTests.ControllerTests;
@@ -33,12 +35,15 @@ public class CartControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync($"/api/Cart/details/{testGuid}");
         CartEntity data = JsonSerializer.Deserialize<CartEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(new List<ProductEntity>(), data.Products);
-        Assert.Equal(default, data.DeliveryType);
-        Assert.Equal(string.Empty, data.DeliveryAddress);
-        Assert.Equal(default, data.PaymentType);
-        Assert.Equal(string.Empty, data.PaymentDetails);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Products.Should().BeEmpty(); //????
+            data.DeliveryType.Should().Be(default);
+            data.DeliveryAddress.Should().BeEmpty();
+            data.PaymentType.Should().Be(default);
+            data.PaymentDetails.Should().BeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -52,7 +57,7 @@ public class CartControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Cart/details/{testInvalidGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
 
         await MockDataDispose(testGuid);
     }
@@ -78,12 +83,15 @@ public class CartControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync(location);
         CartEntity data = JsonSerializer.Deserialize<CartEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(2, data.DeliveryType);
-        Assert.Equal("test", data.DeliveryAddress);
-        Assert.Equal(3, data.PaymentType);
-        Assert.Equal("testt", data.PaymentDetails);
+        using (new AssertionScope())
+        {
+            putResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.DeliveryType.Should().Be(2);
+            data.DeliveryAddress.Should().Be("test");
+            data.PaymentType.Should().Be(3);
+            data.PaymentDetails.Should().Be("testt");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -123,8 +131,11 @@ public class CartControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync(location);
         CartEntity data = JsonSerializer.Deserialize<CartEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("prodAname", data.Products.First().Name);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Products.First().Name.Should().Be("prodAname");
+        }
 
         await MockDataDispose(testGuid);
 
@@ -147,7 +158,7 @@ public class CartControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.PostAsync($"/api/Cart/AddToCart/{testGuid}", stringContent);
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
 
         await MockDataDispose(testGuid);
     }
@@ -161,7 +172,7 @@ public class CartControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Cart/details/{testGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -185,10 +196,13 @@ public class CartControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync($"/api/Cart/details/{testGuid}");
         CartEntity data = JsonSerializer.Deserialize<CartEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.Created, finalizeResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.True(data.Finalized);
+        using (new AssertionScope())
+        {
+            putResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            finalizeResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Finalized.Should().BeTrue();
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -200,7 +214,7 @@ public class CartControllerTests : IntegrationTest
 
         HttpResponseMessage finalizeResponse = await Client.GetAsync($"/api/Cart/finalizeOrder/{testGuid}");
 
-        Assert.Equal(HttpStatusCode.InternalServerError, finalizeResponse.StatusCode);
+        finalizeResponse.Should().HaveStatusCode(HttpStatusCode.InternalServerError);
 
         await MockDataDispose(testGuid);
     }

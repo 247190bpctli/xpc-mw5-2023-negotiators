@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace eshopBackend.IntegrationTests.ControllerTests;
@@ -37,8 +39,11 @@ public class CategoriesControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Categories/list/1");
         List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotEmpty(data);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Should().NotBeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -50,14 +55,15 @@ public class CategoriesControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testGuid}");
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
         CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("catAname", data.Name);
-        Assert.Equal("imurl", data.ImageUrl);
-        Assert.Equal("desc", data.Description);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Name.Should().Be("catAname");
+            data.ImageUrl.Should().Be("imurl");
+            data.Description.Should().Be("desc");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -71,7 +77,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testInvalidGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
 
         await MockDataDispose(testGuid);
     }
@@ -96,11 +102,14 @@ public class CategoriesControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync(location);
         CategoryEntity data = JsonSerializer.Deserialize<CategoryEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("catBname", data.Name);
-        Assert.Equal("imurl", data.ImageUrl);
-        Assert.Equal("desc3", data.Description);
+        using (new AssertionScope())
+        {
+            putResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Name.Should().Be("catBname");
+            data.ImageUrl.Should().Be("imurl");
+            data.Description.Should().Be("desc3");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -114,7 +123,7 @@ public class CategoriesControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Categories/details/{testGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -126,10 +135,13 @@ public class CategoriesControllerTests : IntegrationTest
 
         List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("catAname", data.First().Name);
-        Assert.Equal("imurl", data.First().ImageUrl);
-        Assert.Equal("desc", data.First().Description);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.First().Name.Should().Be("catAname");
+            data.First().ImageUrl.Should().Be("imurl");
+            data.First().Description.Should().Be("desc");
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -143,8 +155,11 @@ public class CategoriesControllerTests : IntegrationTest
 
         List<CategoryEntity> data = JsonSerializer.Deserialize<List<CategoryEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(new List<CategoryEntity>(), data);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Should().BeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }

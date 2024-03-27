@@ -3,6 +3,8 @@ using System.Text;
 using System.Text.Json;
 using eshopBackend.DAL.DTOs;
 using eshopBackend.DAL.Entities;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit;
 
 namespace eshopBackend.IntegrationTests.ControllerTests;
@@ -45,8 +47,11 @@ public class ProductsControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Products/list/1");
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.NotEmpty(data);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Should().NotBeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -59,13 +64,16 @@ public class ProductsControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testGuid}");
         ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("prodAname", data.Name);
-        Assert.Equal("imurl", data.ImageUrl);
-        Assert.Equal("desc", data.Description);
-        Assert.Equal(123, data.Price);
-        Assert.Equal(456, data.Weight);
-        Assert.Equal(789, data.Stock);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Name.Should().Be("prodAname");
+            data.ImageUrl.Should().Be("imurl");
+            data.Description.Should().Be("desc");
+            data.Price.Should().Be(123);
+            data.Weight.Should().Be(456);
+            data.Stock.Should().Be(789);
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -79,7 +87,7 @@ public class ProductsControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testInvalidGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
 
         await MockDataDispose(testGuid);
     }
@@ -107,14 +115,17 @@ public class ProductsControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync(location);
         ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal("prodBname", data.Name);
-        Assert.Equal("imurl", data.ImageUrl);
-        Assert.Equal("desc3", data.Description);
-        Assert.Equal(123, data.Price);
-        Assert.Equal(789, data.Weight);
-        Assert.Equal(456, data.Stock);
+        using (new AssertionScope())
+        {
+            putResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Name.Should().Be("prodBname");
+            data.ImageUrl.Should().Be("imurl");
+            data.Description.Should().Be("desc3");
+            data.Price.Should().Be(123);
+            data.Weight.Should().Be(789);
+            data.Stock.Should().Be(456);
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -128,7 +139,7 @@ public class ProductsControllerTests : IntegrationTest
 
         HttpResponseMessage response = await Client.GetAsync($"/api/Products/details/{testGuid}");
 
-        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        response.Should().HaveStatusCode(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -139,12 +150,16 @@ public class ProductsControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Products/search/prodAname");
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal("prodAname", data.First().Name);
-        Assert.Equal("imurl", data.First().ImageUrl);
-        Assert.Equal("desc", data.First().Description);
-        Assert.Equal(123, data.First().Price);
-        Assert.Equal(456, data.First().Weight);
-        Assert.Equal(789, data.First().Stock);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.First().Name.Should().Be("prodAname");
+            data.First().ImageUrl.Should().Be("imurl");
+            data.First().Description.Should().Be("desc");
+            data.First().Price.Should().Be(123);
+            data.First().Weight.Should().Be(456);
+            data.First().Stock.Should().Be(789);
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -157,8 +172,11 @@ public class ProductsControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync("/api/Products/search/prodBname");
         List<ProductEntity> data = JsonSerializer.Deserialize<List<ProductEntity>>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(new List<ProductEntity>(), data);
+        using (new AssertionScope())
+        {
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Should().BeEmpty();
+        }
 
         await MockDataDispose(testGuid);
     }
@@ -183,11 +201,14 @@ public class ProductsControllerTests : IntegrationTest
         HttpResponseMessage response = await Client.GetAsync(location);
         ProductEntity data = JsonSerializer.Deserialize<ProductEntity>(await response.Content.ReadAsStringAsync(), JsonSerializerOptions)!;
 
-        Assert.Equal(HttpStatusCode.Created, putResponse.StatusCode);
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        Assert.Equal(3, data.Reviews.First().Stars);
-        Assert.Equal("revAname", data.Reviews.First().User);
-        Assert.Equal("desc3", data.Reviews.First().Description);
+        using (new AssertionScope())
+        {
+            putResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+            response.Should().HaveStatusCode(HttpStatusCode.OK);
+            data.Reviews.First().Stars.Should().Be(3);
+            data.Reviews.First().User.Should().Be("revAname");
+            data.Reviews.First().Description.Should().Be("desc3");
+        }
 
         await MockDataDispose(testGuid);
     }
